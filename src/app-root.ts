@@ -1,0 +1,88 @@
+import {BaseComponent, IComponentConfig, ComponentContainer} from './component';
+import {registerRootForAutoRender} from './core';
+
+export interface IAppRootConfig extends IComponentConfig {
+    styleIsolation?: {
+        mode: 'shadow' | 'none';
+        styles?: string;
+    };
+}
+
+export class AppRoot extends BaseComponent<IAppRootConfig> {
+    public host: HTMLElement;
+    public root: HTMLElement | ShadowRoot;
+    public add: ComponentContainerProxy;
+    private _container: ComponentContainer;
+
+    constructor(parentElement: HTMLElement, config: IAppRootConfig) {
+        super(config);
+        this.host = this.element;
+
+        if (config.styleIsolation?.mode === 'shadow') {
+            this.root = this.host.attachShadow({mode: 'open'});
+            if (config.styleIsolation.styles) {
+                const styleEl = document.createElement('style');
+                styleEl.textContent = config.styleIsolation.styles;
+                this.root.appendChild(styleEl);
+            }
+        } else {
+            this.root = this.host;
+        }
+
+        this._container = new ComponentContainer(this.root, (window as any).Zone?.current);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+        parentElement.appendChild(this.host);
+
+        registerRootForAutoRender(this);
+    }
+
+    protected createHTMLElement(): HTMLElement {
+        return document.createElement('div');
+    }
+
+    public render(): void {
+        // AppRoot 自身渲染逻辑
+    }
+
+    public renderAll(): void {
+        this.render();
+        this._container.renderAll();
+    }
+}
+
+/**
+ * 代理类，用于支持 appRoot.add.Label(...) 这种调用方式
+ */
+export interface ComponentContainerProxy {
+    Label: (config: any) => any;
+    Button: (config: any) => any;
+    Flex: (config: any) => any;
+
+    [key: string]: (config: any) => any;
+}
+
+// 提前声明组件构造函数，稍后实现
+const componentRegistry: Record<string, any> = {};
+
+export function registerComponent(name: string, ctor: any) {
+    componentRegistry[name] = ctor;
+}
+
+export function createComponentContainerProxyFromContainer(container: ComponentContainer): ComponentContainerProxy {
+    return new Proxy({}, {
+        get: (target, prop: string) => {
+            return (config: any) => {
+                const ctor = componentRegistry[prop];
+                if (!ctor) {
+                    throw new Error(`Component ${prop} is not registered.`);
+                }
+                return container.addComponent(ctor, config);
+            };
+        }
+    }) as any;
+}
+
+export function createComponentContainerProxy(host: HTMLElement | ShadowRoot): ComponentContainerProxy {
+    const container = new ComponentContainer(host, (window as any).Zone?.current);
+    return createComponentContainerProxyFromContainer(container);
+}
