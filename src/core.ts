@@ -1,5 +1,10 @@
 import 'zone.js';
-import {signal as alienSignal, effect as alienEffect, computed as alienComputed, Signal} from 'alien-signals';
+import {signal as alienSignal, effect as alienEffect, computed as alienComputed} from 'alien-signals';
+
+type AlienSignal<T> = {
+    (): T;
+    (value: T): void;
+};
 
 declare global {
     interface Window {
@@ -51,7 +56,7 @@ export interface ISignal<T> {
 }
 
 class SignalWrapper<T> implements ISignal<T> {
-    private _signal: Signal<T>;
+    private _signal: AlienSignal<T>;
 
     constructor(initialValue: T) {
         this._signal = alienSignal(initialValue);
@@ -62,7 +67,7 @@ class SignalWrapper<T> implements ISignal<T> {
     }
 
     set(value: T): void {
-        this._signal.set(value);
+        this._signal(value);
     }
 
     get value(): T {
