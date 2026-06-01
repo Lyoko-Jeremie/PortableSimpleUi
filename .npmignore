@@ -1,0 +1,27 @@
+# Test and Example files
+test/
+examples/
+
+# Configuration files (not needed in npm)
+tsconfig*.json
+jest.config.js
+jest.setup.js
+webpack.examples.config.js
+
+# Documentation and reports
+*.md
+coverage/
+docs/
+
+# Development only
+.idea/
+.vscode/
+.git/
+.gitignore
+
+# Build artifacts
+node_modules/
+*.tsbuildinfo
+.yarn/
+.pnp.*
+
