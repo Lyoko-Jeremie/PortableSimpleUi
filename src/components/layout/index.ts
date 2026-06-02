@@ -1,6 +1,7 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ContainerComponent} from '../../component';
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
 import {IZoneWrapper} from '../../core';
+import {DynamicValue} from '../../types';
 
 /**
  * 基础容器组件
@@ -121,7 +122,7 @@ export class Grid extends ContainerComponent<IGridConfig> {
  * 分组布局
  */
 export interface IGroupConfig extends IComponentConfig {
-    title?: string;
+    title?: DynamicValue<string>;
 }
 
 export class Group extends ContainerComponent<IGroupConfig> {
@@ -138,12 +139,9 @@ export class Group extends ContainerComponent<IGroupConfig> {
         fieldset.style.padding = '10px';
         fieldset.style.margin = '10px 0';
 
-        if (this.config.title) {
-            const legend = document.createElement('legend');
-            legend.textContent = this.config.title;
-            fieldset.appendChild(legend);
-            this._titleElement = legend;
-        }
+        const legend = document.createElement('legend');
+        fieldset.appendChild(legend);
+        this._titleElement = legend;
 
         const div = document.createElement('div');
         fieldset.appendChild(div);
@@ -158,8 +156,16 @@ export class Group extends ContainerComponent<IGroupConfig> {
 
     public render(): void {
         super.render();
-        if (this._titleElement && this.config.title) {
-            this._titleElement.textContent = this.config.title;
+        const legend = this._titleElement;
+        if (legend) {
+            const val = this.config.title;
+            const title = val !== undefined ? this.resolveValue(val) : undefined;
+            if (title !== undefined) {
+                legend.textContent = title;
+                legend.style.display = '';
+            } else {
+                legend.style.display = 'none';
+            }
         }
     }
 }
