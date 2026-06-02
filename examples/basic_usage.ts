@@ -79,7 +79,10 @@ async function runExample() {
         flex.add.Button({
             text: 'Increment Deep Value',
             onClick: () => {
-                aOuterContextInMod.counter.a.b[0].c += 1;
+                const item = aOuterContextInMod.counter.a.b[0];
+                if (item) {
+                    item.c += 1;
+                }
                 // 注意：在 Zone.js 环境下，异步任务结束后会自动触发渲染。
                 // 如果是同步修改且希望立即看到效果，或者不在 Zone 管理的宏/微任务中，才需要 markDirty。
             }
