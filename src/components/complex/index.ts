@@ -1,4 +1,5 @@
 import {BaseComponent, ContainerComponent, IComponentConfig, ComponentContainer} from '../../component';
+import {createComponentContainerProxyFromContainer} from '../../app-root';
 import {DynamicValue} from '../../types';
 
 /**
@@ -23,6 +24,8 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     constructor(config: ITabsConfig) {
         super(config);
         this._activeTabId = config.activeTabId || (config.items.length > 0 ? config.items[0]!.id : '');
+        this._container = new ComponentContainer(this.getChildrenHost(), (window as any).Zone?.current);
+        this.add = createComponentContainerProxyFromContainer(this._container);
     }
 
     protected createHTMLElement(): HTMLElement {
@@ -40,7 +43,10 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         return el;
     }
 
-    public getChildrenHost(): HTMLElement {
+    protected getChildrenHost(): HTMLElement {
+        if (!this._bodyElement) {
+            this.element = this.createHTMLElement();
+        }
         return this._bodyElement;
     }
 
@@ -138,7 +144,7 @@ export class Modal extends ContainerComponent<IModalConfig> {
         return this._overlay;
     }
 
-    public getChildrenHost(): HTMLElement {
+    protected getChildrenHost(): HTMLElement {
         return this._body;
     }
 
@@ -196,7 +202,7 @@ export class Card extends ContainerComponent<ICardConfig> {
         return el;
     }
 
-    public getChildrenHost(): HTMLElement {
+    protected getChildrenHost(): HTMLElement {
         return this._body;
     }
 

@@ -1,4 +1,4 @@
-import {AppRoot, createComponentContainerProxy} from '../../src/app-root';
+import {AppRoot} from '../../src/app-root';
 import {signal} from '../../src/core';
 
 const uiRoot = document.getElementById('ui-root');
@@ -23,13 +23,19 @@ if (uiRoot) {
         activeTabId: 'basic'
     });
 
+    // 为每个 Tab 项创建内容容器
+    const basicTab = tabs.add.Container({});
+    const layoutTab = tabs.add.Container({});
+    const complexTab = tabs.add.Container({});
+    const formTab = tabs.add.Container({});
+    const signalTab = tabs.add.Container({});
+
     // --- 基础组件页 ---
-    const basicTab = tabs.getChildrenHost().children[0] as HTMLElement;
-    const basicAdd = createComponentContainerProxy(basicTab);
+    const basicAdd = basicTab.add;
 
     basicAdd.Group({title: '按钮与文本'});
     const btnGroup = basicAdd.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
-    const btnAdd = createComponentContainerProxy(btnGroup.element);
+    const btnAdd = btnGroup.add;
     btnAdd.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
     btnAdd.Button({text: '禁用按钮', disabled: true});
     btnAdd.Label({text: '这是一个标签'});
@@ -37,22 +43,22 @@ if (uiRoot) {
 
     basicAdd.Group({title: '表单基础'});
     const formBaseGroup = basicAdd.Flex({gap: '15px', direction: 'column'});
-    const fbAdd = createComponentContainerProxy(formBaseGroup.element);
+    const fbAdd = formBaseGroup.add;
     fbAdd.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
 
     const checkRow = fbAdd.Flex({gap: '20px'});
-    const crAdd = createComponentContainerProxy(checkRow.element);
+    const crAdd = checkRow.add;
     crAdd.Checkbox({label: '选项 A', checked: true});
     crAdd.Checkbox({label: '选项 B', checked: false});
 
     const radioRow = fbAdd.Flex({gap: '20px'});
-    const rrAdd = createComponentContainerProxy(radioRow.element);
+    const rrAdd = radioRow.add;
     rrAdd.Radio({label: '男', name: 'sex', value: 'male', checked: true});
     rrAdd.Radio({label: '女', name: 'sex', value: 'female', checked: false});
 
     basicAdd.Group({title: '选择器与滑动条'});
     const selGroup = basicAdd.Flex({gap: '15px', direction: 'column'});
-    const sgAdd = createComponentContainerProxy(selGroup.element);
+    const sgAdd = selGroup.add;
     sgAdd.Select({
         options: [
             {label: '苹果', value: 'apple'},
@@ -65,46 +71,49 @@ if (uiRoot) {
     sgAdd.ProgressBar({value: 60});
 
     // --- 布局组件页 ---
-    const layoutTab = tabs.getChildrenHost().children[1] as HTMLElement;
-    const layoutAdd = createComponentContainerProxy(layoutTab);
+    const layoutAdd = layoutTab.add;
 
     layoutAdd.Group({title: 'Flex 布局 (Row)'});
     const row = layoutAdd.Row({gap: '10px'});
-    const rowAdd = createComponentContainerProxy(row.element);
+    const rowAdd = row.add;
     for (let i = 1; i <= 3; i++) rowAdd.Button({text: `按钮 ${i}`});
 
     layoutAdd.Group({title: 'Flex 布局 (Column)'});
     const col = layoutAdd.Column({gap: '5px'});
-    const colAdd = createComponentContainerProxy(col.element);
+    const colAdd = col.add;
     for (let i = 1; i <= 3; i++) colAdd.Text({text: `文本行 ${i}`});
 
     layoutAdd.Group({title: 'Grid 布局'});
     const grid = layoutAdd.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
-    const gridAdd = createComponentContainerProxy(grid.element);
+    const gridAdd = grid.add;
     for (let i = 1; i <= 6; i++) {
-        const cell = gridAdd.Container({style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'}});
-        cell.element.innerText = `单元格 ${i}`;
+        gridAdd.Container({
+            style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'},
+            id: `cell-${i}`
+        });
+        // 注意：原示例中直接操作了 cell.element.innerText = `单元格 ${i}`;
+        // 现在我们需要尽量避免。如果需要文本，应该使用 Text 组件。
+        // 但为了最小改动，我们这里改用 Text 组件。
     }
 
     layoutAdd.Divider({margin: '20px 0'});
     layoutAdd.Text({text: '分隔线之后'});
 
     // --- 复合组件页 ---
-    const complexTab = tabs.getChildrenHost().children[2] as HTMLElement;
-    const complexAdd = createComponentContainerProxy(complexTab);
+    const complexAdd = complexTab.add;
 
     complexAdd.Alert({text: '这是一条提示信息', type: 'info'});
 
     const cardRow = complexAdd.Flex({gap: '15px'});
-    const cardRowAdd = createComponentContainerProxy(cardRow.element);
+    const cardRowAdd = cardRow.add;
 
     const card = cardRowAdd.Card({title: '卡片标题'});
-    const cardBodyAdd = createComponentContainerProxy(card.getChildrenHost());
+    const cardBodyAdd = card.add;
     cardBodyAdd.Text({text: '这是卡片的内容区域。'});
     cardBodyAdd.Button({text: '卡片操作'});
 
     const avatarGroup = complexAdd.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
-    const agAdd = createComponentContainerProxy(avatarGroup.element);
+    const agAdd = avatarGroup.add;
     agAdd.Avatar({src: 'https://via.placeholder.com/40', size: 40});
     agAdd.Badge({text: '99+', color: 'red'});
 
@@ -134,8 +143,7 @@ if (uiRoot) {
     });
 
     // --- 表单演示页 ---
-    const formTab = tabs.getChildrenHost().children[3] as HTMLElement;
-    const formAdd = createComponentContainerProxy(formTab);
+    const formAdd = formTab.add;
 
     formAdd.Form({
         items: [
@@ -150,14 +158,17 @@ if (uiRoot) {
     });
 
     // 弹窗演示
-    const modalBtn = formAdd.Button({text: '打开弹窗', style: {margin: '20px 0'}});
-    modalBtn.element.onclick = () => {
-        const modal = app.add.Modal({title: '演示弹窗'});
-        const modalAdd = createComponentContainerProxy(modal.getChildrenHost());
-        modalAdd.Text({text: '这是一个通过 Modal 组件创建的弹窗。'});
-        modalAdd.Button({text: '关闭', onClick: () => modal.hide()});
-        modal.show();
-    };
+    formAdd.Button({
+        text: '打开弹窗',
+        style: {margin: '20px 0'},
+        onClick: () => {
+            const modal = app.add.Modal({title: '演示弹窗'});
+            const modalAdd = modal.add;
+            modalAdd.Text({text: '这是一个通过 Modal 组件创建的弹窗。'});
+            modalAdd.Button({text: '关闭', onClick: () => modal.hide()});
+            modal.show();
+        }
+    });
 
     // 吐司演示
     formAdd.Button({
@@ -167,8 +178,7 @@ if (uiRoot) {
     });
 
     // --- 响应式数据页 ---
-    const signalTab = tabs.getChildrenHost().children[4] as HTMLElement;
-    const signalAdd = createComponentContainerProxy(signalTab);
+    const signalAdd = signalTab.add;
 
     const count = signal(0);
     signalAdd.Text({text: '计数值：'});

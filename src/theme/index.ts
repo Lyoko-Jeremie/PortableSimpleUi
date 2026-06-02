@@ -70,4 +70,130 @@ export const DEFAULT_THEME_CSS = `
   font-weight: bold;
   padding: 0 5px;
 }
+
+/* Tabs */
+.ps-shadow-root .psu-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.ps-shadow-root .psu-tabs-header {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.ps-shadow-root .psu-tabs-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.ps-shadow-root .psu-tabs-item:hover {
+  color: #007bff;
+}
+.ps-shadow-root .psu-tabs-item.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  font-weight: bold;
+}
+.ps-shadow-root .psu-tabs-body {
+  padding: 10px 0;
+}
+/* 全局样式支持 (当 mode 为 none 时) */
+.ps-root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+}
+.ps-root .ps-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.ps-root .ps-button:hover {
+  background: #0056b3;
+}
+.ps-root .ps-button:disabled {
+  background: rgb(102, 175.8, 255);
+  cursor: not-allowed;
+}
+.ps-root .ps-input, .ps-root .ps-select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+.ps-root .ps-input:focus, .ps-root .ps-select:focus {
+  border-color: #007bff;
+}
+.ps-root .ps-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.ps-root .ps-text {
+  font-size: 14px;
+}
+.ps-root .ps-checkbox, .ps-root .ps-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.ps-root .ps-checkbox input, .ps-root .ps-radio input {
+  cursor: pointer;
+}
+.ps-root .ps-progress-bar {
+  background-color: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.ps-root .ps-progress-bar > div {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.2s;
+}
+.ps-root .ps-group {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+.ps-root .ps-group legend {
+  font-weight: bold;
+  padding: 0 5px;
+}
+.ps-root .psu-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.ps-root .psu-tabs-header {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.ps-root .psu-tabs-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.ps-root .psu-tabs-item:hover {
+  color: #007bff;
+}
+.ps-root .psu-tabs-item.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  font-weight: bold;
+}
+.ps-root .psu-tabs-body {
+  padding: 10px 0;
+}
 `;

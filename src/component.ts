@@ -12,8 +12,16 @@ export interface IComponentConfig {
 }
 
 export abstract class BaseComponent<TConfig extends IComponentConfig = IComponentConfig> {
-    public element: HTMLElement;
+    protected element: HTMLElement;
     public config: TConfig;
+
+    /**
+     * 获取组件的原生 HTML 元素。
+     * 尽量避免直接操作原生元素，除非必要（如集成第三方库）。
+     */
+    public getElement(): HTMLElement {
+        return this.element;
+    }
     public state: any = {};
     protected _dirty = false;
 
@@ -95,7 +103,7 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
     /**
      * 返回存放子组件的 HTML 元素，默认为组件根元素
      */
-    public getChildrenHost(): HTMLElement | ShadowRoot {
+    protected getChildrenHost(): HTMLElement | ShadowRoot {
         return this.element;
     }
 
@@ -115,7 +123,8 @@ export class ComponentContainer {
 
     public addComponent<T extends BaseComponent<any>>(ctor: ComponentConstructor<T>, config: any): T {
         const component = new ctor(config);
-        this.host.appendChild(component.element);
+        const host = this.host instanceof ShadowRoot ? this.host : this.host;
+        host.appendChild(component.getElement());
         this.components.push(component);
         // 如果有 Zone，可以在 Zone 中执行渲染逻辑
         if (this.parentZone) {
