@@ -82,6 +82,14 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         }
     }
 
+    protected setValue<T>(accessor: DynamicValue<T>, value: T): void {
+        if (accessor && typeof accessor === 'object') {
+            if ('set' in accessor && typeof (accessor as any).set === 'function') {
+                (accessor as any).set(value);
+            }
+        }
+    }
+
     protected resolveValue<T>(value: DynamicValue<T>): T {
         if (typeof value === 'function') {
             const result = (value as Function)();

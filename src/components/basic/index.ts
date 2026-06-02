@@ -141,6 +141,7 @@ export class Input extends BaseComponent<IInputConfig> {
         input.addEventListener('input', () => {
             const run = () => {
                 this.state.value = input.value;
+                if (this.config.value) this.setValue(this.config.value, input.value);
                 if (this.config.onInput) this.config.onInput(input.value, this);
             };
             this.zoneWrapper.run(run);
@@ -148,6 +149,7 @@ export class Input extends BaseComponent<IInputConfig> {
         input.addEventListener('change', () => {
             const run = () => {
                 this.state.value = input.value;
+                if (this.config.value) this.setValue(this.config.value, input.value);
                 if (this.config.onChange) this.config.onChange(input.value, this);
             };
             this.zoneWrapper.run(run);
@@ -190,6 +192,7 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
         inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = inputEl.checked;
+                if (this.config.checked) this.setValue(this.config.checked, inputEl.checked);
                 if (this.config.onChange) this.config.onChange(inputEl.checked, this);
             };
             this.zoneWrapper.run(run);
@@ -256,6 +259,7 @@ export class Radio extends BaseComponent<IRadioConfig> {
         inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = inputEl.checked;
+                if (this.config.checked) this.setValue(this.config.checked, inputEl.checked);
                 if (this.config.onChange) this.config.onChange(inputEl.checked, this);
             };
             this.zoneWrapper.run(run);
@@ -316,6 +320,7 @@ export class Select extends BaseComponent<ISelectConfig> {
         select.addEventListener('change', () => {
             const run = () => {
                 this.state.value = select.value;
+                if (this.config.value) this.setValue(this.config.value, select.value);
                 if (this.config.onChange) this.config.onChange(select.value, this);
             };
             this.zoneWrapper.run(run);
@@ -366,15 +371,10 @@ export class Slider extends BaseComponent<ISliderConfig> {
             const run = () => {
                 const val = parseFloat(input.value);
                 this.state.value = val;
+                if (this.config.value) this.setValue(this.config.value, val);
                 if (this.config.onChange) this.config.onChange(val, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
         return input;
     }
@@ -409,6 +409,7 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
         input.addEventListener('input', () => {
             const run = () => {
                 this.state.value = input.value;
+                if (this.config.value) this.setValue(this.config.value, input.value);
                 if (this.config.onChange) this.config.onChange(input.value, this);
             };
             this.zoneWrapper.run(run);

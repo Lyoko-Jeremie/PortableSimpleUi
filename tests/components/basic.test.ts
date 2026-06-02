@@ -1,5 +1,6 @@
 import {AppRoot} from '../../src/app-root';
 import {createZoneWrapper} from '../../src/core';
+import {makeDataAccessor} from '../../src/utils';
 
 describe('Basic Components', () => {
     let container: HTMLElement;
@@ -64,6 +65,42 @@ describe('Basic Components', () => {
             const text = appRoot.add.Text({ html: '<span>Nested</span>' });
             appRoot.renderAll();
             expect(text.getElement().innerHTML).toBe('<span>Nested</span>');
+        });
+    });
+
+    describe('Input Two-way Binding', () => {
+        it('should update context when input changes', () => {
+            const context = { name: 'Alice' };
+            const input = appRoot.add.Input({
+                value: makeDataAccessor(context, 'name')
+            });
+            appRoot.renderAll();
+
+            const inputEl = input.getElement() as HTMLInputElement;
+            expect(inputEl.value).toBe('Alice');
+
+            inputEl.value = 'Bob';
+            inputEl.dispatchEvent(new Event('input'));
+
+            expect(context.name).toBe('Bob');
+        });
+    });
+
+    describe('Checkbox Two-way Binding', () => {
+        it('should update context when checkbox changes', () => {
+            const context = { active: false };
+            const checkbox = appRoot.add.Checkbox({
+                checked: makeDataAccessor(context, 'active')
+            });
+            appRoot.renderAll();
+
+            const inputEl = checkbox.getElement().querySelector('input') as HTMLInputElement;
+            expect(inputEl.checked).toBe(false);
+
+            inputEl.checked = true;
+            inputEl.dispatchEvent(new Event('change'));
+
+            expect(context.active).toBe(true);
         });
     });
 });

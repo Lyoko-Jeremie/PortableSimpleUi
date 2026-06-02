@@ -1,3 +1,5 @@
+import {DataAccessor} from "./types";
+
 /**
  * 获取对象 T 在路径 P 上的类型
  */
@@ -36,6 +38,39 @@ function getValueByPath(obj: any, path: string): any {
         current = current[part];
     }
     return current;
+}
+
+/**
+ * 内部用于根据路径设置值
+ */
+function setValueByPath(obj: any, path: string, value: any): void {
+    const parts = path.split('.');
+    let current = obj;
+    for (let i = 0; i < parts.length - 1; i++) {
+        const part = parts[i];
+        if (part === undefined) continue;
+        if (current[part] === undefined || current[part] === null) {
+            current[part] = {};
+        }
+        current = current[part];
+    }
+    const lastPart = parts[parts.length - 1];
+    if (lastPart !== undefined) {
+        current[lastPart] = value;
+    }
+}
+
+/**
+ * makeDataAccessor 实现
+ */
+export function makeDataAccessor<T, P extends string = DotPathOf<T>>(
+    context: T,
+    path: P & (P extends DotPathOf<T> ? P : never)
+): DataAccessor<ValueOfDotPathTo<T, P>> {
+    return {
+        get: () => getValueByPath(context, path),
+        set: (value: any) => setValueByPath(context, path, value)
+    };
 }
 
 /**

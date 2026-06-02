@@ -1,7 +1,7 @@
 import 'core-js/full';
 import 'zone.js';
 import themeString from '../src/theme/css/theme.css?inlineText';
-import {AppRoot, Button, createZoneWrapper, makeRef, signal} from "../src";
+import {AppRoot, Button, createZoneWrapper, makeRef, signal, makeDataAccessor} from "../src";
 
 const zone = createZoneWrapper('my-mod-a');
 
@@ -172,7 +172,42 @@ const dataAccessor = {
 flexContainer.add.Radio({
     id: 'radioInFlex',
     label: 'aaa',
+    name: 'test-radio',
+    value: 'aaa',
     checked: dataAccessor,
+});
+
+flexContainer.add.Label({
+    id: 'label_radio_status',
+    text: () => `Radio Status: ${aOuterContextInOuterLogic.value}`,
+});
+
+const formContext = {
+    name: 'Junie',
+    age: 18,
+    isHappy: true
+};
+
+flexContainer.add.Input({
+    id: 'input_name',
+    value: makeDataAccessor(formContext, 'name'),
+    placeholder: 'Enter name',
+});
+
+flexContainer.add.Label({
+    id: 'label_name',
+    text: () => `Name in context: ${formContext.name}`,
+});
+
+flexContainer.add.Checkbox({
+    id: 'checkbox_happy',
+    label: 'Are you happy?',
+    checked: makeDataAccessor(formContext, 'isHappy'),
+});
+
+flexContainer.add.Label({
+    id: 'label_happy',
+    text: () => `Happy in context: ${formContext.isHappy}`,
 });
 
 flexContainer.markDirty(); // 手动触发强制更新/同步整个容器中所有的值，并重新渲染
