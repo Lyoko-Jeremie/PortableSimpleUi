@@ -2,7 +2,7 @@ import {AppRoot} from '../src/app-root';
 
 // 模拟环境
 if (typeof document === 'undefined') {
-    (global as any).document = {
+    (globalThis as any).document = {
         createElement: (tag: string) => ({
             style: {},
             appendChild: () => {},
@@ -12,7 +12,7 @@ if (typeof document === 'undefined') {
         }),
         getElementById: () => null,
     };
-    (global as any).window = {
+    (globalThis as any).window = {
         Zone: { current: null }
     };
 }

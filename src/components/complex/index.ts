@@ -40,7 +40,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         return el;
     }
 
-    protected getChildrenHost(): HTMLElement {
+    public getChildrenHost(): HTMLElement {
         return this._bodyElement;
     }
 
@@ -138,7 +138,7 @@ export class Modal extends ContainerComponent<IModalConfig> {
         return this._overlay;
     }
 
-    protected getChildrenHost(): HTMLElement {
+    public getChildrenHost(): HTMLElement {
         return this._body;
     }
 
@@ -196,7 +196,7 @@ export class Card extends ContainerComponent<ICardConfig> {
         return el;
     }
 
-    protected getChildrenHost(): HTMLElement {
+    public getChildrenHost(): HTMLElement {
         return this._body;
     }
 

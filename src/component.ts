@@ -95,7 +95,7 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
     /**
      * 返回存放子组件的 HTML 元素，默认为组件根元素
      */
-    protected getChildrenHost(): HTMLElement | ShadowRoot {
+    public getChildrenHost(): HTMLElement | ShadowRoot {
         return this.element;
     }
 

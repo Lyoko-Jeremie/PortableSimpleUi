@@ -151,7 +151,7 @@ export class Group extends ContainerComponent<IGroupConfig> {
         return fieldset;
     }
 
-    protected getChildrenHost(): HTMLElement {
+    public getChildrenHost(): HTMLElement {
         return this._contentElement;
     }
 

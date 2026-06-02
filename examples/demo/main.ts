@@ -20,17 +20,15 @@ if (uiRoot) {
             {id: 'form', label: '表单演示'},
             {id: 'signal', label: '响应式数据'}
         ],
-        activeId: 'basic'
+        activeTabId: 'basic'
     });
 
     // --- 基础组件页 ---
     const basicTab = tabs.getChildrenHost().children[0] as HTMLElement;
-    // Tabs 的 childrenHost 是渲染子组件的地方。
-    // 为了将组件放入特定 Tab，我们需要在对应 Tab 容器上创建 proxy。
     const basicAdd = createComponentContainerProxy(basicTab);
 
     basicAdd.Group({title: '按钮与文本'});
-    const btnGroup = basicAdd.Flex({gap: '10px', direction: 'row', align: 'center'});
+    const btnGroup = basicAdd.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
     const btnAdd = createComponentContainerProxy(btnGroup.element);
     btnAdd.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
     btnAdd.Button({text: '禁用按钮', disabled: true});
@@ -45,12 +43,12 @@ if (uiRoot) {
     const checkRow = fbAdd.Flex({gap: '20px'});
     const crAdd = createComponentContainerProxy(checkRow.element);
     crAdd.Checkbox({label: '选项 A', checked: true});
-    crAdd.Checkbox({label: '选项 B'});
+    crAdd.Checkbox({label: '选项 B', checked: false});
 
     const radioRow = fbAdd.Flex({gap: '20px'});
     const rrAdd = createComponentContainerProxy(radioRow.element);
-    rrAdd.Radio({label: '男', name: 'sex', checked: true});
-    rrAdd.Radio({label: '女', name: 'sex'});
+    rrAdd.Radio({label: '男', name: 'sex', value: 'male', checked: true});
+    rrAdd.Radio({label: '女', name: 'sex', value: 'female', checked: false});
 
     basicAdd.Group({title: '选择器与滑动条'});
     const selGroup = basicAdd.Flex({gap: '15px', direction: 'column'});
@@ -64,7 +62,7 @@ if (uiRoot) {
     });
     sgAdd.Slider({min: 0, max: 100, value: 50});
     sgAdd.ColorPicker({value: '#007bff'});
-    sgAdd.ProgressBar({value: 60, max: 100});
+    sgAdd.ProgressBar({value: 60});
 
     // --- 布局组件页 ---
     const layoutTab = tabs.getChildrenHost().children[1] as HTMLElement;
@@ -81,10 +79,10 @@ if (uiRoot) {
     for (let i = 1; i <= 3; i++) colAdd.Text({text: `文本行 ${i}`});
 
     layoutAdd.Group({title: 'Grid 布局'});
-    const grid = layoutAdd.Grid({columns: 'repeat(3, 1fr)', gap: '10px'});
+    const grid = layoutAdd.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
     const gridAdd = createComponentContainerProxy(grid.element);
     for (let i = 1; i <= 6; i++) {
-        const cell = gridAdd.Container({style: 'background: #eee; padding: 10px; text-align: center; border-radius: 4px;'});
+        const cell = gridAdd.Container({style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'}});
         cell.element.innerText = `单元格 ${i}`;
     }
 
@@ -95,7 +93,7 @@ if (uiRoot) {
     const complexTab = tabs.getChildrenHost().children[2] as HTMLElement;
     const complexAdd = createComponentContainerProxy(complexTab);
 
-    complexAdd.Alert({title: '这是一条提示信息', type: 'info' as any});
+    complexAdd.Alert({text: '这是一条提示信息', type: 'info'});
 
     const cardRow = complexAdd.Flex({gap: '15px'});
     const cardRowAdd = createComponentContainerProxy(cardRow.element);
@@ -105,14 +103,14 @@ if (uiRoot) {
     cardBodyAdd.Text({text: '这是卡片的内容区域。'});
     cardBodyAdd.Button({text: '卡片操作'});
 
-    const avatarGroup = complexAdd.Flex({gap: '10px', align: 'center', margin: '15px 0'});
+    const avatarGroup = complexAdd.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
     const agAdd = createComponentContainerProxy(avatarGroup.element);
     agAdd.Avatar({src: 'https://via.placeholder.com/40', size: 40});
-    agAdd.Badge({content: '99+', type: 'danger' as any});
+    agAdd.Badge({text: '99+', color: 'red'});
 
     complexAdd.Group({title: '列表与分页'});
     complexAdd.List({
-        items: ['列表项目 1', '列表项目 2', '列表项目 3'],
+        dataSource: ['列表项目 1', '列表项目 2', '列表项目 3'],
         renderItem: (item) => {
             const el = document.createElement('div');
             el.innerText = item;
@@ -123,13 +121,13 @@ if (uiRoot) {
 
     complexAdd.Group({title: '树形视图'});
     complexAdd.TreeView({
-        nodes: [
+        data: [
             {
                 key: '1',
-                label: '根节点',
+                title: '根节点',
                 children: [
-                    {key: '1-1', label: '子节点 1'},
-                    {key: '1-2', label: '子节点 2'}
+                    {key: '1-1', title: '子节点 1'},
+                    {key: '1-2', title: '子节点 2'}
                 ]
             }
         ]
@@ -141,9 +139,9 @@ if (uiRoot) {
 
     formAdd.Form({
         items: [
-            {label: '用户名', name: 'username', component: 'Input', props: {placeholder: '请输入'}},
-            {label: '出生日期', name: 'birthday', component: 'DatePicker', props: {}},
-            {label: '上传头像', name: 'avatar', component: 'FilePicker', props: {}}
+            {label: '用户名', key: 'username', component: 'Input', componentConfig: {placeholder: '请输入'}},
+            {label: '出生日期', key: 'birthday', component: 'DatePicker', componentConfig: {}},
+            {label: '上传头像', key: 'avatar', component: 'FilePicker', componentConfig: {}}
         ],
         onFinish: (values) => {
             console.log('Form Values:', values);
@@ -152,7 +150,7 @@ if (uiRoot) {
     });
 
     // 弹窗演示
-    const modalBtn = formAdd.Button({text: '打开弹窗', margin: '20px 0'});
+    const modalBtn = formAdd.Button({text: '打开弹窗', style: {margin: '20px 0'}});
     modalBtn.element.onclick = () => {
         const modal = app.add.Modal({title: '演示弹窗'});
         const modalAdd = createComponentContainerProxy(modal.getChildrenHost());
@@ -164,7 +162,7 @@ if (uiRoot) {
     // 吐司演示
     formAdd.Button({
         text: '显示 Toast', onClick: () => {
-            app.add.Toast({message: '这是一条通知消息', duration: 3000});
+            app.add.Toast({text: '这是一条通知消息', duration: 3000});
         }
     });
 
@@ -176,7 +174,7 @@ if (uiRoot) {
     signalAdd.Text({text: '计数值：'});
     signalAdd.Text({text: count as any}); // 组件通常支持 ISignal 作为文本
 
-    signalAdd.Flex({margin: '10px 0', gap: '10px'}).add.Button({
+    signalAdd.Flex({style: {margin: '10px 0'}, gap: '10px'}).add.Button({
         text: '点击增加',
         onClick: () => count.set(count.get() + 1)
     });
