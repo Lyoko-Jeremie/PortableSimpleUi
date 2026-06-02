@@ -1,5 +1,5 @@
 import {AppRoot} from '../../src/app-root';
-import {signal} from '../../src/core';
+import {computed, signal} from '../../src/core';
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -166,7 +166,7 @@ if (uiRoot) {
 
     const count = signal(0);
     signalTab.add.Text({text: '计数值：'});
-    signalTab.add.Text({text: count as any}); // 组件通常支持 ISignal 作为文本
+    signalTab.add.Text({text: computed(() => `${count}`)}); // 组件通常支持 ISignal 作为文本
 
     signalTab.add.Flex({style: {margin: '10px 0'}, gap: '10px'}).add.Button({
         text: '点击增加',

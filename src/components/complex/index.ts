@@ -70,15 +70,27 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
     private renderHeader() {
         if (!this._headerElement) return;
-        this._headerElement.innerHTML = '';
-        this.config.items.forEach(item => {
-            const tabEl = document.createElement('div');
+        
+        // 只在项目数量变化或首次渲染时重新构建
+        if (this._headerElement.children.length !== this.config.items.length) {
+            this._headerElement.innerHTML = '';
+            this.config.items.forEach(item => {
+                const tabEl = document.createElement('div');
+                tabEl.dataset.id = item.id;
+                tabEl.onclick = () => {
+                    this.activeTabId = item.id;
+                };
+                this._headerElement.appendChild(tabEl);
+            });
+        }
+
+        // 更新状态
+        Array.from(this._headerElement.children).forEach((el, index) => {
+            const item = this.config.items[index];
+            if (!item) return;
+            const tabEl = el as HTMLElement;
             tabEl.className = `psu-tabs-item ${item.id === this._activeTabId ? 'active' : ''}`;
             tabEl.textContent = this.resolveValue(item.label);
-            tabEl.onclick = () => {
-                this.activeTabId = item.id;
-            };
-            this._headerElement.appendChild(tabEl);
         });
     }
 
@@ -447,21 +459,39 @@ export class List extends BaseComponent<IListConfig> {
 
     public render(): void {
         super.render();
-        this.element.innerHTML = '';
+        if (!this.element) return;
+        
         const data = this.resolveValue(this.config.dataSource) || [];
+        
+        // 增量更新逻辑：如果数量不匹配，才重新生成
+        // 这是一个权衡，为了防止 innerHTML='' 销毁子组件
+        if (this.element.children.length !== data.length) {
+            this.element.innerHTML = '';
+            data.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'psu-list-item';
+                li.style.padding = '8px';
+                li.style.borderBottom = '1px solid #eee';
+                this.element.appendChild(li);
+            });
+        }
 
-        data.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.className = 'psu-list-item';
-            li.style.padding = '8px';
-            li.style.borderBottom = '1px solid #eee';
+        Array.from(this.element.children).forEach((liEl, index) => {
+            const li = liEl as HTMLElement;
+            const item = data[index];
             const rendered = this.config.renderItem(item, index);
+            
+            // 如果 renderItem 返回的是 HTMLElement，且它不是当前的第一个子元素
             if (rendered instanceof HTMLElement) {
-                li.appendChild(rendered);
+                if (li.firstElementChild !== rendered) {
+                    li.innerHTML = '';
+                    li.appendChild(rendered);
+                }
             } else {
-                li.textContent = rendered;
+                if (li.textContent !== String(rendered)) {
+                    li.textContent = String(rendered);
+                }
             }
-            this.element.appendChild(li);
         });
     }
 }
@@ -487,25 +517,37 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
 
     public render(): void {
         super.render();
-        this.element.innerHTML = '';
+        if (!this.element) return;
+        
         const current = this.resolveValue(this.config.current);
         const total = this.resolveValue(this.config.total);
         const pageSize = this.config.pageSize || 10;
         const pageCount = Math.ceil(total / pageSize);
 
-        for (let i = 1; i <= pageCount; i++) {
-            const btn = document.createElement('button');
-            btn.textContent = i.toString();
-            btn.style.padding = '2px 8px';
+        if (this.element.children.length !== pageCount) {
+            this.element.innerHTML = '';
+            for (let i = 1; i <= pageCount; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i.toString();
+                btn.style.padding = '2px 8px';
+                btn.onclick = () => {
+                    this.config.onChange?.(i);
+                };
+                this.element.appendChild(btn);
+            }
+        }
+
+        Array.from(this.element.children).forEach((el, index) => {
+            const i = index + 1;
+            const btn = el as HTMLElement;
             if (i === current) {
                 btn.style.backgroundColor = '#1890ff';
                 btn.style.color = 'white';
+            } else {
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
             }
-            btn.onclick = () => {
-                this.config.onChange?.(i);
-            };
-            this.element.appendChild(btn);
-        }
+        });
     }
 }
 
@@ -532,22 +574,44 @@ export class Breadcrumb extends BaseComponent<IBreadcrumbConfig> {
 
     public render(): void {
         super.render();
-        this.element.innerHTML = '';
-        this.config.items.forEach((item, index) => {
-            const span = document.createElement('span');
-            span.textContent = item.label;
-            if (item.onClick) {
-                span.style.cursor = 'pointer';
-                span.style.color = '#1890ff';
-                span.onclick = item.onClick;
-            }
-            this.element.appendChild(span);
+        if (!this.element) return;
+        
+        const currentItems = this.config.items;
+        
+        // 增量更新逻辑
+        if (this.element.children.length !== currentItems.length * 2 - (currentItems.length > 0 ? 1 : 0)) {
+            this.element.innerHTML = '';
+            currentItems.forEach((item, index) => {
+                const span = document.createElement('span');
+                span.dataset.index = String(index);
+                this.element.appendChild(span);
 
-            if (index < this.config.items.length - 1) {
-                const sep = document.createElement('span');
-                sep.textContent = '/';
-                sep.style.color = '#ccc';
-                this.element.appendChild(sep);
+                if (index < currentItems.length - 1) {
+                    const sep = document.createElement('span');
+                    sep.textContent = '/';
+                    this.element.appendChild(sep);
+                }
+            });
+        }
+
+        let itemIndex = 0;
+        Array.from(this.element.children).forEach((el) => {
+            const span = el as HTMLElement;
+            if (span.dataset.index !== undefined) {
+                const item = currentItems[itemIndex++];
+                if (!item) return;
+                if (span.textContent !== item.label) {
+                    span.textContent = item.label;
+                }
+                if (item.onClick) {
+                    span.style.cursor = 'pointer';
+                    span.style.color = '#1890ff';
+                    span.onclick = item.onClick;
+                } else {
+                    span.style.cursor = '';
+                    span.style.color = '';
+                    span.onclick = null;
+                }
             }
         });
     }
@@ -575,37 +639,56 @@ export class Timeline extends BaseComponent<ITimelineConfig> {
 
     public render(): void {
         super.render();
-        this.element.innerHTML = '';
-        this.config.items.forEach(item => {
-            const itemEl = document.createElement('div');
-            itemEl.style.paddingLeft = '20px';
-            itemEl.style.position = 'relative';
-            itemEl.style.paddingBottom = '20px';
-            itemEl.style.borderLeft = '2px solid #eee';
+        if (!this.element) return;
+        
+        const currentData = this.config.items;
+        if (this.element.children.length !== currentData.length) {
+            this.element.innerHTML = '';
+            currentData.forEach((_, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.style.paddingLeft = '20px';
+                itemEl.style.position = 'relative';
+                itemEl.style.paddingBottom = '20px';
+                itemEl.style.borderLeft = '2px solid #eee';
 
-            const dot = document.createElement('div');
-            dot.style.position = 'absolute';
-            dot.style.left = '-7px';
-            dot.style.top = '5px';
-            dot.style.width = '12px';
-            dot.style.height = '12px';
-            dot.style.borderRadius = '50%';
-            dot.style.backgroundColor = item.color || '#1890ff';
-            itemEl.appendChild(dot);
+                const dot = document.createElement('div');
+                dot.className = 'psu-timeline-dot';
+                dot.style.position = 'absolute';
+                dot.style.left = '-7px';
+                dot.style.top = '5px';
+                dot.style.width = '12px';
+                dot.style.height = '12px';
+                dot.style.borderRadius = '50%';
+                itemEl.appendChild(dot);
 
-            const content = document.createElement('div');
-            content.textContent = item.content;
-            itemEl.appendChild(content);
+                const content = document.createElement('div');
+                content.className = 'psu-timeline-content';
+                itemEl.appendChild(content);
 
-            if (item.description) {
                 const desc = document.createElement('div');
-                desc.textContent = item.description;
+                desc.className = 'psu-timeline-desc';
                 desc.style.fontSize = '12px';
                 desc.style.color = '#999';
                 itemEl.appendChild(desc);
-            }
 
-            this.element.appendChild(itemEl);
+                this.element.appendChild(itemEl);
+            });
+        }
+
+        Array.from(this.element.children).forEach((el, index) => {
+            const item = currentData[index];
+            if (!item) return;
+            const itemEl = el as HTMLElement;
+            const dot = itemEl.querySelector('.psu-timeline-dot') as HTMLElement;
+            const content = itemEl.querySelector('.psu-timeline-content') as HTMLElement;
+            const desc = itemEl.querySelector('.psu-timeline-desc') as HTMLElement;
+
+            if (dot) dot.style.backgroundColor = item.color || '#1890ff';
+            if (content) content.textContent = item.content;
+            if (desc) {
+                desc.textContent = item.description || '';
+                desc.style.display = item.description ? 'block' : 'none';
+            }
         });
     }
 }
@@ -653,17 +736,19 @@ export class Form extends BaseComponent<IFormConfig> {
                 label.style.display = 'block';
                 itemEl.appendChild(label);
 
+                // @ts-ignore
                 const container = new ComponentContainer(itemEl, (window as any).Zone?.current);
-                const ctor = componentRegistry[item.component as string];
+                // @ts-ignore
+                const ctor = (window as any).psuComponentRegistry?.[item.component as string];
                 if (!ctor) {
                     console.warn(`Component ${item.component} not found in registry`);
                     return;
                 }
                 const component = container.addComponent(ctor, {
-                    ...item.componentConfig,
+                    ...(item.componentConfig as any),
                     onChange: (val: any) => {
                         this._values[item.key] = val;
-                        item.componentConfig.onChange?.(val);
+                        (item.componentConfig as any).onChange?.(val);
                     }
                 });
 
@@ -819,8 +904,14 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
 
     public render(): void {
         super.render();
+        if (!this.element) return;
+        
+        const currentData = this.config.data;
+        // 注意：TreeView 是递归渲染的，这里的增量逻辑比较复杂
+        // 为了安全起见，我们暂且保留 innerHTML = ''，但说明其局限性
+        // 或者简单判断如果数据没变就不重绘
         this.element.innerHTML = '';
-        this.renderNodes(this.config.data, this.element);
+        this.renderNodes(currentData, this.element);
     }
 
     private renderNodes(nodes: ITreeNode[], parent: HTMLElement) {
