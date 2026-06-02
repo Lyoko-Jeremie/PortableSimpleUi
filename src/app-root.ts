@@ -1,4 +1,4 @@
-import {BaseComponent, IComponentConfig, ComponentContainer} from './component';
+import {BaseComponent, IComponentConfig, ComponentContainer, ComponentConstructor} from './component';
 import {registerRootForAutoRender} from './core';
 
 export interface IAppRootConfig extends IComponentConfig {
@@ -51,21 +51,29 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
 }
 
 /**
- * 代理类，用于支持 appRoot.add.Label(...) 这种调用方式
+ * 全局组件注册表接口，用于类型扩展
  */
-export interface ComponentContainerProxy {
-    Label: (config: any) => any;
-    Button: (config: any) => any;
-    Flex: (config: any) => any;
-
-    [key: string]: (config: any) => any;
+export interface IComponentRegistry {
 }
 
-// 提前声明组件构造函数，稍后实现
-const componentRegistry: Record<string, any> = {};
+/**
+ * 代理类，用于支持 appRoot.add.Label(...) 这种调用方式
+ * 通过映射 IComponentRegistry 实现类型安全
+ */
+export type ComponentContainerProxy = {
+    [K in keyof IComponentRegistry]: IComponentRegistry[K] extends ComponentConstructor<infer T>
+        ? (config: ConstructorParameters<IComponentRegistry[K]>[0]) => T
+        : never;
+};
 
-export function registerComponent(name: string, ctor: any) {
-    componentRegistry[name] = ctor;
+// 提前声明组件构造函数，稍后实现
+const componentRegistry: Record<string, ComponentConstructor<any>> = {};
+
+export function registerComponent<K extends keyof IComponentRegistry>(
+    name: K,
+    ctor: IComponentRegistry[K]
+) {
+    componentRegistry[name as string] = ctor as any;
 }
 
 export function createComponentContainerProxyFromContainer(container: ComponentContainer): ComponentContainerProxy {

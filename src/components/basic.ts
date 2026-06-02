@@ -1,5 +1,13 @@
 import {BaseComponent, IComponentConfig, ComponentContainer} from '../component';
-import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../app-root';
+import {createComponentContainerProxyFromContainer, ComponentContainerProxy, IComponentRegistry} from '../app-root';
+
+declare module '../app-root' {
+    interface IComponentRegistry {
+        Label: typeof Label;
+        Button: typeof Button;
+        Flex: typeof Flex;
+    }
+}
 
 export type DynamicValue<T> = T | (() => T) | { value: T };
 
