@@ -7,6 +7,7 @@ module.exports = {
   mode: 'development',
   devtool: 'source-map',
   entry: {
+    demo: './examples/demo/main.ts',
     // basic: './examples/basic/main.ts',
     // complex: './examples/complex/main.ts',
     // layout: './examples/layout/main.ts',
@@ -63,6 +64,12 @@ module.exports = {
     ],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'demo.html',
+      template: './examples/demo/template.html',
+      chunks: ['demo'],
+      inject: 'body',
+    }),
     // new HtmlWebpackPlugin({
     //   filename: 'basic.html',
     //   template: './examples/basic/template.html',
@@ -116,7 +123,7 @@ module.exports = {
     static: {
       directory: distDir,
     },
-    port: 8080,
-    open: ['basic.html'],
+    port: 8086,
+    open: ['demo.html'],
   },
 };
