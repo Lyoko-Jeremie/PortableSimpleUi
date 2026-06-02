@@ -135,12 +135,30 @@ export class Input extends BaseComponent<IInputConfig> {
         const input = document.createElement('input');
         input.type = this.config.type || 'text';
         input.oninput = () => {
-            this.state.value = input.value;
-            if (this.config.onInput) this.config.onInput(input.value, this);
+            const run = () => {
+                this.state.value = input.value;
+                if (this.config.onInput) this.config.onInput(input.value, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
         input.onchange = () => {
-            this.state.value = input.value;
-            if (this.config.onChange) this.config.onChange(input.value, this);
+            const run = () => {
+                this.state.value = input.value;
+                if (this.config.onChange) this.config.onChange(input.value, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
         return input;
     }
@@ -181,8 +199,17 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
         this.inputEl = document.createElement('input');
         this.inputEl.type = 'checkbox';
         this.inputEl.onchange = () => {
-            this.state.checked = this.inputEl.checked;
-            if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+            const run = () => {
+                this.state.checked = this.inputEl.checked;
+                if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
 
         container.appendChild(this.inputEl);
@@ -237,8 +264,17 @@ export class Radio extends BaseComponent<IRadioConfig> {
         this.inputEl.name = this.config.name;
         this.inputEl.value = this.config.value;
         this.inputEl.onchange = () => {
-            this.state.checked = this.inputEl.checked;
-            if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+            const run = () => {
+                this.state.checked = this.inputEl.checked;
+                if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
 
         container.appendChild(this.inputEl);
@@ -285,8 +321,17 @@ export class Select extends BaseComponent<ISelectConfig> {
     protected createHTMLElement(): HTMLSelectElement {
         const select = document.createElement('select');
         select.onchange = () => {
-            this.state.value = select.value;
-            if (this.config.onChange) this.config.onChange(select.value, this);
+            const run = () => {
+                this.state.value = select.value;
+                if (this.config.onChange) this.config.onChange(select.value, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
         return select;
     }
@@ -331,9 +376,18 @@ export class Slider extends BaseComponent<ISliderConfig> {
         const input = document.createElement('input');
         input.type = 'range';
         input.oninput = () => {
-            const val = parseFloat(input.value);
-            this.state.value = val;
-            if (this.config.onChange) this.config.onChange(val, this);
+            const run = () => {
+                const val = parseFloat(input.value);
+                this.state.value = val;
+                if (this.config.onChange) this.config.onChange(val, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
         return input;
     }
@@ -366,8 +420,17 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
         const input = document.createElement('input');
         input.type = 'color';
         input.oninput = () => {
-            this.state.value = input.value;
-            if (this.config.onChange) this.config.onChange(input.value, this);
+            const run = () => {
+                this.state.value = input.value;
+                if (this.config.onChange) this.config.onChange(input.value, this);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+                this.render();
+            }
         };
         return input;
     }

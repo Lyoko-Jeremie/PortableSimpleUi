@@ -70,7 +70,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
     private renderHeader() {
         if (!this._headerElement) return;
-        
+
         // 只在项目数量变化或首次渲染时重新构建
         if (this._headerElement.children.length !== this.config.items.length) {
             this._headerElement.innerHTML = '';
@@ -78,7 +78,15 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
                 const tabEl = document.createElement('div');
                 tabEl.dataset.id = item.id;
                 tabEl.onclick = () => {
-                    this.activeTabId = item.id;
+                    const run = () => {
+                        this.activeTabId = item.id;
+                    };
+                    const zone = (window as any).Zone?.current;
+                    if (zone) {
+                        zone.run(run);
+                    } else {
+                        run();
+                    }
                 };
                 this._headerElement.appendChild(tabEl);
             });
@@ -460,9 +468,9 @@ export class List extends BaseComponent<IListConfig> {
     public render(): void {
         super.render();
         if (!this.element) return;
-        
+
         const data = this.resolveValue(this.config.dataSource) || [];
-        
+
         // 增量更新逻辑：如果数量不匹配，才重新生成
         // 这是一个权衡，为了防止 innerHTML='' 销毁子组件
         if (this.element.children.length !== data.length) {
@@ -480,7 +488,7 @@ export class List extends BaseComponent<IListConfig> {
             const li = liEl as HTMLElement;
             const item = data[index];
             const rendered = this.config.renderItem(item, index);
-            
+
             // 如果 renderItem 返回的是 HTMLElement，且它不是当前的第一个子元素
             if (rendered instanceof HTMLElement) {
                 if (li.firstElementChild !== rendered) {
@@ -518,7 +526,7 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
     public render(): void {
         super.render();
         if (!this.element) return;
-        
+
         const current = this.resolveValue(this.config.current);
         const total = this.resolveValue(this.config.total);
         const pageSize = this.config.pageSize || 10;
@@ -531,7 +539,15 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
                 btn.textContent = i.toString();
                 btn.style.padding = '2px 8px';
                 btn.onclick = () => {
-                    this.config.onChange?.(i);
+                    const run = () => {
+                        this.config.onChange?.(i);
+                    };
+                    const zone = (window as any).Zone?.current;
+                    if (zone) {
+                        zone.run(run);
+                    } else {
+                        run();
+                    }
                 };
                 this.element.appendChild(btn);
             }
@@ -575,9 +591,9 @@ export class Breadcrumb extends BaseComponent<IBreadcrumbConfig> {
     public render(): void {
         super.render();
         if (!this.element) return;
-        
+
         const currentItems = this.config.items;
-        
+
         // 增量更新逻辑
         if (this.element.children.length !== currentItems.length * 2 - (currentItems.length > 0 ? 1 : 0)) {
             this.element.innerHTML = '';
@@ -606,7 +622,14 @@ export class Breadcrumb extends BaseComponent<IBreadcrumbConfig> {
                 if (item.onClick) {
                     span.style.cursor = 'pointer';
                     span.style.color = '#1890ff';
-                    span.onclick = item.onClick;
+                    span.onclick = () => {
+                        const zone = (window as any).Zone?.current;
+                        if (zone) {
+                            zone.run(item.onClick!);
+                        } else {
+                            item.onClick!();
+                        }
+                    };
                 } else {
                     span.style.cursor = '';
                     span.style.color = '';
@@ -640,7 +663,7 @@ export class Timeline extends BaseComponent<ITimelineConfig> {
     public render(): void {
         super.render();
         if (!this.element) return;
-        
+
         const currentData = this.config.items;
         if (this.element.children.length !== currentData.length) {
             this.element.innerHTML = '';
@@ -840,8 +863,16 @@ export class FilePicker extends BaseComponent<IFilePickerConfig> {
         el.type = 'file';
         el.className = 'psu-filepicker';
         el.onchange = (e) => {
-            const files = (e.target as HTMLInputElement).files;
-            this.config.onChange?.(files);
+            const run = () => {
+                const files = (e.target as HTMLInputElement).files;
+                this.config.onChange?.(files);
+            };
+            const zone = (window as any).Zone?.current;
+            if (zone) {
+                zone.run(run);
+            } else {
+                run();
+            }
         };
         return el;
     }
@@ -905,7 +936,7 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
     public render(): void {
         super.render();
         if (!this.element) return;
-        
+
         const currentData = this.config.data;
         // 注意：TreeView 是递归渲染的，这里的增量逻辑比较复杂
         // 为了安全起见，我们暂且保留 innerHTML = ''，但说明其局限性
@@ -925,7 +956,15 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
             title.style.cursor = 'pointer';
             title.onclick = (e) => {
                 e.stopPropagation();
-                this.config.onSelect?.(node.key);
+                const run = () => {
+                    this.config.onSelect?.(node.key);
+                };
+                const zone = (window as any).Zone?.current;
+                if (zone) {
+                    zone.run(run);
+                } else {
+                    run();
+                }
             };
             li.appendChild(title);
 

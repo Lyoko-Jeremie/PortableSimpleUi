@@ -1,5 +1,5 @@
 import {AppRoot} from '../../src/app-root';
-import {computed, signal, initPortableSimpleUiZone} from '../../src/core';
+import {computed, signal, initPortableSimpleUiZone, effect} from '../../src/core';
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -174,6 +174,10 @@ if (uiRoot) {
             text: '点击增加',
             onClick: () => count.set(count.get() + 1)
         });
+
+        effect(()=>{
+            console.log('effect count',count.get());
+        })
 
         app.renderAll();
     });
