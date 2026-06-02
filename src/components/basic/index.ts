@@ -64,7 +64,7 @@ export class Button extends BaseComponent<IButtonConfig> {
 
     protected createHTMLElement(): HTMLButtonElement {
         const btn = document.createElement('button');
-        btn.onclick = () => {
+        btn.addEventListener('click', () => {
             if (!btn.disabled && this.config.onClick) {
                 // Ensure the click handler runs inside the Zone if available
                 const zone = (window as any).Zone?.current;
@@ -77,7 +77,7 @@ export class Button extends BaseComponent<IButtonConfig> {
                     this.render();
                 }
             }
-        };
+        });
         return btn;
     }
 
@@ -134,7 +134,7 @@ export class Input extends BaseComponent<IInputConfig> {
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = this.config.type || 'text';
-        input.oninput = () => {
+        input.addEventListener('input', () => {
             const run = () => {
                 this.state.value = input.value;
                 if (this.config.onInput) this.config.onInput(input.value, this);
@@ -146,8 +146,8 @@ export class Input extends BaseComponent<IInputConfig> {
                 run();
                 this.render();
             }
-        };
-        input.onchange = () => {
+        });
+        input.addEventListener('change', () => {
             const run = () => {
                 this.state.value = input.value;
                 if (this.config.onChange) this.config.onChange(input.value, this);
@@ -159,7 +159,7 @@ export class Input extends BaseComponent<IInputConfig> {
                 run();
                 this.render();
             }
-        };
+        });
         return input;
     }
 
@@ -198,7 +198,7 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
 
         this.inputEl = document.createElement('input');
         this.inputEl.type = 'checkbox';
-        this.inputEl.onchange = () => {
+        this.inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = this.inputEl.checked;
                 if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
@@ -210,7 +210,7 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
                 run();
                 this.render();
             }
-        };
+        });
 
         container.appendChild(this.inputEl);
         return container;
@@ -263,7 +263,7 @@ export class Radio extends BaseComponent<IRadioConfig> {
         this.inputEl.type = 'radio';
         this.inputEl.name = this.config.name;
         this.inputEl.value = this.config.value;
-        this.inputEl.onchange = () => {
+        this.inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = this.inputEl.checked;
                 if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
@@ -275,7 +275,7 @@ export class Radio extends BaseComponent<IRadioConfig> {
                 run();
                 this.render();
             }
-        };
+        });
 
         container.appendChild(this.inputEl);
         return container;
@@ -320,7 +320,7 @@ export class Select extends BaseComponent<ISelectConfig> {
 
     protected createHTMLElement(): HTMLSelectElement {
         const select = document.createElement('select');
-        select.onchange = () => {
+        select.addEventListener('change', () => {
             const run = () => {
                 this.state.value = select.value;
                 if (this.config.onChange) this.config.onChange(select.value, this);
@@ -332,7 +332,7 @@ export class Select extends BaseComponent<ISelectConfig> {
                 run();
                 this.render();
             }
-        };
+        });
         return select;
     }
 
@@ -375,7 +375,7 @@ export class Slider extends BaseComponent<ISliderConfig> {
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'range';
-        input.oninput = () => {
+        input.addEventListener('input', () => {
             const run = () => {
                 const val = parseFloat(input.value);
                 this.state.value = val;
@@ -388,7 +388,7 @@ export class Slider extends BaseComponent<ISliderConfig> {
                 run();
                 this.render();
             }
-        };
+        });
         return input;
     }
 
@@ -419,7 +419,7 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'color';
-        input.oninput = () => {
+        input.addEventListener('input', () => {
             const run = () => {
                 this.state.value = input.value;
                 if (this.config.onChange) this.config.onChange(input.value, this);
@@ -431,7 +431,7 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
                 run();
                 this.render();
             }
-        };
+        });
         return input;
     }
 

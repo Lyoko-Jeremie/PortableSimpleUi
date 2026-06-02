@@ -22,6 +22,16 @@ export function initPortableSimpleUiZone(name: string): Zone {
     }
     const zone = Zone.current.fork({
         name,
+        onInvoke: (parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) => {
+            const result = parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
+            window.PortableSimpleUiRootRender?.();
+            return result;
+        },
+        onInvokeTask: (parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs) => {
+            const result = parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
+            window.PortableSimpleUiRootRender?.();
+            return result;
+        },
         onHasTask: (parentZoneDelegate, currentZone, targetZone, hasTask) => {
             if (!hasTask.microTask && !hasTask.macroTask && !hasTask.eventTask) {
                 // 当 Zone 中没有任务时，触发全局脏检查

@@ -77,7 +77,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             this.config.items.forEach(item => {
                 const tabEl = document.createElement('div');
                 tabEl.dataset.id = item.id;
-                tabEl.onclick = () => {
+                tabEl.addEventListener('click', () => {
                     const run = () => {
                         this.activeTabId = item.id;
                     };
@@ -87,7 +87,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
                     } else {
                         run();
                     }
-                };
+                });
                 this._headerElement.appendChild(tabEl);
             });
         }
@@ -538,7 +538,7 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
                 const btn = document.createElement('button');
                 btn.textContent = i.toString();
                 btn.style.padding = '2px 8px';
-                btn.onclick = () => {
+                btn.addEventListener('click', () => {
                     const run = () => {
                         this.config.onChange?.(i);
                     };
@@ -548,7 +548,7 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
                     } else {
                         run();
                     }
-                };
+                });
                 this.element.appendChild(btn);
             }
         }
@@ -622,14 +622,14 @@ export class Breadcrumb extends BaseComponent<IBreadcrumbConfig> {
                 if (item.onClick) {
                     span.style.cursor = 'pointer';
                     span.style.color = '#1890ff';
-                    span.onclick = () => {
+                    span.addEventListener('click', () => {
                         const zone = (window as any).Zone?.current;
                         if (zone) {
                             zone.run(item.onClick!);
                         } else {
                             item.onClick!();
                         }
-                    };
+                    });
                 } else {
                     span.style.cursor = '';
                     span.style.color = '';
@@ -862,7 +862,7 @@ export class FilePicker extends BaseComponent<IFilePickerConfig> {
         const el = document.createElement('input');
         el.type = 'file';
         el.className = 'psu-filepicker';
-        el.onchange = (e) => {
+        el.addEventListener('change', (e) => {
             const run = () => {
                 const files = (e.target as HTMLInputElement).files;
                 this.config.onChange?.(files);
@@ -873,7 +873,7 @@ export class FilePicker extends BaseComponent<IFilePickerConfig> {
             } else {
                 run();
             }
-        };
+        });
         return el;
     }
 
@@ -954,7 +954,7 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
             const title = document.createElement('span');
             title.textContent = node.title;
             title.style.cursor = 'pointer';
-            title.onclick = (e) => {
+            title.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const run = () => {
                     this.config.onSelect?.(node.key);
@@ -965,7 +965,7 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
                 } else {
                     run();
                 }
-            };
+            });
             li.appendChild(title);
 
             if (node.children && node.children.length > 0) {
