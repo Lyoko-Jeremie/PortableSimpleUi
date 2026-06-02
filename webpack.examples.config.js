@@ -3,9 +3,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const distDir = path.resolve(__dirname, 'dist/examples');
 
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
+  target: 'web',
   entry: {
     demo: './examples/demo/main.ts',
     // basic: './examples/basic/main.ts',
@@ -23,6 +27,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    // plugins: [new TsconfigPathsPlugin({
+    //   configFile: 'tsconfig.json',
+    // })],
   },
   module: {
     rules: [
@@ -64,6 +71,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        configFile: 'tsconfig.examples.json',
+      },
+    }),
     new HtmlWebpackPlugin({
       filename: 'demo.html',
       template: './examples/demo/template.html',
