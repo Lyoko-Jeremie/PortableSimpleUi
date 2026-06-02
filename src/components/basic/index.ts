@@ -63,7 +63,7 @@ export class Button extends BaseComponent<IButtonConfig> {
     public render(): void {
         const text = this.state.text !== undefined ? this.state.text : this.resolveValue(this.config.text);
         this.element.textContent = text;
-        
+
         if (this.config.disabled !== undefined) {
             (this.element as HTMLButtonElement).disabled = !!this.resolveValue(this.config.disabled);
         }
@@ -134,7 +134,7 @@ export interface ICheckboxConfig extends IComponentConfig {
 
 export class Checkbox extends BaseComponent<ICheckboxConfig> {
     private inputEl!: HTMLInputElement;
-    private labelEl?: HTMLLabelElement;
+    private labelEl?: HTMLSpanElement | undefined;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
@@ -183,7 +183,7 @@ export interface IRadioConfig extends IComponentConfig {
 
 export class Radio extends BaseComponent<IRadioConfig> {
     private inputEl!: HTMLInputElement;
-    private labelEl?: HTMLLabelElement;
+    private labelEl?: HTMLSpanElement | undefined;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
@@ -248,7 +248,7 @@ export class Select extends BaseComponent<ISelectConfig> {
     public render(): void {
         const select = this.element as HTMLSelectElement;
         const options = this.resolveValue(this.config.options) || [];
-        
+
         // Simple diff for options
         if (select.options.length !== options.length) {
             select.innerHTML = '';
@@ -292,7 +292,7 @@ export class Slider extends BaseComponent<ISliderConfig> {
         input.min = String(this.resolveValue(this.config.min) ?? 0);
         input.max = String(this.resolveValue(this.config.max) ?? 100);
         input.step = String(this.resolveValue(this.config.step) ?? 1);
-        
+
         const val = this.state.value !== undefined ? this.state.value : this.resolveValue(this.config.value);
         if (input.value !== String(val) && val !== undefined) {
             input.value = String(val);
