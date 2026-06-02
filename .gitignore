@@ -612,3 +612,6 @@ FodyWeavers.xsd
 .idea/.copilot*
 .idea/copilot*
 
+.vscode
+novel-helper
+
