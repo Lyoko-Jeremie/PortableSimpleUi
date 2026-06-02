@@ -1,0 +1,66 @@
+import {AppRoot} from '../src/app-root';
+
+// 模拟环境
+if (typeof document === 'undefined') {
+    (global as any).document = {
+        createElement: (tag: string) => {
+            const el: any = {
+                style: {},
+                appendChild: (child: any) => {
+                    if (el.options && child.tagName === 'OPTION') {
+                        el.options.push(child);
+                    }
+                },
+                setAttribute: () => {},
+                classList: { add: () => {} },
+                attachShadow: () => ({ appendChild: () => {} }),
+                innerHTML: '',
+                textContent: '',
+                tagName: tag.toUpperCase(),
+                parentElement: null,
+            };
+            if (tag === 'select') {
+                el.options = [];
+                el.value = '';
+            }
+            return el;
+        },
+        getElementById: () => null,
+    };
+    (global as any).window = {
+        Zone: { current: null }
+    };
+}
+
+const el = document.createElement('div');
+const appRoot = new AppRoot(el, { id: 'app' });
+
+console.log('--- Form & Table Demo ---');
+
+const container = appRoot.add.Container({ style: { padding: '20px' } });
+
+container.add.Form({
+    items: [
+        { label: 'Username', key: 'username', component: 'Input', componentConfig: { placeholder: 'Enter username' } },
+        { label: 'Type', key: 'type', component: 'Select', componentConfig: { options: [{ label: 'Admin', value: 'admin' }, { label: 'User', value: 'user' }] } },
+    ],
+    onFinish: (values) => {
+        console.log('Form finished:', values);
+    }
+});
+
+container.add.Divider({});
+
+container.add.Table({
+    columns: [
+        { title: 'ID', key: 'id' },
+        { title: 'Name', key: 'name' },
+        { title: 'Status', key: 'status' }
+    ],
+    dataSource: [
+        { id: 1, name: 'Task 1', status: 'Done' },
+        { id: 2, name: 'Task 2', status: 'Pending' }
+    ]
+});
+
+console.log('Demo components added.');

@@ -61,6 +61,7 @@ export interface IComponentRegistry {
  */
 import * as BasicComponents from './components/basic/index';
 import * as LayoutComponents from './components/layout/index';
+import * as ComplexComponents from './components/complex/index';
 
 declare module './app-root' {
     interface IComponentRegistry {
@@ -85,6 +86,25 @@ declare module './app-root' {
         Group: typeof LayoutComponents.Group;
         Divider: typeof LayoutComponents.Divider;
         Spacer: typeof LayoutComponents.Spacer;
+
+        Tabs: typeof ComplexComponents.Tabs;
+        Modal: typeof ComplexComponents.Modal;
+        Card: typeof ComplexComponents.Card;
+        Alert: typeof ComplexComponents.Alert;
+        Badge: typeof ComplexComponents.Badge;
+        Avatar: typeof ComplexComponents.Avatar;
+        Toast: typeof ComplexComponents.Toast;
+        Table: typeof ComplexComponents.Table;
+        List: typeof ComplexComponents.List;
+        Pagination: typeof ComplexComponents.Pagination;
+        Breadcrumb: typeof ComplexComponents.Breadcrumb;
+        Timeline: typeof ComplexComponents.Timeline;
+        Form: typeof ComplexComponents.Form;
+        DatePicker: typeof ComplexComponents.DatePicker;
+        TimePicker: typeof ComplexComponents.TimePicker;
+        FilePicker: typeof ComplexComponents.FilePicker;
+        Calendar: typeof ComplexComponents.Calendar;
+        TreeView: typeof ComplexComponents.TreeView;
     }
 }
 
@@ -99,7 +119,7 @@ export type ComponentContainerProxy = {
 };
 
 // 提前声明组件构造函数，稍后实现
-const componentRegistry: Record<string, ComponentConstructor<any>> = {};
+export const componentRegistry: Record<string, ComponentConstructor<any>> = {};
 
 export function registerComponent<K extends keyof IComponentRegistry>(
     name: K,
@@ -118,6 +138,12 @@ Object.keys(BasicComponents).forEach(key => {
 Object.keys(LayoutComponents).forEach(key => {
     const component = (LayoutComponents as any)[key];
     if (component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
+Object.keys(ComplexComponents).forEach(key => {
+    const component = (ComplexComponents as any)[key];
+    if (component && component.prototype instanceof BaseComponent) {
         registerComponent(key as any, component);
     }
 });
