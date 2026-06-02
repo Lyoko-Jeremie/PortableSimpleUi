@@ -102,7 +102,7 @@ if (uiRoot) {
         card.add.Button({text: '卡片操作'});
 
         const avatarGroup = complexTab.add.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
-        avatarGroup.add.Avatar({src: 'https://via.placeholder.com/40', size: 40});
+        avatarGroup.add.Avatar({src: '#', size: 40});
         avatarGroup.add.Badge({text: '99+', color: 'red'});
 
         const complexGroup1 = complexTab.add.Group({title: '列表与分页'});
