@@ -170,13 +170,24 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
         // 在简易实现中，我们通过显示/隐藏子元素来控制
         // 假设子组件的顺序与 _tabItems 一致，或者子组件有自己的 id 匹配
-        const children = Array.from(body.children) as HTMLElement[];
-        children.forEach((child, index) => {
+        this._container.components.forEach((childComp, index) => {
             const item = this._tabItems[index];
             if (item) {
-                const targetDisplay = item.id === this._activeTabId ? 'block' : 'none';
-                if (child.style.display !== targetDisplay) {
-                    child.style.display = targetDisplay;
+                const childEl = childComp.getElement();
+                if (item.id === this._activeTabId) {
+                    const customDisplay = childComp.config.style?.display;
+                    if (customDisplay !== undefined) {
+                        childEl.style.display = this.resolveValue(customDisplay as any);
+                    } else {
+                        // 尝试从 getComputedStyle 获取，或者根据已知组件类型推断
+                        // 简单起见，如果元素本身有内联 display（如 Flex 组件），保持它
+                        // 如果没有内联 display，且是显示状态，我们不应该强行设为 block，除非它原本就是隐藏的
+                        if (childEl.style.display === 'none') {
+                            childEl.style.display = '';
+                        }
+                    }
+                } else {
+                    childEl.style.display = 'none';
                 }
             }
         });

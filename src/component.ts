@@ -107,7 +107,7 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
     public isLayout = true;
     public add: ComponentContainerProxy;
     public zoneWrapper: IZoneWrapper;
-    protected _container: ComponentContainer;
+    public _container: ComponentContainer;
 
     constructor(config: TConfig, zoneWrapper: IZoneWrapper) {
         super(config, zoneWrapper);
@@ -137,7 +137,7 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
 export type ComponentConstructor<T extends BaseComponent<any>> = new (config: any, zoneWrapper: IZoneWrapper) => T;
 
 export class ComponentContainer {
-    private components: BaseComponent<any>[] = [];
+    public components: BaseComponent<any>[] = [];
 
     constructor(private host: HTMLElement | ShadowRoot, private zoneWrapper: IZoneWrapper) {
     }
