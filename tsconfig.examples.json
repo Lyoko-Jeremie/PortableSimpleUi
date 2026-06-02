@@ -5,7 +5,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "es2020",
-    "types": [],
+    "types": [
+      "examples/inlineScss-asset-source.d.ts"
+    ],
     "lib": ["es2020", "dom"],
     "declaration": false,
     "declarationMap": false,
