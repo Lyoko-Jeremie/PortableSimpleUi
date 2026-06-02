@@ -99,19 +99,42 @@ $ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helveti
     margin-top: 10px;
   }
 
-  .psu-pagination-item {
-    min-width: 32px;
-    height: 32px;
-    padding: 0 6px !important;
+  .ps-tabs {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+  }
+
+  .ps-tabs-header {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid $ps-border-color;
+    margin-bottom: 15px;
+    gap: 0;
+  }
+
+  .ps-tabs-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: #666;
+    user-select: none;
+
+    &:hover {
+      color: $ps-primary-color;
+      background-color: rgba($ps-primary-color, 0.05);
+    }
 
     &.active {
-      background: $ps-primary-color;
-      color: white;
-      border-color: $ps-primary-color;
+      color: $ps-primary-color;
+      border-bottom-color: $ps-primary-color;
+      font-weight: bold;
     }
+  }
+
+  .ps-tabs-body {
+    padding: 10px 0;
   }
 }
 

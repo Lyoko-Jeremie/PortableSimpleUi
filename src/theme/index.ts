@@ -81,30 +81,35 @@ export const DEFAULT_THEME_CSS = `
   font-weight: bold;
   padding: 0 5px;
 }
-.ps-shadow-root .psu-tabs, .ps-root .psu-tabs {
+.ps-shadow-root .ps-tabs, .ps-root .ps-tabs {
   display: flex;
   flex-direction: column;
 }
-.ps-shadow-root .psu-tabs-header, .ps-root .psu-tabs-header {
+.ps-shadow-root .ps-tabs-header, .ps-root .ps-tabs-header {
   display: flex;
+  flex-wrap: wrap;
   border-bottom: 1px solid #ddd;
   margin-bottom: 15px;
 }
-.ps-shadow-root .psu-tabs-item, .ps-root .psu-tabs-item {
+.ps-shadow-root .ps-tabs-item, .ps-root .ps-tabs-item {
   padding: 10px 20px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
+  font-size: 14px;
+  color: #666;
+  user-select: none;
 }
-.ps-shadow-root .psu-tabs-item:hover, .ps-root .psu-tabs-item:hover {
+.ps-shadow-root .ps-tabs-item:hover, .ps-root .ps-tabs-item:hover {
   color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
 }
-.ps-shadow-root .psu-tabs-item.active, .ps-root .psu-tabs-item.active {
+.ps-shadow-root .ps-tabs-item.active, .ps-root .ps-tabs-item.active {
   color: #007bff;
   border-bottom-color: #007bff;
   font-weight: bold;
 }
-.ps-shadow-root .psu-tabs-body, .ps-root .psu-tabs-body {
+.ps-shadow-root .ps-tabs-body, .ps-root .ps-tabs-body {
   padding: 10px 0;
 }
 
