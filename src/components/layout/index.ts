@@ -1,4 +1,4 @@
-import {BaseComponent, IComponentConfig, ComponentContainer} from '../../component';
+import {BaseComponent, IComponentConfig, ComponentContainer, ContainerComponent} from '../../component';
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
 
 /**
@@ -8,26 +8,11 @@ export interface IContainerConfig extends IComponentConfig {
     padding?: string;
 }
 
-export class Container extends BaseComponent<IContainerConfig> {
-    public isLayout = true;
-    public add: ComponentContainerProxy;
-    private _container: ComponentContainer;
-
-    constructor(config: IContainerConfig) {
-        super(config);
-        this._container = new ComponentContainer(this.element, (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
-    }
-
+export class Container extends ContainerComponent<IContainerConfig> {
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         if (this.config.padding) div.style.padding = this.config.padding;
         return div;
-    }
-
-    public renderAll(): void {
-        this.render();
-        this._container.renderAll();
     }
 }
 
@@ -45,17 +30,7 @@ export interface IFlexConfig extends IComponentConfig {
 /**
  * Flex 布局基础类
  */
-export class Flex extends BaseComponent<IFlexConfig> {
-    public isLayout = true;
-    public add: ComponentContainerProxy;
-    protected _container: ComponentContainer;
-
-    constructor(config: IFlexConfig) {
-        super(config);
-        this._container = new ComponentContainer(this.element, (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
-    }
-
+export class Flex extends ContainerComponent<IFlexConfig> {
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.display = 'flex';
@@ -69,11 +44,6 @@ export class Flex extends BaseComponent<IFlexConfig> {
         if (this.config.alignItems) el.style.alignItems = this.config.alignItems;
         if (this.config.justifyContent) el.style.justifyContent = this.config.justifyContent;
         if (this.config.flexWrap) el.style.flexWrap = this.config.flexWrap;
-    }
-
-    public renderAll(): void {
-        this.render();
-        this._container.renderAll();
     }
 }
 
@@ -98,26 +68,11 @@ export class Column extends Flex {
 /**
  * 层叠布局
  */
-export class Stack extends BaseComponent<IComponentConfig> {
-    public isLayout = true;
-    public add: ComponentContainerProxy;
-    private _container: ComponentContainer;
-
-    constructor(config: IComponentConfig) {
-        super(config);
-        this._container = new ComponentContainer(this.element, (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
-    }
-
+export class Stack extends ContainerComponent<IComponentConfig> {
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.position = 'relative';
         return div;
-    }
-
-    public renderAll(): void {
-        this.render();
-        this._container.renderAll();
     }
 }
 
@@ -132,17 +87,7 @@ export interface IGridConfig extends IComponentConfig {
     rowGap?: string;
 }
 
-export class Grid extends BaseComponent<IGridConfig> {
-    public isLayout = true;
-    public add: ComponentContainerProxy;
-    private _container: ComponentContainer;
-
-    constructor(config: IGridConfig) {
-        super(config);
-        this._container = new ComponentContainer(this.element, (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
-    }
-
+export class Grid extends ContainerComponent<IGridConfig> {
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.display = 'grid';
@@ -153,11 +98,6 @@ export class Grid extends BaseComponent<IGridConfig> {
         if (this.config.rowGap) div.style.rowGap = this.config.rowGap;
         return div;
     }
-
-    public renderAll(): void {
-        this.render();
-        this._container.renderAll();
-    }
 }
 
 /**
@@ -167,18 +107,9 @@ export interface IGroupConfig extends IComponentConfig {
     title?: string;
 }
 
-export class Group extends BaseComponent<IGroupConfig> {
-    public isLayout = true;
-    public add: ComponentContainerProxy;
-    private _container!: ComponentContainer;
+export class Group extends ContainerComponent<IGroupConfig> {
     private _titleElement?: HTMLElement;
     private _contentElement!: HTMLElement;
-
-    constructor(config: IGroupConfig) {
-        super(config);
-        this._container = new ComponentContainer(this._contentElement, (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
-    }
 
     protected createHTMLElement(): HTMLElement {
         const fieldset = document.createElement('fieldset');
@@ -200,16 +131,15 @@ export class Group extends BaseComponent<IGroupConfig> {
         return fieldset;
     }
 
+    protected getChildrenHost(): HTMLElement {
+        return this._contentElement;
+    }
+
     public render(): void {
         super.render();
         if (this._titleElement && this.config.title) {
             this._titleElement.textContent = this.config.title;
         }
-    }
-
-    public renderAll(): void {
-        this.render();
-        this._container.renderAll();
     }
 }
 

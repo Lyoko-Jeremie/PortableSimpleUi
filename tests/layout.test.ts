@@ -101,4 +101,25 @@ describe('Layout Components', () => {
             expect(spacer.element.style.flex).toMatch(/^2/);
         });
     });
+    it('Complex nested add should work', () => {
+        myZone.run(() => {
+            const containerEl = document.createElement('div');
+            const appRoot = new AppRoot(containerEl, {});
+
+            const group = appRoot.add.Group({ title: 'Root' });
+            const col = group.add.Column({ gap: '10px' });
+            const row = col.add.Row({ gap: '10px' });
+            const btn = row.add.Button({ text: 'Click me' });
+            const text = col.add.Text({ text: 'Hello' });
+
+            // Verify structure
+            // Group -> fieldset -> div (content) -> Column -> Row -> Button
+            //                                             -> Text
+            const groupContent = group.element.querySelector('div');
+            expect(groupContent?.firstChild).toBe(col.element);
+            expect(col.element.childNodes[0]).toBe(row.element);
+            expect(col.element.childNodes[1]).toBe(text.element);
+            expect(row.element.childNodes[0]).toBe(btn.element);
+        });
+    });
 });

@@ -1,5 +1,7 @@
 import {DynamicValue} from './types';
 
+import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from './app-root';
+
 export type StyleDeclaration = {
     [K in keyof CSSStyleDeclaration]?: DynamicValue<CSSStyleDeclaration[K]>;
 };
@@ -61,6 +63,33 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
             return (value as any).value;
         }
         return value as T;
+    }
+}
+
+/**
+ * 支持子组件的容器组件基类
+ */
+export abstract class ContainerComponent<TConfig extends IComponentConfig = IComponentConfig> extends BaseComponent<TConfig> {
+    public isLayout = true;
+    public add: ComponentContainerProxy;
+    protected _container: ComponentContainer;
+
+    constructor(config: TConfig) {
+        super(config);
+        this._container = new ComponentContainer(this.getChildrenHost(), (window as any).Zone?.current);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
+    /**
+     * 返回存放子组件的 HTML 元素，默认为组件根元素
+     */
+    protected getChildrenHost(): HTMLElement | ShadowRoot {
+        return this.element;
+    }
+
+    public renderAll(): void {
+        this.render();
+        this._container.renderAll();
     }
 }
 
