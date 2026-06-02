@@ -142,4 +142,4 @@ export function signal<T>(initialValue: T): ISignal<T> {
     return new SignalWrapper(initialValue);
 }
 
-export {alienEffect as effect, alienComputed as computed};
+export {alienEffect as effect, alienComputed as computed, createZoneWrapper as initPortableSimpleUiZone};
