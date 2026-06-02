@@ -21,6 +21,7 @@ if (uiRoot) {
                 {id: 'basic', label: '基础组件'},
                 {id: 'layout', label: '布局组件'},
                 {id: 'complex', label: '复合组件'},
+                {id: 'advanced', label: '高级组件'},
                 {id: 'form', label: '表单演示'},
                 {id: 'signal', label: '响应式数据'}
             ],
@@ -31,6 +32,7 @@ if (uiRoot) {
         const basicTab = tabs.add.Container({});
         const layoutTab = tabs.add.Container({});
         const complexTab = tabs.add.Container({});
+        const advancedTab = tabs.add.Container({});
         const formTab = tabs.add.Container({});
         const signalTab = tabs.add.Container({});
 
@@ -158,6 +160,59 @@ if (uiRoot) {
             onSelect: (key: string) => console.log('Selected:', key),
             onExpand: (keys: string[]) => console.log('Expanded Keys:', keys)
         });
+
+        // --- 高级组件页 ---
+
+        const advGroup1 = advancedTab.add.Group({title: '自动补全 (Autocomplete)'});
+        const autoValue = signal('');
+        advGroup1.add.Autocomplete({
+            placeholder: '输入水果名称...',
+            value: autoValue,
+            options: ['Apple', 'Banana', 'Orange', 'Mango', 'Pineapple', 'Strawberry', 'Grape'],
+            onSelect: (val) => console.log('Autocomplete Selected:', val)
+        });
+        advGroup1.add.Label({text: computed(() => `当前输入: ${autoValue.value}`)});
+
+        const advGroup2 = advancedTab.add.Group({title: '多选 (Multiselect)'});
+        const multiValue = signal(['apple']);
+        advGroup2.add.Multiselect({
+            placeholder: '选择喜欢的水果...',
+            value: multiValue,
+            options: [
+                {label: '苹果', value: 'apple'},
+                {label: '香蕉', value: 'banana'},
+                {label: '橙子', value: 'orange'},
+                {label: '芒果', value: 'mango'}
+            ],
+            onChange: (vals) => console.log('Multiselect Changed:', vals)
+        });
+        advGroup2.add.Label({text: computed(() => `当前选择: ${multiValue.value.join(', ')}`)});
+
+        const advGroup3 = advancedTab.add.Group({title: '联动多选 (Linked Multiselect)'});
+        const primaryVal = signal('');
+        const secondaryVals = signal<string[]>([]);
+        const categories = [
+            {label: '水果', value: 'fruit'},
+            {label: '蔬菜', value: 'vegetable'}
+        ];
+        const subOptions: Record<string, {label: string, value: string}[]> = {
+            'fruit': [{label: '苹果', value: 'apple'}, {label: '香蕉', value: 'banana'}],
+            'vegetable': [{label: '白菜', value: 'cabbage'}, {label: '胡萝卜', value: 'carrot'}]
+        };
+
+        advGroup3.add.LinkedMultiselect({
+            primary: {
+                placeholder: '选择分类...',
+                value: primaryVal,
+                options: categories
+            },
+            secondary: {
+                placeholder: '选择子项...',
+                value: secondaryVals,
+                options: (p) => subOptions[p] || []
+            }
+        });
+        advGroup3.add.Label({text: computed(() => `分类: ${primaryVal.value}, 子项: ${secondaryVals.value.join(', ')}`)});
 
         // --- 表单演示页 ---
 
