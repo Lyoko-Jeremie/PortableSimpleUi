@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "alien-signals": "^3.2.1",
+    "core-js": "^3.49.0",
     "lodash": "^4.18.1",
     "moment": "^2.30.1",
     "typescript": "^6.0.3",
