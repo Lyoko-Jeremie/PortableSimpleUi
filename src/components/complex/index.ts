@@ -923,10 +923,21 @@ export interface ITreeNode {
 
 export interface ITreeViewConfig extends IComponentConfig {
     data: ITreeNode[];
+    expandedKeys?: string[];
     onSelect?: (key: string) => void;
+    onExpand?: (expandedKeys: string[]) => void;
 }
 
 export class TreeView extends BaseComponent<ITreeViewConfig> {
+    private expandedKeys: Set<string> = new Set();
+
+    constructor(config: ITreeViewConfig) {
+        super(config);
+        if (config.expandedKeys) {
+            this.expandedKeys = new Set(config.expandedKeys);
+        }
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
         el.className = 'psu-treeview';
@@ -938,22 +949,55 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
         if (!this.element) return;
 
         const currentData = this.config.data;
-        // 注意：TreeView 是递归渲染的，这里的增量逻辑比较复杂
-        // 为了安全起见，我们暂且保留 innerHTML = ''，但说明其局限性
-        // 或者简单判断如果数据没变就不重绘
         this.element.innerHTML = '';
         this.renderNodes(currentData, this.element);
+    }
+
+    private toggleExpand(key: string) {
+        if (this.expandedKeys.has(key)) {
+            this.expandedKeys.delete(key);
+        } else {
+            this.expandedKeys.add(key);
+        }
+        this.config.onExpand?.(Array.from(this.expandedKeys));
+        this.markDirty();
     }
 
     private renderNodes(nodes: ITreeNode[], parent: HTMLElement) {
         const ul = document.createElement('ul');
         ul.style.listStyle = 'none';
         ul.style.paddingLeft = '20px';
+        ul.style.margin = '0';
         nodes.forEach(node => {
             const li = document.createElement('li');
+            const itemContainer = document.createElement('div');
+            itemContainer.style.display = 'flex';
+            itemContainer.style.alignItems = 'center';
+            itemContainer.style.cursor = 'pointer';
+
+            const hasChildren = node.children && node.children.length > 0;
+            const isExpanded = this.expandedKeys.has(node.key);
+
+            // 展开/收起图标
+            const switcher = document.createElement('span');
+            switcher.style.display = 'inline-block';
+            switcher.style.width = '20px';
+            switcher.style.textAlign = 'center';
+            switcher.style.userSelect = 'none';
+            if (hasChildren) {
+                switcher.textContent = isExpanded ? '▼' : '▶';
+                const toggle = (e: MouseEvent) => {
+                    e.stopPropagation();
+                    const run = () => this.toggleExpand(node.key);
+                    const zone = (window as any).Zone?.current;
+                    if (zone) zone.run(run); else run();
+                };
+                switcher.addEventListener('click', toggle);
+            }
+            itemContainer.appendChild(switcher);
+
             const title = document.createElement('span');
             title.textContent = node.title;
-            title.style.cursor = 'pointer';
             title.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const run = () => {
@@ -966,10 +1010,11 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
                     run();
                 }
             });
-            li.appendChild(title);
+            itemContainer.appendChild(title);
+            li.appendChild(itemContainer);
 
-            if (node.children && node.children.length > 0) {
-                this.renderNodes(node.children, li);
+            if (hasChildren && isExpanded) {
+                this.renderNodes(node.children!, li);
             }
             ul.appendChild(li);
         });

@@ -116,18 +116,34 @@ if (uiRoot) {
         });
         complexTab.add.Pagination({current: 1, total: 50, pageSize: 10});
 
-        const complexGroup2 = complexTab.add.Group({title: '树形视图'});
+        const complexGroup2 = complexTab.add.Group({title: '树形视图 (可折叠)'});
         complexGroup2.add.TreeView({
             data: [
                 {
                     key: '1',
                     title: '根节点',
                     children: [
-                        {key: '1-1', title: '子节点 1'},
+                        {
+                            key: '1-1',
+                            title: '子节点 1',
+                            children: [
+                                {key: '1-1-1', title: '孙子节点 1'}
+                            ]
+                        },
                         {key: '1-2', title: '子节点 2'}
                     ]
+                },
+                {
+                    key: '2',
+                    title: '根节点 2',
+                    children: [
+                        {key: '2-1', title: '子节点 2-1'}
+                    ]
                 }
-            ]
+            ],
+            expandedKeys: ['1'],
+            onSelect: (key) => console.log('Selected:', key),
+            onExpand: (keys) => console.log('Expanded Keys:', keys)
         });
 
         // --- 表单演示页 ---
