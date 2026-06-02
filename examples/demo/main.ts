@@ -32,15 +32,15 @@ if (uiRoot) {
 
     // --- 基础组件页 ---
 
-    basicTab.add.Group({title: '按钮与文本'});
-    const btnGroup = basicTab.add.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
+    const group1 = basicTab.add.Group({title: '按钮与文本'});
+    const btnGroup = group1.add.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
     btnGroup.add.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
     btnGroup.add.Button({text: '禁用按钮', disabled: true});
     btnGroup.add.Label({text: '这是一个标签'});
     btnGroup.add.Text({text: '这是普通文本'});
 
-    basicTab.add.Group({title: '表单基础'});
-    const formBaseGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
+    const group2 = basicTab.add.Group({title: '表单基础'});
+    const formBaseGroup = group2.add.Flex({gap: '15px', direction: 'column'});
     formBaseGroup.add.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
 
     const checkRow = formBaseGroup.add.Flex({gap: '20px'});
@@ -51,8 +51,8 @@ if (uiRoot) {
     radioRow.add.Radio({label: '男', name: 'sex', value: 'male', checked: true});
     radioRow.add.Radio({label: '女', name: 'sex', value: 'female', checked: false});
 
-    basicTab.add.Group({title: '选择器与滑动条'});
-    const selGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
+    const group3 = basicTab.add.Group({title: '选择器与滑动条'});
+    const selGroup = group3.add.Flex({gap: '15px', direction: 'column'});
     selGroup.add.Select({
         options: [
             {label: '苹果', value: 'apple'},
@@ -66,16 +66,16 @@ if (uiRoot) {
 
     // --- 布局组件页 ---
 
-    layoutTab.add.Group({title: 'Flex 布局 (Row)'});
-    const row = layoutTab.add.Row({gap: '10px'});
+    const layoutGroup1 = layoutTab.add.Group({title: 'Flex 布局 (Row)'});
+    const row = layoutGroup1.add.Row({gap: '10px'});
     for (let i = 1; i <= 3; i++) row.add.Button({text: `按钮 ${i}`});
 
-    layoutTab.add.Group({title: 'Flex 布局 (Column)'});
-    const col = layoutTab.add.Column({gap: '5px'});
+    const layoutGroup2 = layoutTab.add.Group({title: 'Flex 布局 (Column)'});
+    const col = layoutGroup2.add.Column({gap: '5px'});
     for (let i = 1; i <= 3; i++) col.add.Text({text: `文本行 ${i}`});
 
-    layoutTab.add.Group({title: 'Grid 布局'});
-    const grid = layoutTab.add.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
+    const layoutGroup3 = layoutTab.add.Group({title: 'Grid 布局'});
+    const grid = layoutGroup3.add.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
     for (let i = 1; i <= 6; i++) {
         grid.add.Container({
             style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'},
@@ -103,8 +103,8 @@ if (uiRoot) {
     avatarGroup.add.Avatar({src: 'https://via.placeholder.com/40', size: 40});
     avatarGroup.add.Badge({text: '99+', color: 'red'});
 
-    complexTab.add.Group({title: '列表与分页'});
-    complexTab.add.List({
+    const complexGroup1 = complexTab.add.Group({title: '列表与分页'});
+    complexGroup1.add.List({
         dataSource: ['列表项目 1', '列表项目 2', '列表项目 3'],
         renderItem: (item) => {
             const el = document.createElement('div');
@@ -114,8 +114,8 @@ if (uiRoot) {
     });
     complexTab.add.Pagination({current: 1, total: 50, pageSize: 10});
 
-    complexTab.add.Group({title: '树形视图'});
-    complexTab.add.TreeView({
+    const complexGroup2 = complexTab.add.Group({title: '树形视图'});
+    complexGroup2.add.TreeView({
         data: [
             {
                 key: '1',
