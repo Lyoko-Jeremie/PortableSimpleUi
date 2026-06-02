@@ -72,15 +72,19 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         this.applyStyle();
     }
 
-    /**
-     * 辅助方法：处理可能的动态值（signal, ref 或普通值）
-     */
-    protected resolveValue<T>(value: T | (() => T) | { value: T }): T {
+    protected resolveValue<T>(value: DynamicValue<T>): T {
         if (typeof value === 'function') {
-            return (value as Function)();
+            const result = (value as Function)();
+            // 如果函数返回的还是个带有 get() 的对象（虽然不常见，但为了兼容性），继续递归一层或直接返回
+            return result;
         }
-        if (value && typeof value === 'object' && 'value' in value) {
-            return (value as any).value;
+        if (value && typeof value === 'object') {
+            if ('get' in value && typeof (value as any).get === 'function') {
+                return (value as any).get();
+            }
+            if ('value' in value) {
+                return (value as any).value;
+            }
         }
         return value as T;
     }

@@ -166,7 +166,7 @@ if (uiRoot) {
 
     const count = signal(0);
     signalTab.add.Text({text: '计数值：'});
-    signalTab.add.Text({text: computed(() => `${count}`)}); // 组件通常支持 ISignal 作为文本
+    signalTab.add.Text({text: computed(() => `${count.value}`)}); // 组件通常支持 ISignal 作为文本
 
     signalTab.add.Flex({style: {margin: '10px 0'}, gap: '10px'}).add.Button({
         text: '点击增加',
