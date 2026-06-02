@@ -29,7 +29,7 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
     protected _dirty = false;
 
     constructor(config: TConfig, zoneWrapper: IZoneWrapper) {
-        this.config = config;
+        this.config = config || {} as TConfig;
         this.zoneWrapper = zoneWrapper;
         this.element = this.createHTMLElement();
         this.applyConfig();

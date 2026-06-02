@@ -44,9 +44,9 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
                         const childConfig = args[0] || {};
                         if (childConfig.tabTitle || self.config.autoCreateTab !== false) {
                             const tabId = childConfig.id || `tab-${Math.random().toString(36).substr(2, 9)}`;
-                            const tabLabel = childConfig.tabTitle || tabId;
+                            const tabLabel = childConfig.tabTitle || childConfig.id || (childConfig.id ? null : 'Tab');
                             if (!self._tabItems.find(item => item.id === tabId)) {
-                                self._tabItems.push({ id: tabId, label: tabLabel });
+                                self._tabItems.push({ id: tabId, label: tabLabel || tabId });
                                 if (!self._activeTabId) self._activeTabId = tabId;
                             }
                         }
