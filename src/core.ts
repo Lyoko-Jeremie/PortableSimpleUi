@@ -17,6 +17,8 @@ export interface IZoneWrapper {
     run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
     runOutside<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
     registerRoot(root: { renderAll?: () => void; render: () => void }): void;
+    rootsToRender: Set<any>;
+    triggerRender: () => void;
 }
 
 /**
@@ -56,6 +58,8 @@ export function createZoneWrapper(name: string): IZoneWrapper {
 
     return {
         zone,
+        rootsToRender,
+        triggerRender,
         run(fn, applyThis, applyArgs) {
             return zone.run(fn, applyThis, applyArgs);
         },
@@ -64,7 +68,7 @@ export function createZoneWrapper(name: string): IZoneWrapper {
         },
         registerRoot(root) {
             rootsToRender.add(root);
-        }
+        },
     };
 }
 
