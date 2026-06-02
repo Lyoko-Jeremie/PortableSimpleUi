@@ -1,4 +1,4 @@
-import { signal, effect, computed } from '../src/core';
+import {signal, effect, computed} from '../src/core';
 
 describe('Signal System', () => {
     it('should work as a basic signal', () => {

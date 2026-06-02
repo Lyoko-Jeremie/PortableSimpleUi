@@ -1,10 +1,10 @@
-import { makeRef } from '../src/utils';
+import {makeRef} from '../src/utils';
 
 describe('makeRef Path Type Safety', () => {
     const context = {
         a: {
             b: [
-                { c: 1 }
+                {c: 1}
             ]
         },
         x: 10
@@ -21,7 +21,6 @@ describe('makeRef Path Type Safety', () => {
     });
 
     it('should handle missing paths gracefully at runtime', () => {
-        // @ts-expect-error
         const ref = makeRef(context, 'a.nonexistent');
         expect(ref()).toBeUndefined();
     });
