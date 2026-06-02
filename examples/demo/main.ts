@@ -31,63 +31,63 @@ if (uiRoot) {
     const signalTab = tabs.add.Container({});
 
     // --- 基础组件页 ---
-    const basicAdd = basicTab.add;
+    // const basicAdd = basicTab.add;
 
-    basicAdd.Group({title: '按钮与文本'});
-    const btnGroup = basicAdd.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
-    const btnAdd = btnGroup.add;
-    btnAdd.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
-    btnAdd.Button({text: '禁用按钮', disabled: true});
-    btnAdd.Label({text: '这是一个标签'});
-    btnAdd.Text({text: '这是普通文本'});
+    basicTab.add.Group({title: '按钮与文本'});
+    const btnGroup = basicTab.add.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
+    // const btnAdd = btnGroup.add;
+    btnGroup.add.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
+    btnGroup.add.Button({text: '禁用按钮', disabled: true});
+    btnGroup.add.Label({text: '这是一个标签'});
+    btnGroup.add.Text({text: '这是普通文本'});
 
-    basicAdd.Group({title: '表单基础'});
-    const formBaseGroup = basicAdd.Flex({gap: '15px', direction: 'column'});
-    const fbAdd = formBaseGroup.add;
-    fbAdd.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
+    basicTab.add.Group({title: '表单基础'});
+    const formBaseGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
+    // const fbAdd = formBaseGroup.add;
+    formBaseGroup.add.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
 
-    const checkRow = fbAdd.Flex({gap: '20px'});
-    const crAdd = checkRow.add;
-    crAdd.Checkbox({label: '选项 A', checked: true});
-    crAdd.Checkbox({label: '选项 B', checked: false});
+    const checkRow = formBaseGroup.add.Flex({gap: '20px'});
+    // const crAdd = checkRow.add;
+    checkRow.add.Checkbox({label: '选项 A', checked: true});
+    checkRow.add.Checkbox({label: '选项 B', checked: false});
 
-    const radioRow = fbAdd.Flex({gap: '20px'});
-    const rrAdd = radioRow.add;
-    rrAdd.Radio({label: '男', name: 'sex', value: 'male', checked: true});
-    rrAdd.Radio({label: '女', name: 'sex', value: 'female', checked: false});
+    const radioRow = formBaseGroup.add.Flex({gap: '20px'});
+    // const rrAdd = radioRow.add;
+    radioRow.add.Radio({label: '男', name: 'sex', value: 'male', checked: true});
+    radioRow.add.Radio({label: '女', name: 'sex', value: 'female', checked: false});
 
-    basicAdd.Group({title: '选择器与滑动条'});
-    const selGroup = basicAdd.Flex({gap: '15px', direction: 'column'});
-    const sgAdd = selGroup.add;
-    sgAdd.Select({
+    basicTab.add.Group({title: '选择器与滑动条'});
+    const selGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
+    // const sgAdd = selGroup.add;
+    selGroup.add.Select({
         options: [
             {label: '苹果', value: 'apple'},
             {label: '香蕉', value: 'banana'},
             {label: '橙子', value: 'orange'}
         ]
     });
-    sgAdd.Slider({min: 0, max: 100, value: 50});
-    sgAdd.ColorPicker({value: '#007bff'});
-    sgAdd.ProgressBar({value: 60});
+    selGroup.add.Slider({min: 0, max: 100, value: 50});
+    selGroup.add.ColorPicker({value: '#007bff'});
+    selGroup.add.ProgressBar({value: 60});
 
     // --- 布局组件页 ---
-    const layoutAdd = layoutTab.add;
+    // const layoutAdd = layoutTab.add;
 
-    layoutAdd.Group({title: 'Flex 布局 (Row)'});
-    const row = layoutAdd.Row({gap: '10px'});
-    const rowAdd = row.add;
-    for (let i = 1; i <= 3; i++) rowAdd.Button({text: `按钮 ${i}`});
+    layoutTab.add.Group({title: 'Flex 布局 (Row)'});
+    const row = layoutTab.add.Row({gap: '10px'});
+    // const rowAdd = row.add;
+    for (let i = 1; i <= 3; i++) row.add.Button({text: `按钮 ${i}`});
 
-    layoutAdd.Group({title: 'Flex 布局 (Column)'});
-    const col = layoutAdd.Column({gap: '5px'});
-    const colAdd = col.add;
-    for (let i = 1; i <= 3; i++) colAdd.Text({text: `文本行 ${i}`});
+    layoutTab.add.Group({title: 'Flex 布局 (Column)'});
+    const col = layoutTab.add.Column({gap: '5px'});
+    // const colAdd = col.add;
+    for (let i = 1; i <= 3; i++) col.add.Text({text: `文本行 ${i}`});
 
-    layoutAdd.Group({title: 'Grid 布局'});
-    const grid = layoutAdd.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
-    const gridAdd = grid.add;
+    layoutTab.add.Group({title: 'Grid 布局'});
+    const grid = layoutTab.add.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
+    // const gridAdd = grid.add;
     for (let i = 1; i <= 6; i++) {
-        gridAdd.Container({
+        grid.add.Container({
             style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'},
             id: `cell-${i}`
         });
@@ -96,29 +96,29 @@ if (uiRoot) {
         // 但为了最小改动，我们这里改用 Text 组件。
     }
 
-    layoutAdd.Divider({margin: '20px 0'});
-    layoutAdd.Text({text: '分隔线之后'});
+    layoutTab.add.Divider({margin: '20px 0'});
+    layoutTab.add.Text({text: '分隔线之后'});
 
     // --- 复合组件页 ---
-    const complexAdd = complexTab.add;
+    // const complexAdd = complexTab.add;
 
-    complexAdd.Alert({text: '这是一条提示信息', type: 'info'});
+    complexTab.add.Alert({text: '这是一条提示信息', type: 'info'});
 
-    const cardRow = complexAdd.Flex({gap: '15px'});
-    const cardRowAdd = cardRow.add;
+    const cardRow = complexTab.add.Flex({gap: '15px'});
+    // const cardRowAdd = cardRow.add;
 
-    const card = cardRowAdd.Card({title: '卡片标题'});
-    const cardBodyAdd = card.add;
-    cardBodyAdd.Text({text: '这是卡片的内容区域。'});
-    cardBodyAdd.Button({text: '卡片操作'});
+    const card = cardRow.add.Card({title: '卡片标题'});
+    // const cardBodyAdd = card.add;
+    card.add.Text({text: '这是卡片的内容区域。'});
+    card.add.Button({text: '卡片操作'});
 
-    const avatarGroup = complexAdd.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
-    const agAdd = avatarGroup.add;
-    agAdd.Avatar({src: 'https://via.placeholder.com/40', size: 40});
-    agAdd.Badge({text: '99+', color: 'red'});
+    const avatarGroup = complexTab.add.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
+    // const agAdd = avatarGroup.add;
+    avatarGroup.add.Avatar({src: 'https://via.placeholder.com/40', size: 40});
+    avatarGroup.add.Badge({text: '99+', color: 'red'});
 
-    complexAdd.Group({title: '列表与分页'});
-    complexAdd.List({
+    complexTab.add.Group({title: '列表与分页'});
+    complexTab.add.List({
         dataSource: ['列表项目 1', '列表项目 2', '列表项目 3'],
         renderItem: (item) => {
             const el = document.createElement('div');
@@ -126,10 +126,10 @@ if (uiRoot) {
             return el;
         }
     });
-    complexAdd.Pagination({current: 1, total: 50, pageSize: 10});
+    complexTab.add.Pagination({current: 1, total: 50, pageSize: 10});
 
-    complexAdd.Group({title: '树形视图'});
-    complexAdd.TreeView({
+    complexTab.add.Group({title: '树形视图'});
+    complexTab.add.TreeView({
         data: [
             {
                 key: '1',
@@ -143,9 +143,9 @@ if (uiRoot) {
     });
 
     // --- 表单演示页 ---
-    const formAdd = formTab.add;
+    // const formAdd = formTab.add;
 
-    formAdd.Form({
+    formTab.add.Form({
         items: [
             {label: '用户名', key: 'username', component: 'Input', componentConfig: {placeholder: '请输入'}},
             {label: '出生日期', key: 'birthday', component: 'DatePicker', componentConfig: {}},
@@ -158,20 +158,20 @@ if (uiRoot) {
     });
 
     // 弹窗演示
-    formAdd.Button({
+    formTab.add.Button({
         text: '打开弹窗',
         style: {margin: '20px 0'},
         onClick: () => {
             const modal = app.add.Modal({title: '演示弹窗'});
-            const modalAdd = modal.add;
-            modalAdd.Text({text: '这是一个通过 Modal 组件创建的弹窗。'});
-            modalAdd.Button({text: '关闭', onClick: () => modal.hide()});
+            // const modalAdd = modal.add;
+            modal.add.Text({text: '这是一个通过 Modal 组件创建的弹窗。'});
+            modal.add.Button({text: '关闭', onClick: () => modal.hide()});
             modal.show();
         }
     });
 
     // 吐司演示
-    formAdd.Button({
+    formTab.add.Button({
         text: '显示 Toast', onClick: () => {
             app.add.Toast({text: '这是一条通知消息', duration: 3000});
         }
