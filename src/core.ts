@@ -108,11 +108,6 @@ export function createZoneWrapper(name: string): IZoneWrapper {
 }
 
 /**
- * initPortableSimpleUiZone 是 createZoneWrapper 的别名，用于向后兼容
- */
-export const initPortableSimpleUiZone = createZoneWrapper;
-
-/**
  * 包装 signal 以便在组件中使用
  */
 export interface ISignal<T> {
