@@ -1,4 +1,8 @@
-export type StyleDeclaration = Partial<CSSStyleDeclaration>;
+import {DynamicValue} from './types';
+
+export type StyleDeclaration = {
+    [K in keyof CSSStyleDeclaration]?: DynamicValue<CSSStyleDeclaration[K]>;
+};
 
 export interface IComponentConfig {
     id?: string;
@@ -23,8 +27,17 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         if (this.config.id) {
             this.element.id = this.config.id;
         }
+        this.applyStyle();
+    }
+
+    protected applyStyle() {
         if (this.config.style) {
-            Object.assign(this.element.style, this.config.style);
+            for (const key in this.config.style) {
+                const value = this.config.style[key as keyof StyleDeclaration];
+                if (value !== undefined) {
+                    (this.element.style as any)[key] = this.resolveValue(value as any);
+                }
+            }
         }
     }
 
@@ -33,7 +46,9 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         this.render();
     }
 
-    public abstract render(): void;
+    public render(): void {
+        this.applyStyle();
+    }
 
     /**
      * 辅助方法：处理可能的动态值（signal, ref 或普通值）

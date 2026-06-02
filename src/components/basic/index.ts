@@ -1,6 +1,5 @@
 import {BaseComponent, IComponentConfig} from '../../component';
-
-export type DynamicValue<T> = T | (() => T) | { value: T };
+import {DynamicValue} from '../../types';
 
 export interface ITextConfig extends IComponentConfig {
     text: DynamicValue<string>;
@@ -12,6 +11,7 @@ export class Text extends BaseComponent<ITextConfig> {
     }
 
     public render(): void {
+        super.render();
         this.element.textContent = this.resolveValue(this.config.text);
     }
 }
@@ -31,6 +31,7 @@ export class Label extends BaseComponent<ILabelConfig> {
     }
 
     public render(): void {
+        super.render();
         this.element.textContent = this.resolveValue(this.config.text);
     }
 }
@@ -61,6 +62,7 @@ export class Button extends BaseComponent<IButtonConfig> {
     }
 
     public render(): void {
+        super.render();
         const text = this.state.text !== undefined ? this.state.text : this.resolveValue(this.config.text);
         this.element.textContent = text;
 
@@ -83,6 +85,7 @@ export class Image extends BaseComponent<IImageConfig> {
     }
 
     public render(): void {
+        super.render();
         const img = this.element as HTMLImageElement;
         img.src = this.resolveValue(this.config.src);
         if (this.config.alt !== undefined) img.alt = this.resolveValue(this.config.alt);
@@ -115,6 +118,7 @@ export class Input extends BaseComponent<IInputConfig> {
     }
 
     public render(): void {
+        super.render();
         const input = this.element as HTMLInputElement;
         const val = this.state.value !== undefined ? this.state.value : this.resolveValue(this.config.value);
         if (input.value !== val && val !== undefined) {
@@ -154,6 +158,7 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
     }
 
     public render(): void {
+        super.render();
         const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
@@ -205,6 +210,7 @@ export class Radio extends BaseComponent<IRadioConfig> {
     }
 
     public render(): void {
+        super.render();
         const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
@@ -246,6 +252,7 @@ export class Select extends BaseComponent<ISelectConfig> {
     }
 
     public render(): void {
+        super.render();
         const select = this.element as HTMLSelectElement;
         const options = this.resolveValue(this.config.options) || [];
 
@@ -288,6 +295,7 @@ export class Slider extends BaseComponent<ISliderConfig> {
     }
 
     public render(): void {
+        super.render();
         const input = this.element as HTMLInputElement;
         input.min = String(this.resolveValue(this.config.min) ?? 0);
         input.max = String(this.resolveValue(this.config.max) ?? 100);
@@ -317,6 +325,7 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
     }
 
     public render(): void {
+        super.render();
         const input = this.element as HTMLInputElement;
         const val = this.state.value !== undefined ? this.state.value : this.resolveValue(this.config.value);
         if (input.value !== val && val !== undefined) {
@@ -352,6 +361,7 @@ export class ProgressBar extends BaseComponent<IProgressBarConfig> {
     }
 
     public render(): void {
+        super.render();
         const val = this.resolveValue(this.config.value);
         const percent = Math.min(100, Math.max(0, val * 100));
         this.barEl.style.width = `${percent}%`;

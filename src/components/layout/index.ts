@@ -30,6 +30,7 @@ export class Flex extends BaseComponent<IFlexConfig> {
     }
 
     public render(): void {
+        super.render();
         // Flex 容器自身的渲染逻辑
     }
 
