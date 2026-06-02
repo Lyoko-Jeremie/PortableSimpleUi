@@ -130,7 +130,7 @@ export class Group extends ContainerComponent<IGroupConfig> {
         return 'ps-group';
     }
 
-    private _titleElement?: HTMLElement;
+    private _titleElement!: HTMLElement;
     private _contentElement!: HTMLElement;
 
     protected createHTMLElement(): HTMLElement {
@@ -156,7 +156,7 @@ export class Group extends ContainerComponent<IGroupConfig> {
 
     public render(): void {
         super.render();
-        const legend = this._titleElement;
+        const legend = this.getElement().querySelector('legend');
         if (legend) {
             const val = this.config.title;
             const title = val !== undefined ? this.resolveValue(val) : undefined;
