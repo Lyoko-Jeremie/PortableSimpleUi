@@ -62,7 +62,9 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
                 if (this.config.onChange) {
                     this.config.onChange(query, this);
                 }
-                this.setValue(this.config.value!, query);
+                if (this.config.value) {
+                    this.setValue(this.config.value, query);
+                }
                 await this.updateFilteredOptions(query);
                 this.showDropdown = this.filteredOptions.length > 0;
                 this.selectedIndex = -1;
@@ -80,7 +82,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
 
         input.addEventListener('blur', () => {
             // Delay hide to allow click on dropdown
-            setTimeout(() => {
+            this.state.blurTimer = setTimeout(() => {
                 this.zoneWrapper.run(() => {
                     this.showDropdown = false;
                     this.render();
@@ -128,17 +130,23 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     }
 
     private selectOption(value: string) {
-        this.inputElement.value = value;
-        this.state.value = value;
-        this.showDropdown = false;
-        this.setValue(this.config.value!, value);
-        if (this.config.onSelect) {
-            this.config.onSelect(value, this);
-        }
-        if (this.config.onChange) {
-            this.config.onChange(value, this);
-        }
-        this.render();
+        this.zoneWrapper.run(() => {
+            if (this.inputElement) {
+                this.inputElement.value = value;
+            }
+            this.state.value = value;
+            this.showDropdown = false;
+            if (this.config.value) {
+                this.setValue(this.config.value, value);
+            }
+            if (this.config.onSelect) {
+                this.config.onSelect(value, this);
+            }
+            if (this.config.onChange) {
+                this.config.onChange(value, this);
+            }
+            this.render();
+        });
     }
 
     public render(): void {
@@ -170,7 +178,16 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
                     this.selectedIndex = index;
                     this.render();
                 });
-                item.addEventListener('click', () => {
+                item.addEventListener('mousedown', (e) => {
+                    // Prevent blur from hiding dropdown before click
+                    e.preventDefault();
+                    if (this.state.blurTimer) {
+                        clearTimeout(this.state.blurTimer);
+                        this.state.blurTimer = null;
+                    }
+                });
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     this.selectOption(opt);
                 });
                 this.dropdownElement.appendChild(item);
@@ -240,7 +257,8 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
 
         container.addEventListener('click', (e) => {
             if (!this.dropdownElement) return;
-            if (e.target === this.dropdownElement || this.dropdownElement.contains(e.target as Node)) {
+            // 如果点击的是内部元素（比如标签的删除按钮），不切换下拉
+            if (this.dropdownElement.contains(e.target as Node)) {
                 return;
             }
             this.zoneWrapper.run(() => {
@@ -271,7 +289,9 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         } else {
             currentValues = [...currentValues, optionValue];
         }
-        this.setValue(this.config.value!, currentValues);
+        if (this.config.value) {
+            this.setValue(this.config.value, currentValues);
+        }
         if (this.config.onChange) {
             this.config.onChange(currentValues, this);
         }
@@ -415,10 +435,14 @@ export class LinkedMultiselect extends BaseComponent<ILinkedMultiselectConfig> {
         select.addEventListener('change', () => {
             this.zoneWrapper.run(() => {
                 const val = select.value;
-                this.setValue(this.config.primary.value!, val);
+                if (this.config.primary.value) {
+                    this.setValue(this.config.primary.value, val);
+                }
 
                 // Reset secondary value when primary changes
-                this.setValue(this.config.secondary.value!, []);
+                if (this.config.secondary.value) {
+                    this.setValue(this.config.secondary.value, []);
+                }
 
                 if (this.config.primary.onChange) {
                     this.config.primary.onChange(val, this);
@@ -456,7 +480,7 @@ export class LinkedMultiselect extends BaseComponent<ILinkedMultiselectConfig> {
             // Render secondary multiselect
             if (primaryVal) {
                 const secondaryOptions = this.config.secondary.options(primaryVal);
-                if (!this.secondaryMultiselect) {
+                if (!this.secondaryMultiselect || this.state.lastPrimaryVal !== primaryVal) {
                     this.secondaryContainer.innerHTML = '';
                     const config: IMultiselectConfig = {
                         value: this.config.secondary.value,
@@ -470,6 +494,7 @@ export class LinkedMultiselect extends BaseComponent<ILinkedMultiselectConfig> {
                     };
                     this.secondaryMultiselect = new Multiselect(config, this.zoneWrapper);
                     this.secondaryContainer.appendChild(this.secondaryMultiselect.getElement());
+                    this.state.lastPrimaryVal = primaryVal;
                 } else {
                     // Update existing multiselect config
                     this.secondaryMultiselect.config.options = secondaryOptions;
@@ -478,6 +503,7 @@ export class LinkedMultiselect extends BaseComponent<ILinkedMultiselectConfig> {
             } else {
                 this.secondaryContainer.innerHTML = '';
                 this.secondaryMultiselect = undefined;
+                this.state.lastPrimaryVal = undefined;
             }
         }
     }
