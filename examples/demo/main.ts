@@ -1,5 +1,6 @@
 import {AppRoot} from '../../src/app-root';
 import {computed, signal, initPortableSimpleUiZone, effect} from '../../src/core';
+import {makeRef} from "../../src";
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -43,7 +44,18 @@ if (uiRoot) {
 
         const group2 = basicTab.add.Group({title: '表单基础'});
         const formBaseGroup = group2.add.Flex({gap: '15px', direction: 'column'});
-        formBaseGroup.add.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
+        const dataInput = {
+            v: 'alice',
+        }
+        formBaseGroup.add.Input({
+            placeholder: '请输入内容...',
+            value: makeRef(dataInput, 'v'),
+            onInput: (v) => {
+                console.log('Input:', v);
+                dataInput.v = v;
+            },
+        });
+        formBaseGroup.add.Label({text: () => dataInput.v})
 
         const checkRow = formBaseGroup.add.Flex({gap: '20px'});
         checkRow.add.Checkbox({label: '选项 A', checked: true});
@@ -191,8 +203,8 @@ if (uiRoot) {
             onClick: () => count.set(count.get() + 1)
         });
 
-        effect(()=>{
-            console.log('effect count',count.get());
+        effect(() => {
+            console.log('effect count', count.get());
         })
 
         app.renderAll();
