@@ -30,7 +30,7 @@ describe('TreeView Collapse', () => {
             expect(treeView.getElement().textContent).not.toContain('Child 1');
 
             // 查找 switcher 并点击
-            let switcher = treeView.getElement().querySelector('span') as HTMLElement;
+            let switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▶');
             switcher.click();
 
@@ -38,14 +38,14 @@ describe('TreeView Collapse', () => {
             expect(treeView.getElement().textContent).toContain('Child 1');
             
             // 重新获取 switcher，因为 render 重新创建了 DOM
-            switcher = treeView.getElement().querySelector('span') as HTMLElement;
+            switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▼');
 
             // 再次点击收起
             switcher.click();
             expect(treeView.getElement().textContent).not.toContain('Child 1');
             
-            switcher = treeView.getElement().querySelector('span') as HTMLElement;
+            switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▶');
         });
     });
@@ -71,7 +71,7 @@ describe('TreeView Collapse', () => {
             });
             
             expect(treeView.getElement().textContent).toContain('Child 1');
-            const switcher = treeView.getElement().querySelector('span') as HTMLElement;
+            const switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▼');
         });
     });

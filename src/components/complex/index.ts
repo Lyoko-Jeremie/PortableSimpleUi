@@ -978,12 +978,18 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
             const hasChildren = node.children && node.children.length > 0;
             const isExpanded = this.expandedKeys.has(node.key);
 
-            // 展开/收起图标
-            const switcher = document.createElement('span');
+            // 展开/收起按钮
+            const switcher = document.createElement('button');
             switcher.style.display = 'inline-block';
-            switcher.style.width = '20px';
+            switcher.style.width = '24px';
+            switcher.style.height = '24px';
+            switcher.style.lineHeight = '24px';
             switcher.style.textAlign = 'center';
             switcher.style.userSelect = 'none';
+            switcher.style.border = 'none';
+            switcher.style.background = 'transparent';
+            switcher.style.cursor = 'pointer';
+            switcher.style.padding = '0';
             if (hasChildren) {
                 switcher.textContent = isExpanded ? '▼' : '▶';
                 const toggle = (e: MouseEvent) => {
@@ -993,6 +999,8 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
                     if (zone) zone.run(run); else run();
                 };
                 switcher.addEventListener('click', toggle);
+            } else {
+                switcher.style.visibility = 'hidden';
             }
             itemContainer.appendChild(switcher);
 
