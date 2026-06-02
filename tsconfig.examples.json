@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2020",
+    "types": [],
+    "lib": ["es2020", "dom"],
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true
+  },
+  "include": ["src/**/*", "examples/**/*"],
+  "exclude": ["dist", "node_modules", "test"]
+}
+
+
