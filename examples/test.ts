@@ -160,6 +160,21 @@ flexContainer.add.Button({
     },
 });
 
+const aOuterContextInOuterLogic = {
+    value: true,
+};
+
+const dataAccessor = {
+    get: () => aOuterContextInOuterLogic.value,
+    set: (v: boolean) => aOuterContextInOuterLogic.value = v,
+};
+
+flexContainer.add.Radio({
+    id: 'radioInFlex',
+    label: 'aaa',
+    checked: dataAccessor,
+});
+
 flexContainer.markDirty(); // 手动触发强制更新/同步整个容器中所有的值，并重新渲染
 
 
