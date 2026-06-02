@@ -21,7 +21,17 @@ export interface IZoneWrapper {
 
     runOutside<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
 
+    runGuarded<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
+
     registerRoot(root: { renderAll?: () => void; render: () => void }): void;
+
+    runInZone<T>(fn: (...args: any[]) => T): T;
+
+    runInZoneGuarded<T>(fn: (...args: any[]) => T): T;
+
+    runOutZone<T>(fn: (...args: any[]) => T): T;
+
+    wrap<F extends Function>(fn: (...args: any[]) => F): F;
 }
 
 /**
