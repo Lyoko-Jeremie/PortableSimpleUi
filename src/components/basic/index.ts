@@ -189,6 +189,10 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
 
         const inputEl = document.createElement('input');
         inputEl.type = 'checkbox';
+        const initialChecked = this.resolveValue(this.config.checked);
+        if (initialChecked !== undefined) {
+            inputEl.checked = !!initialChecked;
+        }
         inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = inputEl.checked;
@@ -213,14 +217,14 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
     }
 
     public render(): void {
-        const labelText = this.resolveValue(this.config.label);
         super.render();
         if (!this.inputEl) return;
-        const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
+        const checked = this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
         }
 
+        const labelText = this.resolveValue(this.config.label);
         if (this.labelEl) {
             if (labelText !== undefined && labelText !== null && labelText !== '') {
                 this.labelEl.textContent = String(labelText);
@@ -256,6 +260,10 @@ export class Radio extends BaseComponent<IRadioConfig> {
         inputEl.type = 'radio';
         inputEl.name = this.config.name;
         inputEl.value = this.config.value;
+        const initialChecked = this.resolveValue(this.config.checked);
+        if (initialChecked !== undefined) {
+            inputEl.checked = !!initialChecked;
+        }
         inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = inputEl.checked;
@@ -282,13 +290,12 @@ export class Radio extends BaseComponent<IRadioConfig> {
     public render(): void {
         super.render();
         if (!this.inputEl) return;
-        const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
+        const checked = this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
         }
 
         const labelText = this.resolveValue(this.config.label);
-        console.log('Radio render, labelText:', labelText);
         if (labelText !== undefined && labelText !== null && labelText !== '') {
             this.labelEl.textContent = String(labelText);
             this.labelEl.style.display = '';

@@ -1,8 +1,6 @@
 import {DynamicValue} from './types';
 import {IZoneWrapper} from './core';
 
-import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from './app-root';
-
 export type StyleDeclaration = {
     [K in keyof CSSStyleDeclaration]?: DynamicValue<CSSStyleDeclaration[K]>;
 };
@@ -113,7 +111,7 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
  */
 export abstract class ContainerComponent<TConfig extends IComponentConfig = IComponentConfig> extends BaseComponent<TConfig> {
     public isLayout = true;
-    public add: ComponentContainerProxy;
+    public add: any;
     public zoneWrapper: IZoneWrapper;
     public _container: ComponentContainer;
 
@@ -121,7 +119,6 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
         super(config, zoneWrapper);
         this.zoneWrapper = zoneWrapper;
         this._container = new ComponentContainer(this.getChildrenHost(), zoneWrapper);
-        this.add = createComponentContainerProxyFromContainer(this._container);
     }
 
     /**
