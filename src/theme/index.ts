@@ -225,6 +225,26 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-list-item:last-child, .ps-root .ps-list-item:last-child {
   border-bottom: none;
 }
+
+.ps-shadow-root .psu-form-submit, .ps-root .psu-form-submit {
+  margin-top: 10px;
+}
+
+.ps-shadow-root .psu-pagination-item, .ps-root .psu-pagination-item {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ps-shadow-root .psu-pagination-item.active, .ps-root .psu-pagination-item.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
 /* 全局样式支持 (当 mode 为 none 时) */
 .ps-root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

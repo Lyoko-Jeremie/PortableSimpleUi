@@ -525,6 +525,7 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
             for (let i = 1; i <= pageCount; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i.toString();
+                btn.className = 'ps-button psu-pagination-item';
                 btn.style.padding = '2px 8px';
                 btn.addEventListener('click', () => {
                     const run = () => {
@@ -545,9 +546,11 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
             const i = index + 1;
             const btn = el as HTMLElement;
             if (i === current) {
-                btn.style.backgroundColor = '#1890ff';
-                btn.style.color = 'white';
+                btn.classList.add('active');
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
             } else {
+                btn.classList.remove('active');
                 btn.style.backgroundColor = '';
                 btn.style.color = '';
             }
@@ -769,6 +772,7 @@ export class Form extends BaseComponent<IFormConfig> {
             const submitBtn = document.createElement('button');
             submitBtn.type = 'submit';
             submitBtn.textContent = 'Submit';
+            submitBtn.className = 'ps-button psu-form-submit';
             this.element.appendChild(submitBtn);
         }
     }

@@ -69,6 +69,22 @@
   font-weight: bold;
   padding: 0 5px;
 }
+.ps-root .psu-form-submit {
+  margin-top: 10px;
+}
+.ps-root .psu-pagination-item {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ps-root .psu-pagination-item.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
 
 .ps-shadow-root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
