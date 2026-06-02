@@ -1,14 +1,17 @@
 import { AppRoot } from '../src/app-root';
 import { Label, Button } from '../src/components/basic/index';
 import { Flex } from '../src/components/layout/index';
+import { createZoneWrapper, IZoneWrapper } from '../src/core';
 import '../src/index'; // 确保组件已注册
 
 describe('Component Add Mechanism', () => {
     let container: HTMLElement;
+    let zoneWrapper: IZoneWrapper;
 
     beforeEach(() => {
         container = document.createElement('div');
         document.body.appendChild(container);
+        zoneWrapper = createZoneWrapper('test');
     });
 
     afterEach(() => {
@@ -16,7 +19,7 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should add Label correctly via appRoot.add.Label', () => {
-        const app = new AppRoot(container, { id: 'app' });
+        const app = new AppRoot(container, { id: 'app', zoneWrapper });
         const label = app.add.Label({
             id: 'my-label',
             text: 'Hello'
@@ -29,7 +32,7 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should add Button correctly via appRoot.add.Button', () => {
-        const app = new AppRoot(container, { id: 'app' });
+        const app = new AppRoot(container, { id: 'app', zoneWrapper });
         let clicked = false;
         const button = app.add.Button({
             id: 'my-button',
@@ -39,15 +42,15 @@ describe('Component Add Mechanism', () => {
 
         expect(button).toBeInstanceOf(Button);
         expect(button.element.textContent).toBe('Click me');
-        
+
         button.element.click();
         expect(clicked).toBe(true);
     });
 
     it('should add Flex and nested components correctly', () => {
-        const app = new AppRoot(container, { id: 'app' });
+        const app = new AppRoot(container, { id: 'app', zoneWrapper });
         const flex = app.add.Flex({ id: 'my-flex' });
-        
+
         expect(flex).toBeInstanceOf(Flex);
         expect(flex.element.style.display).toBe('flex');
 
@@ -57,7 +60,7 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should throw error if component is not registered', () => {
-        const app = new AppRoot(container, { id: 'app' });
+        const app = new AppRoot(container, { id: 'app', zoneWrapper });
         expect(() => {
             (app.add as any).NonExistentComponent({});
         }).toThrow('Component NonExistentComponent is not registered.');

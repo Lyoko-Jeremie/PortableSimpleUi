@@ -1,16 +1,17 @@
-import {AppRoot, initPortableSimpleUiZone, DEFAULT_THEME_CSS} from '../src/index';
+import {AppRoot, createZoneWrapper, DEFAULT_THEME_CSS, IZoneWrapper} from '../src/index';
 
 describe('Theme and Style Isolation', () => {
-    let myZone: Zone;
+    let zoneWrapper: IZoneWrapper;
 
     beforeAll(() => {
-        myZone = initPortableSimpleUiZone('theme-test-zone');
+        zoneWrapper = createZoneWrapper('theme-test-zone');
     });
 
     it('should add ps-root class in none isolation mode', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
+                zoneWrapper,
                 styleIsolation: { mode: 'none' }
             });
             expect(app.host.classList.contains('ps-root')).toBe(true);
@@ -18,9 +19,10 @@ describe('Theme and Style Isolation', () => {
     });
 
     it('should add ps-shadow-root class and style tag in shadow mode', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
+                zoneWrapper,
                 styleIsolation: { mode: 'shadow', useDefaultTheme: true }
             });
             const shadowRoot = app.host.shadowRoot!;
@@ -36,9 +38,10 @@ describe('Theme and Style Isolation', () => {
     });
 
     it('should add component class names', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
+                zoneWrapper,
                 styleIsolation: { mode: 'none' }
             });
             const btn = app.add.Button({ text: 'Test' });
@@ -53,9 +56,10 @@ describe('Theme and Style Isolation', () => {
     });
 
     it('should not include default theme if useDefaultTheme is false', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
+                zoneWrapper,
                 styleIsolation: { mode: 'shadow', useDefaultTheme: false }
             });
             const shadowRoot = app.host.shadowRoot!;

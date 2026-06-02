@@ -12,47 +12,59 @@ declare global {
     }
 }
 
+export interface IZoneWrapper {
+    readonly zone: Zone;
+    run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
+    runOutside<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
+    registerRoot(root: { renderAll?: () => void; render: () => void }): void;
+}
+
 /**
  * 初始化 PortableSimpleUi 的 Zone
  * @param name Zone 的名称
  */
-export function initPortableSimpleUiZone(name: string): Zone {
+export function createZoneWrapper(name: string): IZoneWrapper {
     if (typeof Zone === 'undefined') {
         throw new Error('zone.js is required but not found. Please import "zone.js" at the entry point.');
     }
+
+    const rootsToRender = new Set<any>();
+    const triggerRender = () => {
+        rootsToRender.forEach(r => r.renderAll ? r.renderAll() : r.render());
+    };
+
     const zone = Zone.current.fork({
         name,
         onInvoke: (parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) => {
             const result = parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
-            window.PortableSimpleUiRootRender?.();
+            triggerRender();
             return result;
         },
         onInvokeTask: (parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs) => {
             const result = parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
-            window.PortableSimpleUiRootRender?.();
+            triggerRender();
             return result;
         },
         onHasTask: (parentZoneDelegate, currentZone, targetZone, hasTask) => {
             if (!hasTask.microTask && !hasTask.macroTask && !hasTask.eventTask) {
-                // 当 Zone 中没有任务时，触发全局脏检查
-                window.PortableSimpleUiRootRender?.();
+                // 当 Zone 中没有任务时，触发当前 Zone 的脏检查
+                triggerRender();
             }
             return parentZoneDelegate.hasTask(targetZone, hasTask);
         }
     });
-    (window as any).PortableSimpleUiZone = zone;
-    return zone;
-}
 
-/**
- * 全局渲染列表，用于 Zone 完成任务后的自动更新
- */
-const rootsToRender = new Set<any>();
-
-export function registerRootForAutoRender(root: any) {
-    rootsToRender.add(root);
-    window.PortableSimpleUiRootRender = () => {
-        rootsToRender.forEach(r => r.renderAll ? r.renderAll() : r.render());
+    return {
+        zone,
+        run(fn, applyThis, applyArgs) {
+            return zone.run(fn, applyThis, applyArgs);
+        },
+        runOutside(fn, applyThis, applyArgs) {
+            return zone.parent!.run(fn, applyThis, applyArgs);
+        },
+        registerRoot(root) {
+            rootsToRender.add(root);
+        }
     };
 }
 

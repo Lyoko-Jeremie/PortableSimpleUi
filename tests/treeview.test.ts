@@ -1,17 +1,17 @@
-import {initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {createZoneWrapper, AppRoot, IZoneWrapper} from '../src/index';
 import {TreeView} from '../src/components/complex/index';
 
 describe('TreeView Collapse', () => {
-    let myZone: Zone;
+    let zoneWrapper: IZoneWrapper;
 
     beforeAll(() => {
-        myZone = initPortableSimpleUiZone('treeview-test-zone');
+        zoneWrapper = createZoneWrapper('treeview-test-zone');
     });
 
     it('should collapse and expand nodes when clicking switcher', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const data = [
                 {
@@ -24,7 +24,7 @@ describe('TreeView Collapse', () => {
             ];
 
             const treeView = appRoot.add.TreeView({ data });
-            
+
             // 初始状态不展开
             expect(treeView.getElement().textContent).toContain('Parent');
             expect(treeView.getElement().textContent).not.toContain('Child 1');
@@ -36,7 +36,7 @@ describe('TreeView Collapse', () => {
 
             // 展开后应该能看到子节点
             expect(treeView.getElement().textContent).toContain('Child 1');
-            
+
             // 重新获取 switcher，因为 render 重新创建了 DOM
             switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▼');
@@ -44,16 +44,16 @@ describe('TreeView Collapse', () => {
             // 再次点击收起
             switcher.click();
             expect(treeView.getElement().textContent).not.toContain('Child 1');
-            
+
             switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▶');
         });
     });
 
     it('should support initial expandedKeys', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const data = [
                 {
@@ -65,11 +65,11 @@ describe('TreeView Collapse', () => {
                 }
             ];
 
-            const treeView = appRoot.add.TreeView({ 
+            const treeView = appRoot.add.TreeView({
                 data,
                 expandedKeys: ['parent']
             });
-            
+
             expect(treeView.getElement().textContent).toContain('Child 1');
             const switcher = treeView.getElement().querySelector('button') as HTMLElement;
             expect(switcher.textContent).toBe('▼');

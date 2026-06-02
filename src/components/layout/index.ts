@@ -1,5 +1,6 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ContainerComponent} from '../../component';
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
+import {IZoneWrapper} from '../../core';
 
 /**
  * 基础容器组件
@@ -59,8 +60,8 @@ export class Flex extends ContainerComponent<IFlexConfig> {
  * 水平布局
  */
 export class Row extends Flex {
-    constructor(config: Omit<IFlexConfig, 'direction'>) {
-        super({...config, direction: 'row'});
+    constructor(config: Omit<IFlexConfig, 'direction'>, zoneWrapper: IZoneWrapper) {
+        super({...config, direction: 'row'}, zoneWrapper);
     }
 }
 
@@ -68,8 +69,8 @@ export class Row extends Flex {
  * 垂直布局
  */
 export class Column extends Flex {
-    constructor(config: Omit<IFlexConfig, 'direction'>) {
-        super({...config, direction: 'column'});
+    constructor(config: Omit<IFlexConfig, 'direction'>, zoneWrapper: IZoneWrapper) {
+        super({...config, direction: 'column'}, zoneWrapper);
     }
 }
 

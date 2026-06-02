@@ -1,8 +1,9 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ComponentConstructor} from './component';
-import {registerRootForAutoRender} from './core';
+import {IZoneWrapper} from './core';
 import {DEFAULT_THEME_CSS} from './theme';
 
 export interface IAppRootConfig extends IComponentConfig {
+    zoneWrapper: IZoneWrapper;
     styleIsolation?: {
         mode: 'shadow' | 'none';
         styles?: string;
@@ -15,16 +16,17 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
     public host: HTMLElement;
     public root: HTMLElement | ShadowRoot;
     public add: ComponentContainerProxy;
+    public zoneWrapper: IZoneWrapper;
     private _container: ComponentContainer;
 
     constructor(parentElement: HTMLElement, config: IAppRootConfig) {
-        super(config);
+        super(config, config.zoneWrapper);
+        this.zoneWrapper = config.zoneWrapper;
         this.host = this.element;
 
         const useDefaultTheme = config.styleIsolation?.useDefaultTheme;
 
-        const currentZone = (window as any).Zone?.current;
-        const targetZone = (window as any).PortableSimpleUiZone || currentZone;
+        const targetZone = this.zoneWrapper;
 
         if (config.styleIsolation?.mode === 'shadow') {
             this.root = this.host.attachShadow({mode: 'open'});
@@ -54,7 +56,7 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
         this.add = createComponentContainerProxyFromContainer(this._container);
         parentElement.appendChild(this.host);
 
-        registerRootForAutoRender(this);
+        this.zoneWrapper.registerRoot(this);
     }
 
     protected createHTMLElement(): HTMLElement {
@@ -183,9 +185,7 @@ export function createComponentContainerProxyFromContainer(container: ComponentC
     }) as any;
 }
 
-export function createComponentContainerProxy(host: HTMLElement | ShadowRoot): ComponentContainerProxy {
-    const currentZone = (window as any).Zone?.current;
-    const targetZone = (window as any).PortableSimpleUiZone || currentZone;
-    const container = new ComponentContainer(host, targetZone);
+export function createComponentContainerProxy(host: HTMLElement | ShadowRoot, zoneWrapper: IZoneWrapper): ComponentContainerProxy {
+    const container = new ComponentContainer(host, zoneWrapper);
     return createComponentContainerProxyFromContainer(container);
 }

@@ -1,6 +1,7 @@
 import {BaseComponent, ContainerComponent, IComponentConfig, ComponentContainer} from '../../component';
 import {createComponentContainerProxyFromContainer} from '../../app-root';
 import {DynamicValue} from '../../types';
+import {IZoneWrapper} from '../../core';
 
 /**
  * Tabs 组件
@@ -21,11 +22,9 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     private _headerElement!: HTMLElement;
     private _bodyElement!: HTMLElement;
 
-    constructor(config: ITabsConfig) {
-        super(config);
+    constructor(config: ITabsConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
         this._activeTabId = config.activeTabId || (config.items.length > 0 ? config.items[0]!.id : '');
-        this._container = new ComponentContainer(this.getChildrenHost(), (window as any).Zone?.current);
-        this.add = createComponentContainerProxyFromContainer(this._container);
     }
 
     protected getBaseClassName(): string | null {
@@ -81,15 +80,9 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
                 const tabEl = document.createElement('div');
                 tabEl.dataset.id = item.id;
                 tabEl.addEventListener('click', () => {
-                    const run = () => {
+                    this.zoneWrapper.run(() => {
                         this.activeTabId = item.id;
-                    };
-                    const zone = (window as any).Zone?.current;
-                    if (zone) {
-                        zone.run(run);
-                    } else {
-                        run();
-                    }
+                    });
                 });
                 this._headerElement.appendChild(tabEl);
             });
@@ -113,7 +106,10 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         children.forEach((child, index) => {
             const item = this.config.items[index];
             if (item) {
-                child.style.display = item.id === this._activeTabId ? 'block' : 'none';
+                const targetDisplay = item.id === this._activeTabId ? 'block' : 'none';
+                if (child.style.display !== targetDisplay) {
+                    child.style.display = targetDisplay;
+                }
             }
         });
     }
@@ -351,8 +347,8 @@ export class Toast extends BaseComponent<IToastConfig> {
         return el;
     }
 
-    constructor(config: IToastConfig) {
-        super(config);
+    constructor(config: IToastConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
         const duration = config.duration || 3000;
         setTimeout(() => {
             if (this.element && this.element.parentElement) {
@@ -528,15 +524,9 @@ export class Pagination extends BaseComponent<IPaginationConfig> {
                 btn.className = 'ps-button psu-pagination-item';
                 btn.style.padding = '2px 8px';
                 btn.addEventListener('click', () => {
-                    const run = () => {
+                    this.zoneWrapper.run(() => {
                         this.config.onChange?.(i);
-                    };
-                    const zone = (window as any).Zone?.current;
-                    if (zone) {
-                        zone.run(run);
-                    } else {
-                        run();
-                    }
+                    });
                 });
                 this.element.appendChild(btn);
             }
@@ -614,12 +604,7 @@ export class Breadcrumb extends BaseComponent<IBreadcrumbConfig> {
                     span.style.cursor = 'pointer';
                     span.style.color = '#1890ff';
                     span.addEventListener('click', () => {
-                        const zone = (window as any).Zone?.current;
-                        if (zone) {
-                            zone.run(item.onClick!);
-                        } else {
-                            item.onClick!();
-                        }
+                        this.zoneWrapper.run(item.onClick!);
                     });
                 } else {
                     span.style.cursor = '';
@@ -923,8 +908,8 @@ export interface ITreeViewConfig extends IComponentConfig {
 export class TreeView extends BaseComponent<ITreeViewConfig> {
     private expandedKeys: Set<string> = new Set();
 
-    constructor(config: ITreeViewConfig) {
-        super(config);
+    constructor(config: ITreeViewConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
         if (config.expandedKeys) {
             this.expandedKeys = new Set(config.expandedKeys);
         }
@@ -986,9 +971,7 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
                 switcher.textContent = isExpanded ? '▼' : '▶';
                 const toggle = (e: MouseEvent) => {
                     e.stopPropagation();
-                    const run = () => this.toggleExpand(node.key);
-                    const zone = (window as any).Zone?.current;
-                    if (zone) zone.run(run); else run();
+                    this.zoneWrapper.run(() => this.toggleExpand(node.key));
                 };
                 switcher.addEventListener('click', toggle);
             } else {
@@ -1000,15 +983,9 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
             title.textContent = node.title;
             title.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const run = () => {
+                this.zoneWrapper.run(() => {
                     this.config.onSelect?.(node.key);
-                };
-                const zone = (window as any).Zone?.current;
-                if (zone) {
-                    zone.run(run);
-                } else {
-                    run();
-                }
+                });
             });
             itemContainer.appendChild(title);
             li.appendChild(itemContainer);

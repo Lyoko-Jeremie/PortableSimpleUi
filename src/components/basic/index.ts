@@ -1,5 +1,6 @@
 import {BaseComponent, IComponentConfig} from '../../component';
 import {DynamicValue} from '../../types';
+import {IZoneWrapper} from '../../core';
 
 export interface ITextConfig extends IComponentConfig {
     text: DynamicValue<string>;
@@ -55,8 +56,8 @@ export class Button extends BaseComponent<IButtonConfig> {
         return 'ps-button';
     }
 
-    constructor(config: IButtonConfig) {
-        super(config);
+    constructor(config: IButtonConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
         if (this.config.text !== undefined) {
             this.state.text = this.resolveValue(this.config.text);
         }
@@ -66,16 +67,9 @@ export class Button extends BaseComponent<IButtonConfig> {
         const btn = document.createElement('button');
         btn.addEventListener('click', () => {
             if (!btn.disabled && this.config.onClick) {
-                // Ensure the click handler runs inside the Zone if available
-                const zone = (window as any).Zone?.current;
-                if (zone) {
-                    zone.run(() => {
-                        this.config.onClick!(this);
-                    });
-                } else {
-                    this.config.onClick(this);
-                    this.render();
-                }
+                this.zoneWrapper.run(() => {
+                    this.config.onClick!(this);
+                });
             }
         });
         return btn;
@@ -139,26 +133,14 @@ export class Input extends BaseComponent<IInputConfig> {
                 this.state.value = input.value;
                 if (this.config.onInput) this.config.onInput(input.value, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
         input.addEventListener('change', () => {
             const run = () => {
                 this.state.value = input.value;
                 if (this.config.onChange) this.config.onChange(input.value, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
         return input;
     }
@@ -203,13 +185,7 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
                 this.state.checked = this.inputEl.checked;
                 if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
 
         container.appendChild(this.inputEl);
@@ -268,13 +244,7 @@ export class Radio extends BaseComponent<IRadioConfig> {
                 this.state.checked = this.inputEl.checked;
                 if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
 
         container.appendChild(this.inputEl);
@@ -325,13 +295,7 @@ export class Select extends BaseComponent<ISelectConfig> {
                 this.state.value = select.value;
                 if (this.config.onChange) this.config.onChange(select.value, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
         return select;
     }
@@ -424,13 +388,7 @@ export class ColorPicker extends BaseComponent<IColorPickerConfig> {
                 this.state.value = input.value;
                 if (this.config.onChange) this.config.onChange(input.value, this);
             };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-                this.render();
-            }
+            this.zoneWrapper.run(run);
         });
         return input;
     }

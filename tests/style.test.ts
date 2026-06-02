@@ -1,19 +1,20 @@
-import {signal, initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {signal, createZoneWrapper, AppRoot, IZoneWrapper} from '../src/index';
 
 describe('Dynamic Styles', () => {
-    let myZone: Zone;
+    let zoneWrapper: IZoneWrapper;
 
     beforeAll(() => {
-        myZone = initPortableSimpleUiZone('test-zone');
+        zoneWrapper = createZoneWrapper('test-zone');
     });
 
     it('should update style when signal changes', (done) => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const container = document.createElement('div');
             document.body.appendChild(container);
 
             const colorSignal = signal('red');
             const appRoot = new AppRoot(container, {
+                zoneWrapper,
                 id: 'test-root'
             });
 

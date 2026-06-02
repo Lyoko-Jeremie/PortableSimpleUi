@@ -1,4 +1,5 @@
 import {DynamicValue} from './types';
+import {IZoneWrapper} from './core';
 
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from './app-root';
 
@@ -14,6 +15,7 @@ export interface IComponentConfig {
 export abstract class BaseComponent<TConfig extends IComponentConfig = IComponentConfig> {
     protected element: HTMLElement;
     public config: TConfig;
+    public zoneWrapper: IZoneWrapper;
 
     /**
      * 获取组件的原生 HTML 元素。
@@ -25,8 +27,9 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
     public state: any = {};
     protected _dirty = false;
 
-    constructor(config: TConfig) {
+    constructor(config: TConfig, zoneWrapper: IZoneWrapper) {
         this.config = config;
+        this.zoneWrapper = zoneWrapper;
         this.element = this.createHTMLElement();
         this.applyConfig();
     }
@@ -96,11 +99,13 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
 export abstract class ContainerComponent<TConfig extends IComponentConfig = IComponentConfig> extends BaseComponent<TConfig> {
     public isLayout = true;
     public add: ComponentContainerProxy;
+    public zoneWrapper: IZoneWrapper;
     protected _container: ComponentContainer;
 
-    constructor(config: TConfig) {
-        super(config);
-        this._container = new ComponentContainer(this.getChildrenHost(), (window as any).Zone?.current);
+    constructor(config: TConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.zoneWrapper = zoneWrapper;
+        this._container = new ComponentContainer(this.getChildrenHost(), zoneWrapper);
         this.add = createComponentContainerProxyFromContainer(this._container);
     }
 
@@ -117,25 +122,21 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
     }
 }
 
-export type ComponentConstructor<T extends BaseComponent<any>> = new (config: any) => T;
+export type ComponentConstructor<T extends BaseComponent<any>> = new (config: any, zoneWrapper: IZoneWrapper) => T;
 
 export class ComponentContainer {
     private components: BaseComponent<any>[] = [];
 
-    constructor(private host: HTMLElement | ShadowRoot, private parentZone?: Zone) {
+    constructor(private host: HTMLElement | ShadowRoot, private zoneWrapper: IZoneWrapper) {
     }
 
     public addComponent<T extends BaseComponent<any>>(ctor: ComponentConstructor<T>, config: any): T {
-        const component = new ctor(config);
+        const component = new ctor(config, this.zoneWrapper);
         const host = this.host instanceof ShadowRoot ? this.host : this.host;
         host.appendChild(component.getElement());
         this.components.push(component);
         // 如果有 Zone，可以在 Zone 中执行渲染逻辑
-        if (this.parentZone) {
-            this.parentZone.run(() => component.render());
-        } else {
-            component.render();
-        }
+        this.zoneWrapper.run(() => component.render());
         return component;
     }
 

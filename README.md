@@ -18,13 +18,14 @@
 import 'core-js/full';
 import 'zone.js';
 import themeString from './a-defualt-theme.css?raw';
-import {signal} from 'alien-signals';
+import {signal, createZoneWrapper, AppRoot} from 'portable-simple-ui';
 
-initPortableSimpleUiZone('my-mod-a');
+const zoneWrapper = createZoneWrapper('my-mod-a');
 
 const el = document.getElementById('app-root');
 
-const appRoot = new AppRoot(el, {
+const appRoot = zoneWrapper.run(() => new AppRoot(el, {
+    zoneWrapper,
     id: 'my-mod-app-root',
     styleIsolation: {
         mode: 'shadow',

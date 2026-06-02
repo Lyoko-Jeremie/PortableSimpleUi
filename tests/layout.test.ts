@@ -1,16 +1,16 @@
-import {initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {createZoneWrapper, AppRoot, IZoneWrapper} from '../src/index';
 
 describe('Layout Components', () => {
-    let myZone: Zone;
+    let zoneWrapper: IZoneWrapper;
 
     beforeAll(() => {
-        myZone = initPortableSimpleUiZone('layout-test-zone');
+        zoneWrapper = createZoneWrapper('layout-test-zone');
     });
 
     it('Container should apply padding and contain children', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const container = appRoot.add.Container({
                 padding: '20px'
@@ -23,9 +23,9 @@ describe('Layout Components', () => {
     });
 
     it('Row should have display flex and flexDirection row', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const row = appRoot.add.Row({ gap: '10px' });
 
@@ -36,9 +36,9 @@ describe('Layout Components', () => {
     });
 
     it('Column should have display flex and flexDirection column', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const col = appRoot.add.Column({ gap: '5px' });
 
@@ -49,9 +49,9 @@ describe('Layout Components', () => {
     });
 
     it('Grid should have display grid and apply templates', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const grid = appRoot.add.Grid({
                 templateColumns: '1fr 1fr',
@@ -65,9 +65,9 @@ describe('Layout Components', () => {
     });
 
     it('Group should have fieldset and legend', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const group = appRoot.add.Group({ title: 'My Group' });
 
@@ -79,9 +79,9 @@ describe('Layout Components', () => {
     });
 
     it('Divider should apply correct styles', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const divider = appRoot.add.Divider({ color: 'red', thickness: '5px' });
 
@@ -91,20 +91,20 @@ describe('Layout Components', () => {
     });
 
     it('Spacer should apply flex', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
-            
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+
             const spacer = appRoot.add.Spacer({ flex: 2 });
-            
+
             // 在某些浏览器/JSDOM 中，flex: 2 可能会被展开
             expect(spacer.element.style.flex).toMatch(/^2/);
         });
     });
     it('Complex nested add should work', () => {
-        myZone.run(() => {
+        zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, {});
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
 
             const group = appRoot.add.Group({ title: 'Root' });
             const col = group.add.Column({ gap: '10px' });
