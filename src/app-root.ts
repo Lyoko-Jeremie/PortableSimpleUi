@@ -14,7 +14,8 @@ export interface IAppRootConfig extends IComponentConfig {
 
 export class AppRoot extends BaseComponent<IAppRootConfig> {
     public host: HTMLElement;
-    public root: HTMLElement | ShadowRoot;
+    public rootShadow: HTMLElement | ShadowRoot;
+    public rootElement: HTMLElement;
     public add: ComponentContainerProxy;
     public zoneWrapper: IZoneWrapper;
     private _container: ComponentContainer;
@@ -29,10 +30,10 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
         const targetZone = this.zoneWrapper;
 
         if (config.styleIsolation?.mode === 'shadow') {
-            this.root = this.host.attachShadow({mode: 'open'});
-            const rootEl = document.createElement('div');
-            rootEl.classList.add('ps-shadow-root');
-            this.root.appendChild(rootEl);
+            this.rootShadow = this.host.attachShadow({mode: 'open'});
+            this.rootElement = document.createElement('div');
+            this.rootElement .classList.add('ps-shadow-root');
+            this.rootShadow.appendChild(this.rootElement );
 
             if (useDefaultTheme || config.styleIsolation.styles) {
                 const styleEl = document.createElement('style');
@@ -44,13 +45,14 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
                     styles += config.styleIsolation.styles;
                 }
                 styleEl.textContent = styles;
-                this.root.appendChild(styleEl);
+                this.rootShadow.appendChild(styleEl);
             }
-            this._container = new ComponentContainer(rootEl, targetZone);
+            this._container = new ComponentContainer(this.rootElement , targetZone);
         } else {
-            this.root = this.host;
+            this.rootShadow = this.host;
+            this.rootElement = this.host;
             this.host.classList.add('ps-root');
-            this._container = new ComponentContainer(this.root, targetZone);
+            this._container = new ComponentContainer(this.rootShadow, targetZone);
         }
 
         this.add = createComponentContainerProxyFromContainer(this._container);

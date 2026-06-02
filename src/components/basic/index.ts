@@ -179,8 +179,8 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
         return 'ps-checkbox';
     }
 
-    private inputEl!: HTMLInputElement;
-    private labelEl?: HTMLSpanElement | undefined;
+    private inputEl: HTMLInputElement = null as any;
+    private labelEl?: HTMLSpanElement | undefined = undefined;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
@@ -188,22 +188,24 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
         container.style.alignItems = 'center';
         container.style.cursor = 'pointer';
 
-        this.inputEl = document.createElement('input');
-        this.inputEl.type = 'checkbox';
-        this.inputEl.addEventListener('change', () => {
+        const inputEl = document.createElement('input');
+        inputEl.type = 'checkbox';
+        inputEl.addEventListener('change', () => {
             const run = () => {
-                this.state.checked = this.inputEl.checked;
-                if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+                this.state.checked = inputEl.checked;
+                if (this.config.onChange) this.config.onChange(inputEl.checked, this);
             };
             this.zoneWrapper.run(run);
         });
 
-        container.appendChild(this.inputEl);
+        this.inputEl = inputEl;
+        container.appendChild(inputEl);
         return container;
     }
 
     public render(): void {
         super.render();
+        if (!this.inputEl) return;
         const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
@@ -236,8 +238,8 @@ export class Radio extends BaseComponent<IRadioConfig> {
         return 'ps-radio';
     }
 
-    private inputEl!: HTMLInputElement;
-    private labelEl?: HTMLSpanElement | undefined;
+    private inputEl: HTMLInputElement = null as any;
+    private labelEl?: HTMLSpanElement | undefined = undefined;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
@@ -245,24 +247,26 @@ export class Radio extends BaseComponent<IRadioConfig> {
         container.style.alignItems = 'center';
         container.style.cursor = 'pointer';
 
-        this.inputEl = document.createElement('input');
-        this.inputEl.type = 'radio';
-        this.inputEl.name = this.config.name;
-        this.inputEl.value = this.config.value;
-        this.inputEl.addEventListener('change', () => {
+        const inputEl = document.createElement('input');
+        inputEl.type = 'radio';
+        inputEl.name = this.config.name;
+        inputEl.value = this.config.value;
+        inputEl.addEventListener('change', () => {
             const run = () => {
-                this.state.checked = this.inputEl.checked;
-                if (this.config.onChange) this.config.onChange(this.inputEl.checked, this);
+                this.state.checked = inputEl.checked;
+                if (this.config.onChange) this.config.onChange(inputEl.checked, this);
             };
             this.zoneWrapper.run(run);
         });
 
-        container.appendChild(this.inputEl);
+        this.inputEl = inputEl;
+        container.appendChild(inputEl);
         return container;
     }
 
     public render(): void {
         super.render();
+        if (!this.inputEl) return;
         const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
