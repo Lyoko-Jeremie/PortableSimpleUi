@@ -180,13 +180,10 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
     }
 
     private inputEl: HTMLInputElement = null as any;
-    private labelEl?: HTMLSpanElement | undefined = undefined;
+    private labelEl: HTMLSpanElement = null as any;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
-        container.style.display = 'inline-flex';
-        container.style.alignItems = 'center';
-        container.style.cursor = 'pointer';
 
         const inputEl = document.createElement('input');
         inputEl.type = 'checkbox';
@@ -200,10 +197,20 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
 
         this.inputEl = inputEl;
         container.appendChild(inputEl);
+
+        const labelEl = document.createElement('span');
+        const initialLabel = this.resolveValue(this.config.label);
+        if (initialLabel) {
+            labelEl.textContent = String(initialLabel);
+        }
+        this.labelEl = labelEl;
+        container.appendChild(this.labelEl);
+
         return container;
     }
 
     public render(): void {
+        const labelText = this.resolveValue(this.config.label);
         super.render();
         if (!this.inputEl) return;
         const checked = this.state.checked !== undefined ? this.state.checked : this.resolveValue(this.config.checked);
@@ -211,16 +218,14 @@ export class Checkbox extends BaseComponent<ICheckboxConfig> {
             this.inputEl.checked = !!checked;
         }
 
-        const labelText = this.resolveValue(this.config.label);
-        if (labelText) {
-            if (!this.labelEl) {
-                this.labelEl = document.createElement('span');
-                this.element.appendChild(this.labelEl);
+        if (this.labelEl) {
+            if (labelText !== undefined && labelText !== null && labelText !== '') {
+                this.labelEl.textContent = String(labelText);
+                this.labelEl.style.display = '';
+            } else {
+                this.labelEl.textContent = '';
+                this.labelEl.style.display = 'none';
             }
-            this.labelEl.textContent = labelText;
-        } else if (this.labelEl) {
-            this.labelEl.remove();
-            this.labelEl = undefined;
         }
     }
 }
@@ -239,13 +244,10 @@ export class Radio extends BaseComponent<IRadioConfig> {
     }
 
     private inputEl: HTMLInputElement = null as any;
-    private labelEl?: HTMLSpanElement | undefined = undefined;
+    private labelEl: HTMLSpanElement = null as any;
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('label');
-        container.style.display = 'inline-flex';
-        container.style.alignItems = 'center';
-        container.style.cursor = 'pointer';
 
         const inputEl = document.createElement('input');
         inputEl.type = 'radio';
@@ -261,6 +263,15 @@ export class Radio extends BaseComponent<IRadioConfig> {
 
         this.inputEl = inputEl;
         container.appendChild(inputEl);
+
+        const labelEl = document.createElement('span');
+        const initialLabel = this.resolveValue(this.config.label);
+        if (initialLabel) {
+            labelEl.textContent = String(initialLabel);
+        }
+        this.labelEl = labelEl;
+        container.appendChild(this.labelEl);
+
         return container;
     }
 
@@ -273,15 +284,13 @@ export class Radio extends BaseComponent<IRadioConfig> {
         }
 
         const labelText = this.resolveValue(this.config.label);
-        if (labelText) {
-            if (!this.labelEl) {
-                this.labelEl = document.createElement('span');
-                this.element.appendChild(this.labelEl);
-            }
-            this.labelEl.textContent = labelText;
-        } else if (this.labelEl) {
-            this.labelEl.remove();
-            this.labelEl = undefined;
+        console.log('Radio render, labelText:', labelText);
+        if (labelText !== undefined && labelText !== null && labelText !== '') {
+            this.labelEl.textContent = String(labelText);
+            this.labelEl.style.display = '';
+        } else {
+            this.labelEl.textContent = '';
+            this.labelEl.style.display = 'none';
         }
     }
 }
