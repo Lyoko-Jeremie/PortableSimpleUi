@@ -1,5 +1,6 @@
 import { AppRoot } from '../src/app-root';
-import { Label, Button, Flex } from '../src/components/basic';
+import { Label, Button } from '../src/components/basic/index';
+import { Flex } from '../src/components/layout/index';
 import '../src/index'; // 确保组件已注册
 
 describe('Component Add Mechanism', () => {

@@ -57,6 +57,30 @@ export interface IComponentRegistry {
 }
 
 /**
+ * 将所有基础组件注册到注册表中
+ */
+import * as BasicComponents from './components/basic/index';
+import * as LayoutComponents from './components/layout/index';
+
+declare module './app-root' {
+    interface IComponentRegistry {
+        Text: typeof BasicComponents.Text;
+        Label: typeof BasicComponents.Label;
+        Button: typeof BasicComponents.Button;
+        Image: typeof BasicComponents.Image;
+        Input: typeof BasicComponents.Input;
+        Checkbox: typeof BasicComponents.Checkbox;
+        Radio: typeof BasicComponents.Radio;
+        Select: typeof BasicComponents.Select;
+        Slider: typeof BasicComponents.Slider;
+        ColorPicker: typeof BasicComponents.ColorPicker;
+        ProgressBar: typeof BasicComponents.ProgressBar;
+        
+        Flex: typeof LayoutComponents.Flex;
+    }
+}
+
+/**
  * 代理类，用于支持 appRoot.add.Label(...) 这种调用方式
  * 通过映射 IComponentRegistry 实现类型安全
  */
@@ -75,6 +99,20 @@ export function registerComponent<K extends keyof IComponentRegistry>(
 ) {
     componentRegistry[name as string] = ctor as any;
 }
+
+// 自动注册基础组件
+Object.keys(BasicComponents).forEach(key => {
+    const component = (BasicComponents as any)[key];
+    if (component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
+Object.keys(LayoutComponents).forEach(key => {
+    const component = (LayoutComponents as any)[key];
+    if (component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
 
 export function createComponentContainerProxyFromContainer(container: ComponentContainer): ComponentContainerProxy {
     return new Proxy({}, {
