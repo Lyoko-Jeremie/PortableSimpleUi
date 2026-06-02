@@ -19,17 +19,20 @@ export interface IZoneWrapper {
 
     run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
 
+    /**
+     * 在父 Zone 中运行，常用于性能优化，避免触发当前 Zone 的渲染钩子
+     */
     runOutside<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
 
     runGuarded<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
 
     registerRoot(root: { renderAll?: () => void; render: () => void }): void;
 
-    runInZone<T>(fn: (...args: any[]) => T): T;
+    runInZone<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T;
 
-    runInZoneGuarded<T>(fn: (...args: any[]) => T): T;
+    runInZoneGuarded<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T;
 
-    runOutZone<T>(fn: (...args: any[]) => T): T;
+    runOutZone<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T;
 
     wrapInZone<F extends Function>(fn: F, debugName?: string): F;
 }
@@ -51,14 +54,18 @@ export function createZoneWrapper(name: string): IZoneWrapper {
     const zone = Zone.current.fork({
         name,
         onInvoke: (parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) => {
-            const result = parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
-            triggerRender();
-            return result;
+            try {
+                return parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
+            } finally {
+                triggerRender();
+            }
         },
         onInvokeTask: (parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs) => {
-            const result = parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
-            triggerRender();
-            return result;
+            try {
+                return parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
+            } finally {
+                triggerRender();
+            }
         },
         onHasTask: (parentZoneDelegate, currentZone, targetZone, hasTask) => {
             if (!hasTask.microTask && !hasTask.macroTask && !hasTask.eventTask) {
@@ -77,7 +84,7 @@ export function createZoneWrapper(name: string): IZoneWrapper {
             return zone.run(fn, applyThis, applyArgs);
         },
         runOutside(fn, applyThis, applyArgs) {
-            return zone.parent!.run(fn, applyThis, applyArgs);
+            return (zone.parent || zone).run(fn, applyThis, applyArgs);
         },
         runGuarded<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T {
             return zone.runGuarded(fn, applyThis, applyArgs);
@@ -85,14 +92,14 @@ export function createZoneWrapper(name: string): IZoneWrapper {
         registerRoot(root) {
             rootsToRender.add(root);
         },
-        runInZone<T>(fn: (...args: any[]) => T): T {
-            return zone.run(fn, undefined, []);
+        runInZone<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T {
+            return zone.run(fn, applyThis, applyArgs);
         },
-        runInZoneGuarded<T>(fn: (...args: any[]) => T): T {
-            return zone.runGuarded(fn, undefined, []);
+        runInZoneGuarded<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T {
+            return zone.runGuarded(fn, applyThis, applyArgs);
         },
-        runOutZone<T>(fn: (...args: any[]) => T): T {
-            return zone.parent!.run(fn, undefined, []);
+        runOutZone<T, A extends any[]>(fn: (...args: A) => T, applyThis?: any, applyArgs?: A): T {
+            return (zone.parent || zone).run(fn, applyThis, applyArgs);
         },
         wrapInZone<F extends Function>(fn: F, debugName?: string): F {
             return zone.wrap<F>(fn, debugName ?? fn.name);
