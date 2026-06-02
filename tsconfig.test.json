@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
+    "target": "es2020",
+    "types": ["jest", "node"],
+    "rootDir": ".",
+    "noUncheckedSideEffectImports": false,
+    "isolatedModules": false
+  },
+  "include": ["src/**/*", "test/**/*"]
+}
+
