@@ -31,7 +31,7 @@ export interface IZoneWrapper {
 
     runOutZone<T>(fn: (...args: any[]) => T): T;
 
-    wrap<F extends Function>(fn: (...args: any[]) => F): F;
+    wrapInZone<F extends Function>(fn: F, debugName?: string): F;
 }
 
 /**
@@ -79,8 +79,23 @@ export function createZoneWrapper(name: string): IZoneWrapper {
         runOutside(fn, applyThis, applyArgs) {
             return zone.parent!.run(fn, applyThis, applyArgs);
         },
+        runGuarded<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T {
+            return zone.runGuarded(fn, applyThis, applyArgs);
+        },
         registerRoot(root) {
             rootsToRender.add(root);
+        },
+        runInZone<T>(fn: (...args: any[]) => T): T {
+            return zone.run(fn, undefined, []);
+        },
+        runInZoneGuarded<T>(fn: (...args: any[]) => T): T {
+            return zone.runGuarded(fn, undefined, []);
+        },
+        runOutZone<T>(fn: (...args: any[]) => T): T {
+            return zone.parent!.run(fn, undefined, []);
+        },
+        wrapInZone<F extends Function>(fn: F, debugName?: string): F {
+            return zone.wrap<F>(fn, debugName ?? fn.name);
         },
     };
 }
