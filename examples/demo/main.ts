@@ -8,7 +8,7 @@ if (uiRoot) {
     myZone.run(() => {
         const app = new AppRoot(uiRoot, {
             styleIsolation: {
-                mode: 'none', // 使用全局样式方便演示，也可以改为 shadow
+                mode: 'shadow', // 使用全局样式方便演示，也可以改为 shadow
                 useDefaultTheme: true
             }
         });

@@ -50,12 +50,12 @@ describe('Container Node Placement', () => {
 
     // 重写了 getChildrenHost 的容器，通过其内部特有的类名来定位 host
     testContainerPlacement('Group', (app) => app.add.Group({ title: 'Test Group' }), 'div');
-    testContainerPlacement('Card', (app) => app.add.Card({ title: 'Test Card' }), '.psu-card-body');
-    testContainerPlacement('Modal', (app) => app.add.Modal({ title: 'Test Modal' }), '.psu-modal-body');
+    testContainerPlacement('Card', (app) => app.add.Card({ title: 'Test Card' }), '.ps-card-body');
+    testContainerPlacement('Modal', (app) => app.add.Modal({ title: 'Test Modal' }), '.ps-modal-body');
     testContainerPlacement('Tabs', (app) => app.add.Tabs({
         items: [{ id: 't1', label: 'Tab 1' }],
         activeTabId: 't1'
-    }), '.psu-tabs-body');
+    }), '.ps-tabs-body');
 
     it('Container should keep children after re-render', () => {
         myZone.run(() => {
@@ -65,7 +65,7 @@ describe('Container Node Placement', () => {
             const card = appRoot.add.Card({ title: 'Dynamic Card' });
             const text = card.add.Text({ text: 'Static Content' });
 
-            const body = card.getElement().querySelector('.psu-card-body');
+            const body = card.getElement().querySelector('.ps-card-body');
             expect(body!.contains(text.getElement())).toBe(true);
 
             // 触发重新渲染
@@ -92,7 +92,7 @@ describe('Container Node Placement', () => {
             const tab1Content = tabs.add.Container({ id: 'c1' });
             const tab2Content = tabs.add.Container({ id: 'c2' });
 
-            const body = tabs.getElement().querySelector('.psu-tabs-body');
+            const body = tabs.getElement().querySelector('.ps-tabs-body');
             expect(body!.contains(tab1Content.getElement())).toBe(true);
             expect(body!.contains(tab2Content.getElement())).toBe(true);
 

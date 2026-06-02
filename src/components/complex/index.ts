@@ -28,16 +28,19 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         this.add = createComponentContainerProxyFromContainer(this._container);
     }
 
+    protected getBaseClassName(): string | null {
+        return 'ps-tabs';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
-        el.className = 'psu-tabs';
 
         this._headerElement = document.createElement('div');
-        this._headerElement.className = 'psu-tabs-header';
+        this._headerElement.className = 'ps-tabs-header';
         el.appendChild(this._headerElement);
 
         this._bodyElement = document.createElement('div');
-        this._bodyElement.className = 'psu-tabs-body';
+        this._bodyElement.className = 'ps-tabs-body';
         el.appendChild(this._bodyElement);
 
         return el;
@@ -97,7 +100,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             const item = this.config.items[index];
             if (!item) return;
             const tabEl = el as HTMLElement;
-            tabEl.className = `psu-tabs-item ${item.id === this._activeTabId ? 'active' : ''}`;
+            tabEl.className = `ps-tabs-item ${item.id === this._activeTabId ? 'active' : ''}`;
             tabEl.textContent = this.resolveValue(item.label);
         });
     }
@@ -131,34 +134,30 @@ export class Modal extends ContainerComponent<IModalConfig> {
     private _header!: HTMLElement;
     private _body!: HTMLElement;
 
+    protected getBaseClassName(): string | null {
+        return 'ps-modal-overlay';
+    }
+
     protected createHTMLElement(): HTMLElement {
         this._overlay = document.createElement('div');
-        this._overlay.className = 'psu-modal-overlay';
         this._overlay.style.position = 'fixed';
         this._overlay.style.top = '0';
         this._overlay.style.left = '0';
         this._overlay.style.width = '100%';
         this._overlay.style.height = '100%';
-        this._overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
         this._overlay.style.display = 'none';
         this._overlay.style.zIndex = '1000';
-        this._overlay.style.justifyContent = 'center';
-        this._overlay.style.alignItems = 'center';
 
         this._content = document.createElement('div');
-        this._content.className = 'psu-modal-content';
-        this._content.style.backgroundColor = 'white';
-        this._content.style.padding = '20px';
-        this._content.style.borderRadius = '4px';
-        this._content.style.minWidth = '300px';
+        this._content.className = 'ps-modal-content';
         this._overlay.appendChild(this._content);
 
         this._header = document.createElement('div');
-        this._header.className = 'psu-modal-header';
+        this._header.className = 'ps-modal-header';
         this._content.appendChild(this._header);
 
         this._body = document.createElement('div');
-        this._body.className = 'psu-modal-body';
+        this._body.className = 'ps-modal-body';
         this._content.appendChild(this._body);
 
         return this._overlay;
@@ -202,21 +201,19 @@ export class Card extends ContainerComponent<ICardConfig> {
     private _header!: HTMLElement;
     private _body!: HTMLElement;
 
+    protected getBaseClassName(): string | null {
+        return 'ps-card';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
-        el.className = 'psu-card';
-        el.style.border = '1px solid #ccc';
-        el.style.borderRadius = '4px';
-        el.style.padding = '10px';
 
         this._header = document.createElement('div');
-        this._header.className = 'psu-card-header';
-        this._header.style.fontWeight = 'bold';
-        this._header.style.marginBottom = '10px';
+        this._header.className = 'ps-card-header';
         el.appendChild(this._header);
 
         this._body = document.createElement('div');
-        this._body.className = 'psu-card-body';
+        this._body.className = 'ps-card-body';
         el.appendChild(this._body);
 
         return el;
@@ -247,12 +244,12 @@ export interface IAlertConfig extends IComponentConfig {
 }
 
 export class Alert extends BaseComponent<IAlertConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-alert';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
-        el.className = 'psu-alert';
-        el.style.padding = '10px';
-        el.style.margin = '5px 0';
-        el.style.borderRadius = '4px';
         return el;
     }
 
@@ -260,15 +257,7 @@ export class Alert extends BaseComponent<IAlertConfig> {
         super.render();
         this.element.textContent = this.resolveValue(this.config.text);
         const type = this.config.type || 'info';
-        const colors = {
-            info: {bg: '#e6f7ff', border: '#91d5ff'},
-            success: {bg: '#f6ffed', border: '#b7eb8f'},
-            warning: {bg: '#fffbe6', border: '#ffe58f'},
-            error: {bg: '#fff1f0', border: '#ffa39e'}
-        };
-        const color = colors[type];
-        this.element.style.backgroundColor = color.bg;
-        this.element.style.border = `1px solid ${color.border}`;
+        this.element.className = `${this.getBaseClassName()} ps-alert-${type}`;
     }
 }
 
@@ -281,14 +270,12 @@ export interface IBadgeConfig extends IComponentConfig {
 }
 
 export class Badge extends BaseComponent<IBadgeConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-badge';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('span');
-        el.className = 'psu-badge';
-        el.style.padding = '2px 6px';
-        el.style.borderRadius = '10px';
-        el.style.fontSize = '12px';
-        el.style.color = 'white';
-        el.style.backgroundColor = 'red';
         return el;
     }
 
@@ -297,6 +284,8 @@ export class Badge extends BaseComponent<IBadgeConfig> {
         this.element.textContent = this.resolveValue(this.config.text).toString();
         if (this.config.color) {
             this.element.style.backgroundColor = this.config.color;
+        } else {
+            this.element.style.backgroundColor = 'red';
         }
     }
 }
@@ -311,15 +300,12 @@ export interface IAvatarConfig extends IComponentConfig {
 }
 
 export class Avatar extends BaseComponent<IAvatarConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-avatar';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
-        el.className = 'psu-avatar';
-        el.style.display = 'inline-flex';
-        el.style.justifyContent = 'center';
-        el.style.alignItems = 'center';
-        el.style.overflow = 'hidden';
-        el.style.borderRadius = '50%';
-        el.style.backgroundColor = '#ccc';
         return el;
     }
 
@@ -328,6 +314,9 @@ export class Avatar extends BaseComponent<IAvatarConfig> {
         const size = this.config.size || 32;
         this.element.style.width = `${size}px`;
         this.element.style.height = `${size}px`;
+        this.element.style.display = 'inline-flex';
+        this.element.style.justifyContent = 'center';
+        this.element.style.alignItems = 'center';
 
         const src = this.resolveValue(this.config.src);
         if (src) {
@@ -393,11 +382,12 @@ export interface ITableConfig<T = any> extends IComponentConfig {
 }
 
 export class Table extends BaseComponent<ITableConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-table';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('table');
-        el.className = 'psu-table';
-        el.style.width = '100%';
-        el.style.borderCollapse = 'collapse';
         return el;
     }
 
@@ -456,12 +446,12 @@ export interface IListConfig<T = any> extends IComponentConfig {
 }
 
 export class List extends BaseComponent<IListConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-list';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('ul');
-        el.className = 'psu-list';
-        el.style.listStyle = 'none';
-        el.style.padding = '0';
-        el.style.margin = '0';
         return el;
     }
 
@@ -477,9 +467,7 @@ export class List extends BaseComponent<IListConfig> {
             this.element.innerHTML = '';
             data.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.className = 'psu-list-item';
-                li.style.padding = '8px';
-                li.style.borderBottom = '1px solid #eee';
+                li.className = 'ps-list-item';
                 this.element.appendChild(li);
             });
         }
