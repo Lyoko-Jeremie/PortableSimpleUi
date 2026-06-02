@@ -1,0 +1,107 @@
+@use "sass:color";
+
+// Theme variables
+$ps-primary-color: #007bff !default;
+$ps-primary-hover-color: #0056b3 !default;
+$ps-text-color: #333 !default;
+$ps-bg-color: #fff !default;
+$ps-border-color: #ccc !default;
+$ps-border-radius: 4px !default;
+$ps-padding: 8px 16px !default;
+$ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+
+// Mixin to scope styles
+@mixin ps-scoped {
+  font-family: $ps-font-family;
+  color: $ps-text-color;
+
+  .ps-button {
+    background: $ps-primary-color;
+    color: white;
+    border: none;
+    padding: $ps-padding;
+    border-radius: $ps-border-radius;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+
+    &:hover {
+      background: $ps-primary-hover-color;
+    }
+
+    &:disabled {
+      background: color.scale($ps-primary-color, $lightness: 40%);
+      cursor: not-allowed;
+    }
+  }
+
+  .ps-input, .ps-select {
+    border: 1px solid $ps-border-color;
+    border-radius: $ps-border-radius;
+    padding: 6px 12px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+
+    &:focus {
+      border-color: $ps-primary-color;
+    }
+  }
+
+  .ps-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+
+  .ps-text {
+    font-size: 14px;
+  }
+
+  .ps-checkbox, .ps-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+
+    input {
+      cursor: pointer;
+    }
+  }
+
+  .ps-progress-bar {
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+
+    > div {
+      height: 100%;
+      background-color: #4caf50;
+      transition: width 0.2s;
+    }
+  }
+
+  .ps-group {
+    border: 1px solid $ps-border-color;
+    border-radius: $ps-border-radius;
+    padding: 10px;
+    margin: 10px 0;
+
+    legend {
+      font-weight: bold;
+      padding: 0 5px;
+    }
+  }
+}
+
+// Global styles scoped by .ps-root
+.ps-root {
+  @include ps-scoped;
+}
+
+// Shadow DOM styles (can be used directly when injected into shadow root)
+.ps-shadow-root {
+  @include ps-scoped;
+}

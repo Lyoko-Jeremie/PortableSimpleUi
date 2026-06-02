@@ -6,6 +6,10 @@ export interface ITextConfig extends IComponentConfig {
 }
 
 export class Text extends BaseComponent<ITextConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-text';
+    }
+
     protected createHTMLElement(): HTMLElement {
         return document.createElement('span');
     }
@@ -22,6 +26,10 @@ export interface ILabelConfig extends IComponentConfig {
 }
 
 export class Label extends BaseComponent<ILabelConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-label';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('label');
         if (this.config.for) {
@@ -43,6 +51,10 @@ export interface IButtonConfig extends IComponentConfig {
 }
 
 export class Button extends BaseComponent<IButtonConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-button';
+    }
+
     constructor(config: IButtonConfig) {
         super(config);
         if (this.config.text !== undefined) {
@@ -80,6 +92,10 @@ export interface IImageConfig extends IComponentConfig {
 }
 
 export class Image extends BaseComponent<IImageConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-image';
+    }
+
     protected createHTMLElement(): HTMLImageElement {
         return document.createElement('img');
     }
@@ -103,6 +119,10 @@ export interface IInputConfig extends IComponentConfig {
 }
 
 export class Input extends BaseComponent<IInputConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-input';
+    }
+
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = this.config.type || 'text';
@@ -137,6 +157,10 @@ export interface ICheckboxConfig extends IComponentConfig {
 }
 
 export class Checkbox extends BaseComponent<ICheckboxConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-checkbox';
+    }
+
     private inputEl!: HTMLInputElement;
     private labelEl?: HTMLSpanElement | undefined;
 
@@ -187,6 +211,10 @@ export interface IRadioConfig extends IComponentConfig {
 }
 
 export class Radio extends BaseComponent<IRadioConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-radio';
+    }
+
     private inputEl!: HTMLInputElement;
     private labelEl?: HTMLSpanElement | undefined;
 
@@ -242,6 +270,10 @@ export interface ISelectConfig extends IComponentConfig {
 }
 
 export class Select extends BaseComponent<ISelectConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-select';
+    }
+
     protected createHTMLElement(): HTMLSelectElement {
         const select = document.createElement('select');
         select.onchange = () => {
@@ -283,6 +315,10 @@ export interface ISliderConfig extends IComponentConfig {
 }
 
 export class Slider extends BaseComponent<ISliderConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-slider';
+    }
+
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'range';
@@ -314,6 +350,10 @@ export interface IColorPickerConfig extends IComponentConfig {
 }
 
 export class ColorPicker extends BaseComponent<IColorPickerConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-color-picker';
+    }
+
     protected createHTMLElement(): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'color';
@@ -340,6 +380,10 @@ export interface IProgressBarConfig extends IComponentConfig {
 }
 
 export class ProgressBar extends BaseComponent<IProgressBarConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-progress-bar';
+    }
+
     private barEl!: HTMLElement;
 
     protected createHTMLElement(): HTMLElement {

@@ -1,10 +1,13 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ComponentConstructor} from './component';
 import {registerRootForAutoRender} from './core';
+import {DEFAULT_THEME_CSS} from './theme';
 
 export interface IAppRootConfig extends IComponentConfig {
     styleIsolation?: {
         mode: 'shadow' | 'none';
         styles?: string;
+        /** 是否使用默认主题 */
+        useDefaultTheme?: boolean;
     };
 }
 
@@ -18,18 +21,33 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
         super(config);
         this.host = this.element;
 
+        const useDefaultTheme = config.styleIsolation?.useDefaultTheme;
+
         if (config.styleIsolation?.mode === 'shadow') {
             this.root = this.host.attachShadow({mode: 'open'});
-            if (config.styleIsolation.styles) {
+            const rootEl = document.createElement('div');
+            rootEl.classList.add('ps-shadow-root');
+            this.root.appendChild(rootEl);
+
+            if (useDefaultTheme || config.styleIsolation.styles) {
                 const styleEl = document.createElement('style');
-                styleEl.textContent = config.styleIsolation.styles;
+                let styles = '';
+                if (useDefaultTheme) {
+                    styles += DEFAULT_THEME_CSS;
+                }
+                if (config.styleIsolation.styles) {
+                    styles += config.styleIsolation.styles;
+                }
+                styleEl.textContent = styles;
                 this.root.appendChild(styleEl);
             }
+            this._container = new ComponentContainer(rootEl, (window as any).Zone?.current);
         } else {
             this.root = this.host;
+            this.host.classList.add('ps-root');
+            this._container = new ComponentContainer(this.root, (window as any).Zone?.current);
         }
 
-        this._container = new ComponentContainer(this.root, (window as any).Zone?.current);
         this.add = createComponentContainerProxyFromContainer(this._container);
         parentElement.appendChild(this.host);
 

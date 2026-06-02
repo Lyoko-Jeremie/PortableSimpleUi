@@ -29,7 +29,19 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         if (this.config.id) {
             this.element.id = this.config.id;
         }
+        // 添加基础类名
+        const className = this.getBaseClassName();
+        if (className) {
+            this.element.classList.add(className);
+        }
         this.applyStyle();
+    }
+
+    /**
+     * 获取组件的基础 CSS 类名
+     */
+    protected getBaseClassName(): string | null {
+        return null;
     }
 
     protected applyStyle() {

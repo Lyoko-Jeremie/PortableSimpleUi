@@ -9,6 +9,10 @@ export interface IContainerConfig extends IComponentConfig {
 }
 
 export class Container extends ContainerComponent<IContainerConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-container';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         if (this.config.padding) div.style.padding = this.config.padding;
@@ -31,6 +35,10 @@ export interface IFlexConfig extends IComponentConfig {
  * Flex 布局基础类
  */
 export class Flex extends ContainerComponent<IFlexConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-flex';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.display = 'flex';
@@ -69,6 +77,10 @@ export class Column extends Flex {
  * 层叠布局
  */
 export class Stack extends ContainerComponent<IComponentConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-stack';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.position = 'relative';
@@ -88,6 +100,10 @@ export interface IGridConfig extends IComponentConfig {
 }
 
 export class Grid extends ContainerComponent<IGridConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-grid';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         div.style.display = 'grid';
@@ -108,6 +124,10 @@ export interface IGroupConfig extends IComponentConfig {
 }
 
 export class Group extends ContainerComponent<IGroupConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-group';
+    }
+
     private _titleElement?: HTMLElement;
     private _contentElement!: HTMLElement;
 
@@ -154,6 +174,10 @@ export interface IDividerConfig extends IComponentConfig {
 }
 
 export class Divider extends BaseComponent<IDividerConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-divider';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         const color = this.config.color || '#ccc';
@@ -186,6 +210,10 @@ export interface ISpacerConfig extends IComponentConfig {
 }
 
 export class Spacer extends BaseComponent<ISpacerConfig> {
+    protected getBaseClassName(): string | null {
+        return 'ps-spacer';
+    }
+
     protected createHTMLElement(): HTMLElement {
         const div = document.createElement('div');
         if (this.config.flex !== undefined) {
