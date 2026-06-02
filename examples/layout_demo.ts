@@ -83,7 +83,7 @@ async function runExample() {
         const miscSection = mainLayout.add.Group({title: '5. Divider & Spacer (分割线与间距)'});
         const rowWithSpacer = miscSection.add.Row({alignItems: 'center'});
         rowWithSpacer.add.Text({text: '左侧文字'});
-        rowWithSpacer.add.Spacer(); // 自动撑开
+        rowWithSpacer.add.Spacer({}); // 自动撑开
         rowWithSpacer.add.Text({text: '右侧文字'});
 
         miscSection.add.Divider({color: 'blue', thickness: '2px', margin: '10px 0'});
