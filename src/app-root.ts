@@ -71,6 +71,14 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
         this.render();
         this._container.renderAll();
     }
+
+    public destroy(): void {
+        this._container.destroy();
+        this.zoneWrapper.unregisterRoot(this);
+        if (this.host && this.host.parentElement) {
+            this.host.parentElement.removeChild(this.host);
+        }
+    }
 }
 
 /**

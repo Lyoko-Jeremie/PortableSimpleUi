@@ -75,6 +75,12 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         this.applyStyle();
     }
 
+    public destroy(): void {
+        if (this.element && this.element.parentElement) {
+            this.element.parentElement.removeChild(this.element);
+        }
+    }
+
     protected resolveValue<T>(value: DynamicValue<T>): T {
         if (typeof value === 'function') {
             const result = (value as Function)();
@@ -120,6 +126,11 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
         this.render();
         this._container.renderAll();
     }
+
+    public destroy(): void {
+        this._container.destroy();
+        super.destroy();
+    }
 }
 
 export type ComponentConstructor<T extends BaseComponent<any>> = new (config: any, zoneWrapper: IZoneWrapper) => T;
@@ -147,5 +158,12 @@ export class ComponentContainer {
                 (comp as any).renderAll();
             }
         }
+    }
+
+    public destroy() {
+        for (const comp of this.components) {
+            comp.destroy();
+        }
+        this.components = [];
     }
 }
