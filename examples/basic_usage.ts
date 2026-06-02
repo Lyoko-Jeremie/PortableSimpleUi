@@ -1,4 +1,4 @@
-import { signal, initPortableSimpleUiZone, AppRoot, makeRef, Button } from '../src/index';
+import {signal, initPortableSimpleUiZone, AppRoot, makeRef, Button} from '../src/index';
 
 // 模拟外部上下文
 const aOuterContextInMod = {
@@ -42,14 +42,14 @@ async function runExample() {
 
         appRoot.add.Label({
             text: 'PortableSimpleUi Demo',
-            style: { fontSize: '24px', fontWeight: 'bold', display: 'block', marginBottom: '10px' }
+            style: {fontSize: '24px', fontWeight: 'bold', display: 'block', marginBottom: '10px'}
         });
 
         // Signal 示例
         const s1 = signal('Initial Signal Value');
         appRoot.add.Label({
             text: s1,
-            style: { color: 'blue', display: 'block', marginBottom: '10px' }
+            style: {color: 'blue', display: 'block', marginBottom: '10px'}
         });
 
         appRoot.add.Button({
@@ -59,7 +59,13 @@ async function runExample() {
 
         // Flex 容器示例
         const flex = appRoot.add.Flex({
-            style: { marginTop: '20px', flexDirection: 'column', gap: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }
+            style: {
+                marginTop: '20px',
+                flexDirection: 'column',
+                gap: '10px',
+                borderTop: '1px solid #eee',
+                paddingTop: '10px'
+            }
         });
 
         // makeRef 示例
@@ -67,7 +73,7 @@ async function runExample() {
 
         flex.add.Label({
             text: ref_c,
-            style: { color: 'green' }
+            style: {color: 'green'}
         });
 
         flex.add.Button({
