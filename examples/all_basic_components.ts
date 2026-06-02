@@ -1,10 +1,10 @@
-import {signal, initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {signal, createZoneWrapper, AppRoot} from '../src/index';
 
 /**
  * 这是一个综合展示所有基础组件的示例
  */
 async function runExample() {
-    const myZone = initPortableSimpleUiZone('all-components-demo');
+    const myZone = createZoneWrapper('all-components-demo');
 
     myZone.run(() => {
         const appContainer = document.createElement('div');

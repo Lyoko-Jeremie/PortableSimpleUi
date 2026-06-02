@@ -1,10 +1,10 @@
-import {initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {createZoneWrapper, AppRoot} from '../src/index';
 
 /**
  * 这是一个展示所有布局组件的示例
  */
 async function runExample() {
-    const myZone = initPortableSimpleUiZone('layout-components-demo');
+    const myZone = createZoneWrapper('layout-components-demo');
 
     myZone.run(() => {
         const appContainer = document.createElement('div');

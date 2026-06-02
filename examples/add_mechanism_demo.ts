@@ -1,4 +1,4 @@
-import {AppRoot, initPortableSimpleUiZone, registerComponent, BaseComponent, IComponentConfig} from '../src/index';
+import {AppRoot, createZoneWrapper, registerComponent, BaseComponent, IComponentConfig} from '../src/index';
 
 // 1. 定义一个新组件
 interface ICustomLabelConfig extends IComponentConfig {
@@ -31,7 +31,7 @@ declare module '../src/app-root' {
 registerComponent('CustomLabel', CustomLabel);
 
 async function runExample() {
-    const myZone = initPortableSimpleUiZone('add-mechanism-example');
+    const myZone = createZoneWrapper('add-mechanism-example');
 
     myZone.run(() => {
         const container = document.createElement('div');

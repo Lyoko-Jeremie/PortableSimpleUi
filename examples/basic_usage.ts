@@ -1,4 +1,4 @@
-import {signal, initPortableSimpleUiZone, AppRoot, makeRef, Button} from '../src/index';
+import {signal, createZoneWrapper, AppRoot, makeRef, Button} from '../src/index';
 
 // 模拟外部上下文
 const aOuterContextInMod = {
@@ -15,7 +15,7 @@ const aOuterContextInMod = {
 
 async function runExample() {
     // 1. 初始化 Zone
-    const myZone = initPortableSimpleUiZone('my-mod-a');
+    const myZone = createZoneWrapper('my-mod-a');
 
     // 2. 在 Zone 中运行应用逻辑
     myZone.run(() => {

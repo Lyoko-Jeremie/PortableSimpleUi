@@ -1,9 +1,9 @@
 import 'core-js/full';
 import 'zone.js';
 import themeString from '../src/theme/css/theme.css?inlineText';
-import {AppRoot, Button, initPortableSimpleUiZone, makeRef, signal} from "../src";
+import {AppRoot, Button, createZoneWrapper, makeRef, signal} from "../src";
 
-const zone = initPortableSimpleUiZone('my-mod-a');
+const zone = createZoneWrapper('my-mod-a');
 
 const el = document.getElementById('app-root')!;
 

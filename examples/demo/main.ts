@@ -1,11 +1,11 @@
 import {AppRoot} from '../../src/app-root';
-import {computed, signal, initPortableSimpleUiZone, effect} from '../../src/core';
+import {computed, signal, createZoneWrapper, effect} from '../../src/core';
 import {makeRef} from "../../src";
 
 const uiRoot = document.getElementById('ui-root');
 
 if (uiRoot) {
-    const myZone = initPortableSimpleUiZone('demo-zone');
+    const myZone = createZoneWrapper('demo-zone');
     myZone.run(() => {
         const app = new AppRoot(uiRoot, {
             zoneWrapper: myZone,

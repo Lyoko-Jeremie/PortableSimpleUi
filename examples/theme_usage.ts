@@ -1,4 +1,4 @@
-import {initPortableSimpleUiZone, AppRoot} from '../src/index';
+import {createZoneWrapper, AppRoot} from '../src/index';
 
 // 模拟外部样式
 const style = document.createElement('style');
@@ -9,7 +9,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 async function runExample() {
-    const myZone = initPortableSimpleUiZone('theme-demo');
+    const myZone = createZoneWrapper('theme-demo');
 
     myZone.run(() => {
         const container = document.createElement('div');
