@@ -38,11 +38,27 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        resourceQuery: { not: [/inlineText/] },
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
+        resourceQuery: { not: [/inlineText/] },
         use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+
+      // https://stackoverflow.com/questions/42631645/webpack-import-typescript-module-both-normally-and-as-raw-string
+      {
+        // test: /.*\/inlineText\/.*/,
+        resourceQuery: /inlineText/,
+        type: 'asset/source',
+      },
+      {
+        resourceQuery: /inlineScss/,
+        type: 'asset/source',
+        use: [
+          'sass-loader'
+        ]
       },
     ],
   },

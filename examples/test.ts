@@ -1,6 +1,6 @@
 import 'core-js/full';
 import 'zone.js';
-import themeString from './a-defualt-theme.css?raw';
+import themeString from '../src/theme/css/theme.css?inlineText';
 import {AppRoot, Button, initPortableSimpleUiZone, makeRef, signal} from "../src";
 
 initPortableSimpleUiZone('my-mod-a');
