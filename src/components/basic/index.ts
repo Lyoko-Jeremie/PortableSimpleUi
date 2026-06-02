@@ -3,7 +3,8 @@ import {DynamicValue} from '../../types';
 import {IZoneWrapper} from '../../core';
 
 export interface ITextConfig extends IComponentConfig {
-    text: DynamicValue<string>;
+    text?: DynamicValue<string>;
+    html?: DynamicValue<string>;
 }
 
 export class Text extends BaseComponent<ITextConfig> {
@@ -17,12 +18,17 @@ export class Text extends BaseComponent<ITextConfig> {
 
     public render(): void {
         super.render();
-        this.element.textContent = this.resolveValue(this.config.text);
+        if (this.config.html !== undefined) {
+            this.element.innerHTML = this.resolveValue(this.config.html);
+        } else if (this.config.text !== undefined) {
+            this.element.textContent = this.resolveValue(this.config.text);
+        }
     }
 }
 
 export interface ILabelConfig extends IComponentConfig {
-    text: DynamicValue<string>;
+    text?: DynamicValue<string>;
+    html?: DynamicValue<string>;
     for?: string;
 }
 
@@ -41,7 +47,11 @@ export class Label extends BaseComponent<ILabelConfig> {
 
     public render(): void {
         super.render();
-        this.element.textContent = this.resolveValue(this.config.text);
+        if (this.config.html !== undefined) {
+            this.element.innerHTML = this.resolveValue(this.config.html);
+        } else if (this.config.text !== undefined) {
+            this.element.textContent = this.resolveValue(this.config.text);
+        }
     }
 }
 
