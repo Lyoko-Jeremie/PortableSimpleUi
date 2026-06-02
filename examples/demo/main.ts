@@ -31,11 +31,9 @@ if (uiRoot) {
     const signalTab = tabs.add.Container({});
 
     // --- 基础组件页 ---
-    // const basicAdd = basicTab.add;
 
     basicTab.add.Group({title: '按钮与文本'});
     const btnGroup = basicTab.add.Flex({gap: '10px', direction: 'row', alignItems: 'center'});
-    // const btnAdd = btnGroup.add;
     btnGroup.add.Button({text: '常规按钮', onClick: () => alert('点击了按钮')});
     btnGroup.add.Button({text: '禁用按钮', disabled: true});
     btnGroup.add.Label({text: '这是一个标签'});
@@ -43,22 +41,18 @@ if (uiRoot) {
 
     basicTab.add.Group({title: '表单基础'});
     const formBaseGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
-    // const fbAdd = formBaseGroup.add;
     formBaseGroup.add.Input({placeholder: '请输入内容...', onInput: (v) => console.log('Input:', v)});
 
     const checkRow = formBaseGroup.add.Flex({gap: '20px'});
-    // const crAdd = checkRow.add;
     checkRow.add.Checkbox({label: '选项 A', checked: true});
     checkRow.add.Checkbox({label: '选项 B', checked: false});
 
     const radioRow = formBaseGroup.add.Flex({gap: '20px'});
-    // const rrAdd = radioRow.add;
     radioRow.add.Radio({label: '男', name: 'sex', value: 'male', checked: true});
     radioRow.add.Radio({label: '女', name: 'sex', value: 'female', checked: false});
 
     basicTab.add.Group({title: '选择器与滑动条'});
     const selGroup = basicTab.add.Flex({gap: '15px', direction: 'column'});
-    // const sgAdd = selGroup.add;
     selGroup.add.Select({
         options: [
             {label: '苹果', value: 'apple'},
@@ -71,21 +65,17 @@ if (uiRoot) {
     selGroup.add.ProgressBar({value: 60});
 
     // --- 布局组件页 ---
-    // const layoutAdd = layoutTab.add;
 
     layoutTab.add.Group({title: 'Flex 布局 (Row)'});
     const row = layoutTab.add.Row({gap: '10px'});
-    // const rowAdd = row.add;
     for (let i = 1; i <= 3; i++) row.add.Button({text: `按钮 ${i}`});
 
     layoutTab.add.Group({title: 'Flex 布局 (Column)'});
     const col = layoutTab.add.Column({gap: '5px'});
-    // const colAdd = col.add;
     for (let i = 1; i <= 3; i++) col.add.Text({text: `文本行 ${i}`});
 
     layoutTab.add.Group({title: 'Grid 布局'});
     const grid = layoutTab.add.Grid({templateColumns: 'repeat(3, 1fr)', gap: '10px'});
-    // const gridAdd = grid.add;
     for (let i = 1; i <= 6; i++) {
         grid.add.Container({
             style: {background: '#eee', padding: '10px', textAlign: 'center', borderRadius: '4px'},
@@ -100,20 +90,16 @@ if (uiRoot) {
     layoutTab.add.Text({text: '分隔线之后'});
 
     // --- 复合组件页 ---
-    // const complexAdd = complexTab.add;
 
     complexTab.add.Alert({text: '这是一条提示信息', type: 'info'});
 
     const cardRow = complexTab.add.Flex({gap: '15px'});
-    // const cardRowAdd = cardRow.add;
 
     const card = cardRow.add.Card({title: '卡片标题'});
-    // const cardBodyAdd = card.add;
     card.add.Text({text: '这是卡片的内容区域。'});
     card.add.Button({text: '卡片操作'});
 
     const avatarGroup = complexTab.add.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
-    // const agAdd = avatarGroup.add;
     avatarGroup.add.Avatar({src: 'https://via.placeholder.com/40', size: 40});
     avatarGroup.add.Badge({text: '99+', color: 'red'});
 
@@ -143,7 +129,6 @@ if (uiRoot) {
     });
 
     // --- 表单演示页 ---
-    // const formAdd = formTab.add;
 
     formTab.add.Form({
         items: [
@@ -178,13 +163,12 @@ if (uiRoot) {
     });
 
     // --- 响应式数据页 ---
-    const signalAdd = signalTab.add;
 
     const count = signal(0);
-    signalAdd.Text({text: '计数值：'});
-    signalAdd.Text({text: count as any}); // 组件通常支持 ISignal 作为文本
+    signalTab.add.Text({text: '计数值：'});
+    signalTab.add.Text({text: count as any}); // 组件通常支持 ISignal 作为文本
 
-    signalAdd.Flex({style: {margin: '10px 0'}, gap: '10px'}).add.Button({
+    signalTab.add.Flex({style: {margin: '10px 0'}, gap: '10px'}).add.Button({
         text: '点击增加',
         onClick: () => count.set(count.get() + 1)
     });
