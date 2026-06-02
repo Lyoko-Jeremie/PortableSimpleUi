@@ -20,7 +20,7 @@ export function initPortableSimpleUiZone(name: string): Zone {
     if (typeof Zone === 'undefined') {
         throw new Error('zone.js is required but not found. Please import "zone.js" at the entry point.');
     }
-    return Zone.current.fork({
+    const zone = Zone.current.fork({
         name,
         onHasTask: (parentZoneDelegate, currentZone, targetZone, hasTask) => {
             if (!hasTask.microTask && !hasTask.macroTask && !hasTask.eventTask) {
@@ -30,6 +30,8 @@ export function initPortableSimpleUiZone(name: string): Zone {
             return parentZoneDelegate.hasTask(targetZone, hasTask);
         }
     });
+    (window as any).PortableSimpleUiZone = zone;
+    return zone;
 }
 
 /**

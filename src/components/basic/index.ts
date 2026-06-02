@@ -66,8 +66,16 @@ export class Button extends BaseComponent<IButtonConfig> {
         const btn = document.createElement('button');
         btn.onclick = () => {
             if (!btn.disabled && this.config.onClick) {
-                this.config.onClick(this);
-                this.render();
+                // Ensure the click handler runs inside the Zone if available
+                const zone = (window as any).Zone?.current;
+                if (zone) {
+                    zone.run(() => {
+                        this.config.onClick!(this);
+                    });
+                } else {
+                    this.config.onClick(this);
+                    this.render();
+                }
             }
         };
         return btn;

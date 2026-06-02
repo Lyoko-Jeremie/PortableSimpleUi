@@ -23,6 +23,9 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
 
         const useDefaultTheme = config.styleIsolation?.useDefaultTheme;
 
+        const currentZone = (window as any).Zone?.current;
+        const targetZone = (window as any).PortableSimpleUiZone || currentZone;
+
         if (config.styleIsolation?.mode === 'shadow') {
             this.root = this.host.attachShadow({mode: 'open'});
             const rootEl = document.createElement('div');
@@ -41,11 +44,11 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
                 styleEl.textContent = styles;
                 this.root.appendChild(styleEl);
             }
-            this._container = new ComponentContainer(rootEl, (window as any).Zone?.current);
+            this._container = new ComponentContainer(rootEl, targetZone);
         } else {
             this.root = this.host;
             this.host.classList.add('ps-root');
-            this._container = new ComponentContainer(this.root, (window as any).Zone?.current);
+            this._container = new ComponentContainer(this.root, targetZone);
         }
 
         this.add = createComponentContainerProxyFromContainer(this._container);
@@ -181,6 +184,8 @@ export function createComponentContainerProxyFromContainer(container: ComponentC
 }
 
 export function createComponentContainerProxy(host: HTMLElement | ShadowRoot): ComponentContainerProxy {
-    const container = new ComponentContainer(host, (window as any).Zone?.current);
+    const currentZone = (window as any).Zone?.current;
+    const targetZone = (window as any).PortableSimpleUiZone || currentZone;
+    const container = new ComponentContainer(host, targetZone);
     return createComponentContainerProxyFromContainer(container);
 }

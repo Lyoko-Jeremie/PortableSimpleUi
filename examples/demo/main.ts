@@ -1,17 +1,19 @@
 import {AppRoot} from '../../src/app-root';
-import {computed, signal} from '../../src/core';
+import {computed, signal, initPortableSimpleUiZone} from '../../src/core';
 
 const uiRoot = document.getElementById('ui-root');
 
 if (uiRoot) {
-    const app = new AppRoot(uiRoot, {
-        styleIsolation: {
-            mode: 'none', // 使用全局样式方便演示，也可以改为 shadow
-            useDefaultTheme: true
-        }
-    });
+    const myZone = initPortableSimpleUiZone('demo-zone');
+    myZone.run(() => {
+        const app = new AppRoot(uiRoot, {
+            styleIsolation: {
+                mode: 'none', // 使用全局样式方便演示，也可以改为 shadow
+                useDefaultTheme: true
+            }
+        });
 
-    // 1. Layout: Tabs
+        // 1. Layout: Tabs
     const tabs = app.add.Tabs({
         items: [
             {id: 'basic', label: '基础组件'},
@@ -174,4 +176,5 @@ if (uiRoot) {
     });
 
     app.renderAll();
+    });
 }
