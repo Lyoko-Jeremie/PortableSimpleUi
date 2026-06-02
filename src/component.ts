@@ -1,6 +1,8 @@
 import {DynamicValue} from './types';
 import {IZoneWrapper} from './core';
 
+import type {ComponentContainerProxy} from './app-root';
+
 export type StyleDeclaration = {
     [K in keyof CSSStyleDeclaration]?: DynamicValue<CSSStyleDeclaration[K]>;
 };
@@ -111,7 +113,7 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
  */
 export abstract class ContainerComponent<TConfig extends IComponentConfig = IComponentConfig> extends BaseComponent<TConfig> {
     public isLayout = true;
-    public add: any;
+    public add!: ComponentContainerProxy;
     public zoneWrapper: IZoneWrapper;
     public _container: ComponentContainer;
 
