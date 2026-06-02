@@ -13,6 +13,7 @@ async function runExample() {
 
         const appRoot = new AppRoot(appContainer, {
             id: 'demo-root',
+            zoneWrapper: myZone,
             style: {
                 width: '600px',
                 margin: '20px auto',

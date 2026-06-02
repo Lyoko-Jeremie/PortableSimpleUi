@@ -8,6 +8,7 @@ if (uiRoot) {
     const myZone = initPortableSimpleUiZone('demo-zone');
     myZone.run(() => {
         const app = new AppRoot(uiRoot, {
+            zoneWrapper: myZone,
             styleIsolation: {
                 mode: 'shadow', // 使用全局样式方便演示，也可以改为 shadow
                 useDefaultTheme: true

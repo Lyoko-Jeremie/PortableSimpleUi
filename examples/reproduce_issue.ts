@@ -1,9 +1,12 @@
 import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
 
 const uiRoot = document.getElementById('ui-root');
 
 if (uiRoot) {
+    const zone = createZoneWrapper('reproduce-zone');
     const app = new AppRoot(uiRoot, {
+        zoneWrapper: zone,
         styleIsolation: {
             mode: 'none',
             useDefaultTheme: true
@@ -35,7 +38,7 @@ if (uiRoot) {
         console.log('Switching to Tab 2...');
         tabs.activeTabId = 'tab2';
         console.log('After switch - Tabs body children count:', document.querySelector('.psu-tabs-body')?.children.length);
-        
+
         // 检查 Container 1 是否还在 DOM 中
         const c1 = document.getElementById('container-1');
         console.log('Container 1 in DOM:', !!c1);

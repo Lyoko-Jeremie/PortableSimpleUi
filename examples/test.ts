@@ -3,12 +3,13 @@ import 'zone.js';
 import themeString from '../src/theme/css/theme.css?inlineText';
 import {AppRoot, Button, initPortableSimpleUiZone, makeRef, signal} from "../src";
 
-initPortableSimpleUiZone('my-mod-a');
+const zone = initPortableSimpleUiZone('my-mod-a');
 
 const el = document.getElementById('app-root')!;
 
 const appRoot = new AppRoot(el, {
     id: 'my-mod-app-root',
+    zoneWrapper: zone,
     styleIsolation: {
         mode: 'shadow',
         styles: themeString,

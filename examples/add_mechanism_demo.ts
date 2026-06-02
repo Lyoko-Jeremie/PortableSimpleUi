@@ -37,7 +37,10 @@ async function runExample() {
         const container = document.createElement('div');
         document.body.appendChild(container);
 
-        const app = new AppRoot(container, {id: 'app'});
+        const app = new AppRoot(container, {
+            id: 'app',
+            zoneWrapper: myZone
+        });
 
         // 使用内置组件，享受类型提示
         app.add.Label({

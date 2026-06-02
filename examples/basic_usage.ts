@@ -25,6 +25,7 @@ async function runExample() {
 
         const appRoot = new AppRoot(appContainer, {
             id: 'my-mod-app-root',
+            zoneWrapper: myZone,
             styleIsolation: {
                 mode: 'shadow',
                 styles: `

@@ -17,6 +17,7 @@ async function runExample() {
 
         // 1. Shadow DOM 模式，自动加载默认主题
         const app1 = new AppRoot(container, {
+            zoneWrapper: myZone,
             styleIsolation: { mode: 'shadow' },
             style: { marginBottom: '20px' }
         });
@@ -30,6 +31,7 @@ async function runExample() {
         // 2. None 模式，手动加载 CSS (在 HTML 中引入 theme.css)
         // 这里模拟手动添加类名
         const app2 = new AppRoot(container, {
+            zoneWrapper: myZone,
             styleIsolation: { mode: 'none' },
             style: { border: '1px dashed #666', padding: '10px' }
         });

@@ -1,4 +1,5 @@
 import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
 
 // 模拟环境
 if (typeof document === 'undefined') {
@@ -13,13 +14,23 @@ if (typeof document === 'undefined') {
         getElementById: () => null,
     };
     (globalThis as any).window = {
-        Zone: { current: null }
+        Zone: {
+            current: {
+                fork: () => ({
+                    run: (fn: any) => fn(),
+                    parent: { run: (fn: any) => fn() }
+                })
+            }
+        }
     };
+    (globalThis as any).Zone = (globalThis as any).window.Zone;
 }
 
+const zone = createZoneWrapper('test-zone');
 const el = document.createElement('div');
 const appRoot = new AppRoot(el, {
-    id: 'test-root'
+    id: 'test-root',
+    zoneWrapper: zone
 });
 
 console.log('Testing Complex Components...');
