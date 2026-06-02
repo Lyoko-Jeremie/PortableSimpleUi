@@ -19,7 +19,7 @@ describe('Container Node Placement', () => {
 
                 // 如果有选择器，通过选择器查找 host，否则使用 element
                 const host = expectedHostSelector
-                    ? container.element.querySelector(expectedHostSelector)
+                    ? container.getElement().querySelector(expectedHostSelector)
                     : container.element;
 
                 expect(host).not.toBeNull();
@@ -27,7 +27,7 @@ describe('Container Node Placement', () => {
 
                 // 确保它不在 element 之后（如果是同一个节点，contains 为 true 且 offsetParent 等通常能体现层级，
                 // 但这里我们简单检查 parentNode 链）
-                let parent = text.element.parentElement;
+                let parent = text.getElement().parentElement;
                 let foundHost = false;
                 while (parent) {
                     if (parent === host) {

@@ -26,9 +26,9 @@ describe('Component Add Mechanism', () => {
         });
 
         expect(label).toBeInstanceOf(Label);
-        expect(label.element.id).toBe('my-label');
-        expect(label.element.textContent).toBe('Hello');
-        expect(app.host.contains(label.element)).toBe(true);
+        expect(label.getElement().id).toBe('my-label');
+        expect(label.getElement().textContent).toBe('Hello');
+        expect(app.host.contains(label.getElement())).toBe(true);
     });
 
     it('should add Button correctly via appRoot.add.Button', () => {
@@ -41,9 +41,9 @@ describe('Component Add Mechanism', () => {
         });
 
         expect(button).toBeInstanceOf(Button);
-        expect(button.element.textContent).toBe('Click me');
+        expect(button.getElement().textContent).toBe('Click me');
 
-        button.element.click();
+        button.getElement().click();
         expect(clicked).toBe(true);
     });
 
@@ -52,11 +52,11 @@ describe('Component Add Mechanism', () => {
         const flex = app.add.Flex({ id: 'my-flex' });
 
         expect(flex).toBeInstanceOf(Flex);
-        expect(flex.element.style.display).toBe('flex');
+        expect(flex.getElement().style.display).toBe('flex');
 
         const nestedLabel = flex.add.Label({ text: 'Nested' });
         expect(nestedLabel).toBeInstanceOf(Label);
-        expect(flex.element.contains(nestedLabel.element)).toBe(true);
+        expect(flex.getElement().contains(nestedLabel.getElement())).toBe(true);
     });
 
     it('should throw error if component is not registered', () => {

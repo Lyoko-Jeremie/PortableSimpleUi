@@ -25,12 +25,12 @@ describe('Dynamic Styles', () => {
                 }
             });
 
-            expect(text.element.style.color).toBe('red');
+            expect(text.getElement().style.color).toBe('red');
 
             colorSignal.set('blue');
             appRoot.renderAll();
 
-            expect(text.element.style.color).toBe('blue');
+            expect(text.getElement().style.color).toBe('blue');
             document.body.removeChild(container);
             done();
         });

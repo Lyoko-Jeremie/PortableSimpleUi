@@ -45,13 +45,13 @@ describe('Theme and Style Isolation', () => {
                 styleIsolation: { mode: 'none' }
             });
             const btn = app.add.Button({ text: 'Test' });
-            expect(btn.element.classList.contains('ps-button')).toBe(true);
+            expect(btn.getElement().classList.contains('ps-button')).toBe(true);
 
             const input = app.add.Input({});
-            expect(input.element.classList.contains('ps-input')).toBe(true);
+            expect(input.getElement().classList.contains('ps-input')).toBe(true);
 
             const flex = app.add.Flex({});
-            expect(flex.element.classList.contains('ps-flex')).toBe(true);
+            expect(flex.getElement().classList.contains('ps-flex')).toBe(true);
         });
     });
 

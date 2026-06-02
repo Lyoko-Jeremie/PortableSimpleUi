@@ -17,8 +17,8 @@ describe('Layout Components', () => {
             });
             container.add.Text({ text: 'Child' });
 
-            expect(container.element.style.padding).toBe('20px');
-            expect(container.element.childNodes.length).toBe(1);
+            expect(container.getElement().style.padding).toBe('20px');
+            expect(container.getElement().childNodes.length).toBe(1);
         });
     });
 
@@ -29,9 +29,9 @@ describe('Layout Components', () => {
 
             const row = appRoot.add.Row({ gap: '10px' });
 
-            expect(row.element.style.display).toBe('flex');
-            expect(row.element.style.flexDirection).toBe('row');
-            expect(row.element.style.gap).toBe('10px');
+            expect(row.getElement().style.display).toBe('flex');
+            expect(row.getElement().style.flexDirection).toBe('row');
+            expect(row.getElement().style.gap).toBe('10px');
         });
     });
 
@@ -42,9 +42,9 @@ describe('Layout Components', () => {
 
             const col = appRoot.add.Column({ gap: '5px' });
 
-            expect(col.element.style.display).toBe('flex');
-            expect(col.element.style.flexDirection).toBe('column');
-            expect(col.element.style.gap).toBe('5px');
+            expect(col.getElement().style.display).toBe('flex');
+            expect(col.getElement().style.flexDirection).toBe('column');
+            expect(col.getElement().style.gap).toBe('5px');
         });
     });
 
@@ -58,9 +58,9 @@ describe('Layout Components', () => {
                 gap: '15px'
             });
 
-            expect(grid.element.style.display).toBe('grid');
-            expect(grid.element.style.gridTemplateColumns).toBe('1fr 1fr');
-            expect(grid.element.style.gap).toBe('15px');
+            expect(grid.getElement().style.display).toBe('grid');
+            expect(grid.getElement().style.gridTemplateColumns).toBe('1fr 1fr');
+            expect(grid.getElement().style.gap).toBe('15px');
         });
     });
 
@@ -71,8 +71,8 @@ describe('Layout Components', () => {
 
             const group = appRoot.add.Group({ title: 'My Group' });
 
-            expect(group.element.tagName.toLowerCase()).toBe('fieldset');
-            const legend = group.element.querySelector('legend');
+            expect(group.getElement().tagName.toLowerCase()).toBe('fieldset');
+            const legend = group.getElement().querySelector('legend');
             expect(legend).not.toBeNull();
             expect(legend?.textContent).toBe('My Group');
         });
@@ -85,8 +85,8 @@ describe('Layout Components', () => {
 
             const divider = appRoot.add.Divider({ color: 'red', thickness: '5px' });
 
-            expect(divider.element.style.backgroundColor).toBe('red');
-            expect(divider.element.style.height).toBe('5px');
+            expect(divider.getElement().style.backgroundColor).toBe('red');
+            expect(divider.getElement().style.height).toBe('5px');
         });
     });
 
@@ -98,7 +98,7 @@ describe('Layout Components', () => {
             const spacer = appRoot.add.Spacer({ flex: 2 });
 
             // 在某些浏览器/JSDOM 中，flex: 2 可能会被展开
-            expect(spacer.element.style.flex).toMatch(/^2/);
+            expect(spacer.getElement().style.flex).toMatch(/^2/);
         });
     });
     it('Complex nested add should work', () => {
@@ -115,11 +115,11 @@ describe('Layout Components', () => {
             // Verify structure
             // Group -> fieldset -> div (content) -> Column -> Row -> Button
             //                                             -> Text
-            const groupContent = group.element.querySelector('div');
-            expect(groupContent?.firstChild).toBe(col.element);
-            expect(col.element.childNodes[0]).toBe(row.element);
-            expect(col.element.childNodes[1]).toBe(text.element);
-            expect(row.element.childNodes[0]).toBe(btn.element);
+            const groupContent = group.getElement().querySelector('div');
+            expect(groupContent?.firstChild).toBe(col.getElement());
+            expect(col.getElement().childNodes[0]).toBe(row.getElement());
+            expect(col.getElement().childNodes[1]).toBe(text.getElement());
+            expect(row.getElement().childNodes[0]).toBe(btn.getElement());
         });
     });
 });
