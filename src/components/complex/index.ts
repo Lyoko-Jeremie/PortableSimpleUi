@@ -1,5 +1,5 @@
 import {BaseComponent, ContainerComponent, IComponentConfig, ComponentContainer} from '../../component';
-import {createComponentContainerProxyFromContainer} from '../../app-root';
+import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
 import {DynamicValue} from '../../types';
 import {IZoneWrapper} from '../../core';
 
@@ -87,6 +87,31 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             this.applyConfig();
         }
         return this._bodyElement;
+    }
+
+    /**
+     * 添加一个带配置的标签页并返回一个代理以添加内容组件
+     * @param tabConfig 标签页配置
+     */
+    public addTab(tabConfig: { id?: string, title?: DynamicValue<string> }): ComponentContainerProxy {
+        const self = this;
+        return new Proxy({}, {
+            get: (target, prop: string) => {
+                return (config: any) => {
+                    const childConfig = config || {};
+                    // 将 addTab 的配置注入到组件配置中
+                    if (tabConfig.id && !childConfig.id) {
+                        childConfig.id = tabConfig.id;
+                    }
+                    if (tabConfig.title && !childConfig.tabTitle) {
+                        childConfig.tabTitle = tabConfig.title;
+                    }
+
+                    // 调用正常的 add 代理
+                    return (self.add as any)[prop](childConfig);
+                };
+            }
+        }) as any;
     }
 
     public get activeTabId() {
