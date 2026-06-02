@@ -30,6 +30,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
     constructor(config: ITabsConfig, zoneWrapper: IZoneWrapper) {
         super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
         this._tabItems = config.items || [];
         this._activeTabId = config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : '');
 
@@ -204,6 +205,10 @@ export interface IModalConfig extends IComponentConfig {
 }
 
 export class Modal extends ContainerComponent<IModalConfig> {
+    constructor(config: IModalConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
     private _overlay!: HTMLElement;
     private _content!: HTMLElement;
     private _header!: HTMLElement;
@@ -273,6 +278,10 @@ export interface ICardConfig extends IComponentConfig {
 }
 
 export class Card extends ContainerComponent<ICardConfig> {
+    constructor(config: ICardConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
     private _header!: HTMLElement;
     private _body!: HTMLElement;
 

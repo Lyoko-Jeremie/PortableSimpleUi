@@ -57,7 +57,7 @@ container.add.Form({
         { label: 'Username', key: 'username', component: 'Input', componentConfig: { placeholder: 'Enter username' } },
         { label: 'Type', key: 'type', component: 'Select', componentConfig: { options: [{ label: 'Admin', value: 'admin' }, { label: 'User', value: 'user' }] } },
     ],
-    onFinish: (values) => {
+    onFinish: (values: any) => {
         console.log('Form finished:', values);
     }
 });

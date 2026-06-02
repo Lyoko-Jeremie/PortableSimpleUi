@@ -55,7 +55,7 @@ async function runExample() {
         const inputText = signal('');
         inputSection.add.Input({
             placeholder: '请输入内容...',
-            onInput: (val) => inputText.set(val),
+            onInput: (val: string) => inputText.set(val),
             style: {padding: '5px'}
         });
         inputSection.add.Text({text: () => `输入的内容是: ${inputText.value}`, style: {fontSize: '12px', color: '#666'}});
@@ -67,7 +67,7 @@ async function runExample() {
         checkboxSection.add.Checkbox({
             label: '同意条款',
             checked: isChecked,
-            onChange: (val) => isChecked.set(val)
+            onChange: (val: boolean) => isChecked.set(val)
         });
         checkboxSection.add.Text({text: () => `选中状态: ${isChecked.value}`, style: {fontSize: '12px'}});
 
@@ -103,7 +103,7 @@ async function runExample() {
                 {label: '广州', value: 'gz'}
             ],
             value: selectedOption,
-            onChange: (val) => selectedOption.set(val)
+            onChange: (val: string) => selectedOption.set(val)
         });
 
         // 7. 滑块
@@ -114,7 +114,7 @@ async function runExample() {
             min: 0,
             max: 100,
             value: sliderValue,
-            onChange: (val) => sliderValue.set(val)
+            onChange: (val: number) => sliderValue.set(val)
         });
         sliderSection.add.Text({text: () => `当前值: ${sliderValue.value}`, style: {fontSize: '12px'}});
 
@@ -124,7 +124,7 @@ async function runExample() {
         const selectedColor = signal('#4caf50');
         colorSection.add.ColorPicker({
             value: selectedColor,
-            onChange: (val) => selectedColor.set(val)
+            onChange: (val: string) => selectedColor.set(val)
         });
         colorSection.add.Text({
             text: '颜色预览',

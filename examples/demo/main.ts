@@ -51,7 +51,7 @@ if (uiRoot) {
         formBaseGroup.add.Input({
             placeholder: '请输入内容...',
             value: makeRef(dataInput, 'v'),
-            onInput: (v) => {
+            onInput: (v: string) => {
                 console.log('Input:', v);
                 dataInput.v = v;
             },
@@ -121,7 +121,7 @@ if (uiRoot) {
         const complexGroup1 = complexTab.add.Group({title: '列表与分页'});
         complexGroup1.add.List({
             dataSource: ['列表项目 1', '列表项目 2', '列表项目 3'],
-            renderItem: (item) => {
+            renderItem: (item: any) => {
                 const el = document.createElement('div');
                 el.innerText = item;
                 return el;
@@ -155,8 +155,8 @@ if (uiRoot) {
                 }
             ],
             expandedKeys: ['1'],
-            onSelect: (key) => console.log('Selected:', key),
-            onExpand: (keys) => console.log('Expanded Keys:', keys)
+            onSelect: (key: string) => console.log('Selected:', key),
+            onExpand: (keys: string[]) => console.log('Expanded Keys:', keys)
         });
 
         // --- 表单演示页 ---
@@ -167,7 +167,7 @@ if (uiRoot) {
                 {label: '出生日期', key: 'birthday', component: 'DatePicker', componentConfig: {}},
                 {label: '上传头像', key: 'avatar', component: 'FilePicker', componentConfig: {}}
             ],
-            onFinish: (values) => {
+            onFinish: (values: any) => {
                 console.log('Form Values:', values);
                 alert('提交成功，请看控制台');
             }

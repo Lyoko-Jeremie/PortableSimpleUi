@@ -11,6 +11,11 @@ export interface IContainerConfig extends IComponentConfig {
 }
 
 export class Container extends ContainerComponent<IContainerConfig> {
+    constructor(config: IContainerConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
     protected getBaseClassName(): string | null {
         return 'ps-container';
     }
@@ -37,6 +42,11 @@ export interface IFlexConfig extends IComponentConfig {
  * Flex 布局基础类
  */
 export class Flex extends ContainerComponent<IFlexConfig> {
+    constructor(config: IFlexConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
     protected getBaseClassName(): string | null {
         return 'ps-flex';
     }
@@ -79,6 +89,11 @@ export class Column extends Flex {
  * 层叠布局
  */
 export class Stack extends ContainerComponent<IComponentConfig> {
+    constructor(config: IComponentConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
     protected getBaseClassName(): string | null {
         return 'ps-stack';
     }
@@ -102,6 +117,11 @@ export interface IGridConfig extends IComponentConfig {
 }
 
 export class Grid extends ContainerComponent<IGridConfig> {
+    constructor(config: IGridConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
     protected getBaseClassName(): string | null {
         return 'ps-grid';
     }
@@ -126,6 +146,11 @@ export interface IGroupConfig extends IComponentConfig {
 }
 
 export class Group extends ContainerComponent<IGroupConfig> {
+    constructor(config: IGroupConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        this.add = createComponentContainerProxyFromContainer(this._container);
+    }
+
     protected getBaseClassName(): string | null {
         return 'ps-group';
     }
