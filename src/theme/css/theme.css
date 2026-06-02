@@ -9,15 +9,24 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
   font-family: inherit;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
 }
 .ps-root .ps-button:hover {
   background: #0056b3;
 }
+.ps-root .ps-button:active {
+  background: #004085;
+}
 .ps-root .ps-button:disabled {
-  background: rgb(102, 175.8, 255);
+  background: #ccc;
   cursor: not-allowed;
+  color: #666;
 }
 .ps-root .ps-input, .ps-root .ps-select {
   border: 1px solid #ccc;
@@ -53,6 +62,7 @@
   background-color: #eee;
   border-radius: 5px;
   overflow: hidden;
+  height: 10px;
 }
 .ps-root .ps-progress-bar > div {
   height: 100%;
@@ -68,6 +78,37 @@
 .ps-root .ps-group legend {
   font-weight: bold;
   padding: 0 5px;
+}
+.ps-root .ps-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.ps-root .ps-tabs-header {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.ps-root .ps-tabs-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #666;
+  user-select: none;
+}
+.ps-root .ps-tabs-item:hover {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+.ps-root .ps-tabs-item.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  font-weight: bold;
+}
+.ps-root .ps-tabs-body {
+  padding: 10px 0;
 }
 .ps-root .psu-form-submit {
   margin-top: 10px;
@@ -97,15 +138,24 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
   font-family: inherit;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
 }
 .ps-shadow-root .ps-button:hover {
   background: #0056b3;
 }
+.ps-shadow-root .ps-button:active {
+  background: #004085;
+}
 .ps-shadow-root .ps-button:disabled {
-  background: rgb(102, 175.8, 255);
+  background: #ccc;
   cursor: not-allowed;
+  color: #666;
 }
 .ps-shadow-root .ps-input, .ps-shadow-root .ps-select {
   border: 1px solid #ccc;
@@ -141,6 +191,7 @@
   background-color: #eee;
   border-radius: 5px;
   overflow: hidden;
+  height: 10px;
 }
 .ps-shadow-root .ps-progress-bar > div {
   height: 100%;
@@ -156,4 +207,35 @@
 .ps-shadow-root .ps-group legend {
   font-weight: bold;
   padding: 0 5px;
+}
+.ps-shadow-root .ps-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.ps-shadow-root .ps-tabs-header {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.ps-shadow-root .ps-tabs-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #666;
+  user-select: none;
+}
+.ps-shadow-root .ps-tabs-item:hover {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+.ps-shadow-root .ps-tabs-item.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  font-weight: bold;
+}
+.ps-shadow-root .ps-tabs-body {
+  padding: 10px 0;
 }
