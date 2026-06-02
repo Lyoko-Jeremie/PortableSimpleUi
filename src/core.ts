@@ -14,11 +14,14 @@ declare global {
 
 export interface IZoneWrapper {
     readonly zone: Zone;
+    readonly rootsToRender: Set<any>;
+    readonly triggerRender: () => void;
+
     run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
+
     runOutside<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any[]): T;
+
     registerRoot(root: { renderAll?: () => void; render: () => void }): void;
-    rootsToRender: Set<any>;
-    triggerRender: () => void;
 }
 
 /**
