@@ -12,19 +12,53 @@ export interface ITabItem {
 }
 
 export interface ITabsConfig extends IComponentConfig {
-    items: ITabItem[];
+    items?: ITabItem[];
     activeTabId?: string;
     onChange?: (tabId: string, self: Tabs) => void;
+    /**
+     * 是否在添加子组件时自动创建 Tab
+     * 如果为 true，则每次调用 add.xxx() 都会创建一个新的 Tab
+     */
+    autoCreateTab?: boolean;
 }
 
 export class Tabs extends ContainerComponent<ITabsConfig> {
     private _activeTabId: string;
     private _headerElement!: HTMLElement;
     private _bodyElement!: HTMLElement;
+    private _tabItems: ITabItem[] = [];
 
     constructor(config: ITabsConfig, zoneWrapper: IZoneWrapper) {
         super(config, zoneWrapper);
-        this._activeTabId = config.activeTabId || (config.items.length > 0 ? config.items[0]!.id : '');
+        this._tabItems = config.items || [];
+        this._activeTabId = config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : '');
+
+        // 覆盖 add 代理
+        const self = this;
+        const originalAdd = this.add;
+        this.add = new Proxy(originalAdd, {
+            get(target, prop) {
+                const value = (target as any)[prop];
+                if (typeof value === 'function') {
+                    return (...args: any[]) => {
+                        const childConfig = args[0] || {};
+                        if (childConfig.tabTitle || self.config.autoCreateTab !== false) {
+                            const tabId = childConfig.id || `tab-${Math.random().toString(36).substr(2, 9)}`;
+                            const tabLabel = childConfig.tabTitle || tabId;
+                            if (!self._tabItems.find(item => item.id === tabId)) {
+                                self._tabItems.push({ id: tabId, label: tabLabel });
+                                if (!self._activeTabId) self._activeTabId = tabId;
+                            }
+                        }
+                        const component = value.apply(target, args);
+                        // 在组件添加后同步渲染 header
+                        self.renderHeader();
+                        return component;
+                    };
+                }
+                return value;
+            }
+        }) as any;
     }
 
     protected getBaseClassName(): string | null {
@@ -34,13 +68,15 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     protected createHTMLElement(): HTMLElement {
         const el = document.createElement('div');
 
-        this._headerElement = document.createElement('div');
-        this._headerElement.className = 'ps-tabs-header';
-        el.appendChild(this._headerElement);
+        const headerElement = document.createElement('div');
+        headerElement.className = 'ps-tabs-header';
+        el.appendChild(headerElement);
+        this._headerElement = headerElement;
 
-        this._bodyElement = document.createElement('div');
-        this._bodyElement.className = 'ps-tabs-body';
-        el.appendChild(this._bodyElement);
+        const bodyElement = document.createElement('div');
+        bodyElement.className = 'ps-tabs-body';
+        el.appendChild(bodyElement);
+        this._bodyElement = bodyElement;
 
         return el;
     }
@@ -48,6 +84,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     protected getChildrenHost(): HTMLElement {
         if (!this._bodyElement) {
             this.element = this.createHTMLElement();
+            this.applyConfig();
         }
         return this._bodyElement;
     }
@@ -71,26 +108,29 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     }
 
     private renderHeader() {
-        if (!this._headerElement) return;
+        const header = this.element.querySelector('.ps-tabs-header') as HTMLElement;
+        if (!header) return;
+        this._headerElement = header;
 
         // 只在项目数量变化或首次渲染时重新构建
-        if (this._headerElement.children.length !== this.config.items.length) {
-            this._headerElement.innerHTML = '';
-            this.config.items.forEach(item => {
+        if (header.children.length !== this._tabItems.length) {
+            header.innerHTML = '';
+            this._tabItems.forEach(item => {
                 const tabEl = document.createElement('div');
                 tabEl.dataset.id = item.id;
+                tabEl.className = 'ps-tabs-item';
                 tabEl.addEventListener('click', () => {
                     this.zoneWrapper.run(() => {
                         this.activeTabId = item.id;
                     });
                 });
-                this._headerElement.appendChild(tabEl);
+                header.appendChild(tabEl);
             });
         }
 
         // 更新状态
-        Array.from(this._headerElement.children).forEach((el, index) => {
-            const item = this.config.items[index];
+        Array.from(header.children).forEach((el, index) => {
+            const item = this._tabItems[index];
             if (!item) return;
             const tabEl = el as HTMLElement;
             tabEl.className = `ps-tabs-item ${item.id === this._activeTabId ? 'active' : ''}`;
@@ -99,12 +139,15 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     }
 
     private renderBody() {
-        if (!this._bodyElement) return;
+        const body = this.element.querySelector('.ps-tabs-body') as HTMLElement;
+        if (!body) return;
+        this._bodyElement = body;
+
         // 在简易实现中，我们通过显示/隐藏子元素来控制
-        // 假设子组件的顺序与 items 一致，或者子组件有自己的 id 匹配
-        const children = Array.from(this._bodyElement.children) as HTMLElement[];
+        // 假设子组件的顺序与 _tabItems 一致，或者子组件有自己的 id 匹配
+        const children = Array.from(body.children) as HTMLElement[];
         children.forEach((child, index) => {
-            const item = this.config.items[index];
+            const item = this._tabItems[index];
             if (item) {
                 const targetDisplay = item.id === this._activeTabId ? 'block' : 'none';
                 if (child.style.display !== targetDisplay) {

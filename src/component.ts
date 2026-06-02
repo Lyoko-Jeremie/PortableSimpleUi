@@ -10,6 +10,7 @@ export type StyleDeclaration = {
 export interface IComponentConfig {
     id?: string;
     style?: StyleDeclaration;
+    tabTitle?: DynamicValue<string>;
 }
 
 export abstract class BaseComponent<TConfig extends IComponentConfig = IComponentConfig> {
