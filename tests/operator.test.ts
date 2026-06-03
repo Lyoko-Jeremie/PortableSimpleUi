@@ -76,6 +76,29 @@ describe('Operator Components', () => {
             expect(container.classList.contains('dragging')).toBe(true);
             expect(dragOverEvent.preventDefault).toHaveBeenCalled();
 
+            // 模拟进入子元素（应保持 dragging 状态）
+            const btn = container.querySelector('button')!;
+            const dragEnterBtnEvent = new (global as any).window.CustomEvent('dragenter', { bubbles: true });
+            Object.defineProperty(dragEnterBtnEvent, 'target', { value: btn });
+            container.dispatchEvent(dragEnterBtnEvent);
+            expect(container.classList.contains('dragging')).toBe(true);
+
+            // 模拟从子元素离开回到容器（应保持 dragging 状态）
+            const dragLeaveBtnEvent = new (global as any).window.CustomEvent('dragleave', { bubbles: true });
+            Object.defineProperty(dragLeaveBtnEvent, 'target', { value: btn });
+            container.dispatchEvent(dragLeaveBtnEvent);
+            expect(container.classList.contains('dragging')).toBe(true);
+
+            // 模拟离开容器
+            const dragLeaveEvent = new (global as any).window.CustomEvent('dragleave', { bubbles: true });
+            Object.defineProperty(dragLeaveEvent, 'target', { value: container });
+            container.dispatchEvent(dragLeaveEvent);
+            expect(container.classList.contains('dragging')).toBe(false);
+
+            // 重新进入并进行 drop
+            container.dispatchEvent(dragOverEvent);
+            expect(container.classList.contains('dragging')).toBe(true);
+
             // 模拟 drop
             const dropEvent = new (global as any).window.CustomEvent('drop', { bubbles: true });
             dropEvent.preventDefault = jest.fn();

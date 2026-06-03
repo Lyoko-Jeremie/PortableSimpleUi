@@ -59,6 +59,18 @@ export class Upload extends BaseComponent<IUploadConfig> {
         });
 
         // 拖拽支持
+        container.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.resolveValue(this.config.disabled)) return;
+
+            this._isDragging = true;
+            container.classList.add('dragging');
+            if (this.config.dragOverClass) {
+                container.classList.add(this.config.dragOverClass);
+            }
+        });
+
         container.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -76,7 +88,11 @@ export class Upload extends BaseComponent<IUploadConfig> {
         container.addEventListener('dragleave', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.clearDragState(container);
+            
+            // 只有当离开容器本身（而不是进入子元素）时才清除状态
+            if (e.target === container) {
+                this.clearDragState(container);
+            }
         });
 
         container.addEventListener('drop', (e) => {

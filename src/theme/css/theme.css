@@ -124,9 +124,9 @@
   background-color: #f0f7ff;
 }
 .ps-root .ps-upload-container.dragging {
-  border-color: #28a745;
-  background-color: #e8f5e9;
-  opacity: 0.8;
+  border-color: #28a745 !important;
+  background-color: #e8f5e9 !important;
+  opacity: 1 !important;
 }
 .ps-root .psu-form-submit {
   margin-top: 10px;
@@ -271,7 +271,7 @@
   background-color: #f0f7ff;
 }
 .ps-shadow-root .ps-upload-container.dragging {
-  border-color: #28a745;
-  background-color: #e8f5e9;
-  opacity: 0.8;
+  border-color: #28a745 !important;
+  background-color: #e8f5e9 !important;
+  opacity: 1 !important;
 }
