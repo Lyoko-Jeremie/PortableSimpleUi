@@ -1,3 +1,4 @@
+import './polyfill';
 import {AppRoot} from '../../src/app-root';
 import {computed, signal, createZoneWrapper, effect} from '../../src/core';
 import {makeRef} from "../../src";
@@ -188,7 +189,8 @@ if (uiRoot) {
             onSearch: (query) => {
                 console.log('Searching for:', query);
                 // 模拟异步加载
-                setTimeout(() => {
+                setTimeout(myZone.wrapInZone(() => {
+                    console.log('Searching setTimeout:', query);
                     if (query) {
                         asyncOptions.set([
                             {label: `${query} 1`, value: 1},
@@ -198,7 +200,8 @@ if (uiRoot) {
                     } else {
                         asyncOptions.set([]);
                     }
-                }, 500);
+                    console.log('Searching setTimeout asyncOptions', asyncOptions.get());
+                }), 500);
             }
         });
 

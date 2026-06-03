@@ -30,6 +30,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     private dropdownElement!: HTMLDivElement;
     private isOpen: boolean = false;
     private filteredOptions: IAutocompleteOption[] = [];
+    private currentQuery: string = '';
 
     protected getBaseClassName(): string {
         return 'ps-autocomplete';
@@ -57,26 +58,28 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         this.inputElement = input;
         this.dropdownElement = dropdown;
 
-        input.addEventListener('input', () => {
+        input.addEventListener('input', this.zoneWrapper.wrapInZone(() => {
             this.handleInput(input.value);
-        });
+        }));
 
-        input.addEventListener('focus', () => {
+        input.addEventListener('focus', this.zoneWrapper.wrapInZone(() => {
             if (this.filteredOptions.length > 0) {
                 this.showDropdown();
             }
-        });
+        }));
 
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', this.zoneWrapper.wrapInZone((e) => {
             if (!container.contains(e.target as Node)) {
                 this.hideDropdown();
             }
-        });
+        }));
 
         return container;
     }
 
     private handleInput(query: string) {
+        this.currentQuery = query;
+
         if (this.config.value) {
             this.setValue(this.config.value, query);
         }
@@ -185,5 +188,10 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
             this.inputElement.value = val;
         }
         this.inputElement.placeholder = this.resolveValue(this.config.placeholder || '');
+
+        // Re-sync options from signal (critical for async mode where options change after render)
+        if (this.config.onSearch) {
+            this.updateFilteredOptions(this.currentQuery);
+        }
     }
 }
