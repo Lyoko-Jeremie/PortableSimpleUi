@@ -1,3 +1,120 @@
+/**
+ * ============================================================
+ *  Autocomplete 组件 — 架构总览与工作流程
+ * ============================================================
+ *
+ * 一、DOM 结构
+ * ─────────────────────────────────────────────────────────
+ *   <div class="ps-autocomplete-container">   ← 根节点 (element)
+ *     <input class="ps-autocomplete-input">   ← inputEl
+ *     <div  class="ps-autocomplete-dropdown"> ← dropdownEl
+ *       <div class="ps-autocomplete-item">选项 A</div>
+ *       <div class="ps-autocomplete-item">选项 B</div>
+ *       ...
+ *     </div>
+ *   </div>
+ *
+ *
+ * 二、内部状态（state）
+ * ─────────────────────────────────────────────────────────
+ *   state.query       : string          当前输入框的查询文本
+ *   state.selectedKey : string|undefined 当前已选中项的 key
+ *   isDropdownOpen    : boolean         下拉是否可见（不进入 state，纯视图标志）
+ *
+ *
+ * 三、数据流向
+ * ─────────────────────────────────────────────────────────
+ *
+ *   外部配置 (config.options / config.value)
+ *          │
+ *          ▼
+ *   ┌─────────────┐   resolveOptions()        ┌───────────────────────┐
+ *   │ DynamicValue│ ─────────────────────────▶│ IResolvedAutocomplete │
+ *   │  (原始选项)  │                           │   Option[]  (字符串)  │
+ *   └─────────────┘                           └──────────┬────────────┘
+ *                                                        │
+ *              ┌─────────────────────────────────────────┤
+ *              │                                         │
+ *              ▼                                         ▼
+ *   syncInputFromExternalValue()             filterOptions(query, options)
+ *   当 config.value 存在时，把外部 key          用 query 对选项做筛选，
+ *   映射成对应 label 写入 state.query           支持自定义 filter 函数
+ *              │                                         │
+ *              └──────────────┬──────────────────────────┘
+ *                             │
+ *                             ▼
+ *                    renderDropdownItems()
+ *                    把筛选结果渲染成 DOM 节点
+ *
+ *
+ * 四、交互事件流
+ * ─────────────────────────────────────────────────────────
+ *
+ *   [用户输入 / 聚焦 / 点击输入框]
+ *          │
+ *          ▼
+ *   bindInputEvents()
+ *   ├─ input 事件  → 更新 state.query，清空 selectedKey，openDropdown()
+ *   │               → 触发 config.onSearch 回调
+ *   └─ focus/click  → openDropdown()，触发 config.onSearch 回调
+ *          │
+ *          ▼
+ *       markDirty()  ← 通知调度器：该组件需要重新渲染
+ *          │
+ *          ▼
+ *       render()     ← 父类调度，统一刷新视图
+ *
+ *   [用户点击某个候选项]
+ *          │
+ *          ▼
+ *   renderDropdownItems() 内部的 click 监听
+ *   ├─ 更新 state.query / state.selectedKey
+ *   ├─ 调用 setValue() 把 key 写回 config.value（受控模式）
+ *   ├─ 触发 config.onSelect 回调
+ *   └─ closeDropdown() → markDirty() → render()
+ *
+ *   [用户点击组件外部]
+ *          │
+ *          ▼
+ *   bindDocumentOutsideClick()
+ *   document mousedown 监听：element.contains(target) 为 false 时
+ *   └─ closeDropdown() → markDirty() → render()
+ *
+ *
+ * 五、受控模式 vs 非受控模式
+ * ─────────────────────────────────────────────────────────
+ *
+ *   ┌──────────────────┬──────────────────────────────────────────┐
+ *   │                  │  非受控 (config.value 未提供)             │
+ *   │ 驱动源           │  用户输入直接更新 state.query              │
+ *   ├──────────────────┼──────────────────────────────────────────┤
+ *   │                  │  受控 (config.value 已提供)               │
+ *   │ 驱动源           │  外部 value 变化 → syncInputFromExternal  │
+ *   │                  │  Value() 覆盖 state.query / selectedKey   │
+ *   └──────────────────┴──────────────────────────────────────────┘
+ *
+ *
+ * 六、生命周期
+ * ─────────────────────────────────────────────────────────
+ *
+ *   constructor()
+ *     └─ createHTMLElement()  建立 DOM 骨架
+ *     └─ bindInputEvents()    绑定输入框事件
+ *     └─ bindDocumentOutsideClick()  绑定全局点击
+ *     └─ 初始化 state
+ *          │
+ *          ▼
+ *   render()  (由调度器驱动，可多次调用)
+ *     └─ 同步 placeholder / 选项 / query / 下拉可见性
+ *          │
+ *          ▼
+ *   destroy()
+ *     └─ 移除 document mousedown 监听，防止内存泄漏
+ *     └─ 调用父类 destroy()
+ *
+ * ============================================================
+ */
+
 import {BaseComponent, IComponentConfig} from '../../component';
 import {IZoneWrapper} from '../../core';
 import {DynamicValue} from '../../types';
