@@ -63,12 +63,10 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         }));
 
         input.addEventListener('focus', this.zoneWrapper.wrapInZone(() => {
-            if (this.filteredOptions.length > 0) {
-                this.showDropdown();
-            }
+            this.updateFilteredOptions(this.currentQuery);
         }));
 
-        document.addEventListener('click', this.zoneWrapper.wrapInZone((e) => {
+        document.addEventListener('mousedown', this.zoneWrapper.wrapInZone((e) => {
             if (!container.contains(e.target as Node)) {
                 this.hideDropdown();
             }
@@ -98,7 +96,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     private updateFilteredOptions(query: string) {
         const options = this.resolveValue(this.config.options || []);
         if (!query) {
-            this.filteredOptions = [];
+            this.filteredOptions = [...options];
         } else {
             this.filteredOptions = options.filter(opt =>
                 opt.label.toLowerCase().includes(query.toLowerCase())
