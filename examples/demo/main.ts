@@ -1,7 +1,7 @@
 import './polyfill';
 import {AppRoot} from '../../src/app-root';
 import {computed, signal, createZoneWrapper, effect} from '../../src/core';
-import {makeRef} from "../../src";
+import {makeDataAccessor, makeRef} from "../../src";
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -166,6 +166,7 @@ if (uiRoot) {
         const advancedGroup1 = advancedTab.add.Group({title: '自动补全 (Autocomplete)'});
         const autoData = signal('');
         advancedGroup1.add.Autocomplete({
+            id: 'auto-complete-1',
             placeholder: '输入 "a" 试试...',
             value: autoData,
             options: [
@@ -175,6 +176,7 @@ if (uiRoot) {
                 {label: 'Date', key: 'date'},
                 {label: 'Elderberry', key: 'elderberry'}
             ],
+            onSearch: (value: string) => console.log('Search:', value),
             onSelect: (opt) => console.log('Autocomplete Selected:', opt)
         });
         advancedGroup1.add.Label({text: computed(() => `当前输入: ${autoData.get()}`)});
@@ -183,6 +185,7 @@ if (uiRoot) {
         const asyncAutoData = signal('');
         const asyncOptions = signal<{ label: string, key: string }[]>([]);
         advancedGroup2.add.Autocomplete({
+            id: 'auto-complete-2',
             placeholder: '输入内容异步加载...',
             value: asyncAutoData,
             options: asyncOptions,

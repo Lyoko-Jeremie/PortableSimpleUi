@@ -327,7 +327,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
      */
     private bindInputEvents(): void {
         // 输入事件：用户键入内容时，更新查询词、清空已选项，并通知外部执行搜索。
-        this.inputEl.addEventListener('input', () => {
+        this.inputEl.addEventListener('input', (event) => {
             this.zoneWrapper.run(() => {
                 // 输入框内容直接作为新的查询词。
                 this.state.query = this.inputEl.value;
@@ -343,7 +343,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         });
 
         // 聚焦和点击输入框时，都视为用户希望查看候选项，因此复用同一处理逻辑。
-        const handleActivate = () => {
+        const handleActivate = (type: string, event: Event) => {
             this.zoneWrapper.run(() => {
                 // 激活时直接打开下拉。
                 this.openDropdown();
@@ -352,10 +352,11 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
                 // 触发重新渲染，让下拉内容按当前状态更新。
                 this.markDirty();
             });
+            event.preventDefault();
         };
 
-        this.inputEl.addEventListener('focus', handleActivate);
-        this.inputEl.addEventListener('click', handleActivate);
+        this.inputEl.addEventListener('focus', handleActivate.bind(this, 'focus'));
+        this.inputEl.addEventListener('click', handleActivate.bind(this, 'click'));
     }
 
     /**
@@ -492,7 +493,6 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
 
         // 将外部受控值同步到内部状态与输入框显示内容。
         this.state.selectedKey = externalKey;
-        this.state.query = selectedOption.label;
     }
 
     /**
@@ -547,14 +547,11 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
             itemEl.className = 'ps-autocomplete-item';
             itemEl.textContent = option.label;
 
-            // 阻止 mousedown 导致输入框失焦，从而避免点击选项时提前关闭下拉。
-            itemEl.addEventListener('mousedown', (event) => {
-                event.preventDefault();
-            });
-
             // 选中项时同步内部状态、外部 value，并关闭下拉。
-            itemEl.addEventListener('click', () => {
+            itemEl.addEventListener('mousedown', (event) => {
+                // console.log('Item mousedown:', option.label);
                 this.zoneWrapper.run(() => {
+                    // console.log('Selected option:', option.label);
                     this.state.query = option.label;
                     this.state.selectedKey = option.key;
                     if (this.config.value) {
@@ -568,6 +565,12 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
                     // 标记脏状态，确保输入框和下拉视觉都刷新到最新值。
                     this.markDirty();
                 });
+                event.preventDefault();
+            });
+
+            // 选中项时同步内部状态、外部 value，并关闭下拉。
+            itemEl.addEventListener('click', (event) => {
+                event.preventDefault();
             });
 
             this.dropdownEl.appendChild(itemEl);
