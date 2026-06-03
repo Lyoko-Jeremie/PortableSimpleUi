@@ -104,7 +104,7 @@ export const DEFAULT_THEME_CSS = `
   color: #007bff;
   background-color: rgba(0, 123, 255, 0.05);
 }
-.ps-shadow-root .ps-tabs-item.active, .ps-root .ps-tabs-item.active {
+  .ps-shadow-root .ps-tabs-item.active, .ps-root .ps-tabs-item.active {
   color: #007bff;
   border-bottom-color: #007bff;
   font-weight: bold;
@@ -403,6 +403,26 @@ export const DEFAULT_THEME_CSS = `
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* Upload */
+.ps-shadow-root .ps-upload-container, .ps-root .ps-upload-container {
+  display: inline-block;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+  background-color: #f9f9f9;
+}
+.ps-shadow-root .ps-upload-container:hover, .ps-root .ps-upload-container:hover {
+  border-color: #007bff;
+  background-color: #f0f7ff;
+}
+.ps-shadow-root .ps-upload-container.dragging, .ps-root .ps-upload-container.dragging {
+  border-color: #28a745 !important;
+  background-color: #e8f5e9 !important;
+  opacity: 1 !important;
 }
 
 /* 全局样式支持 (当 mode 为 none 时) */

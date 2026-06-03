@@ -147,6 +147,323 @@ $ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helveti
   .ps-tabs-body {
     padding: 10px 0;
   }
+
+  /* Modal */
+  .ps-modal-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+  .ps-modal-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    max-width: 80vw;
+    overflow: hidden;
+  }
+  .ps-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .ps-modal-body {
+    padding: 20px;
+  }
+
+  /* Card */
+  .ps-card {
+    background: white;
+    border: 1px solid #eee !important;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .ps-card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+  }
+  .ps-card-body {
+    padding: 16px;
+  }
+
+  /* Alert */
+  .ps-alert {
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+  }
+  .ps-alert-info {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+    color: #004085;
+  }
+  .ps-alert-success {
+    background-color: #f6ffed;
+    border-color: #b7eb8f;
+    color: #155724;
+  }
+  .ps-alert-warning {
+    background-color: #fffbe6;
+    border-color: #ffe58f;
+    color: #856404;
+  }
+  .ps-alert-error {
+    background-color: #fff1f0;
+    border-color: #ffa39e;
+    color: #721c24;
+  }
+
+  /* Badge */
+  .ps-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+  }
+
+  /* Avatar */
+  .ps-avatar {
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #ccc;
+  }
+
+  /* Table */
+  .ps-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .ps-table th,
+  .ps-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  .ps-table th {
+    background-color: #fafafa;
+    font-weight: 500;
+  }
+
+  /* List */
+  .ps-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ps-list-item {
+    padding: 10px 16px;
+    border-bottom: 1px solid #eee;
+  }
+  .ps-list-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Pagination */
+  .psu-pagination-item {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.active {
+      background: $ps-primary-color;
+      color: white;
+      border-color: $ps-primary-color;
+    }
+  }
+
+  /* Autocomplete */
+  .ps-autocomplete-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  .ps-autocomplete-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid $ps-border-color;
+    border-radius: $ps-border-radius;
+    padding: 6px 12px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: $ps-primary-color;
+    }
+  }
+  .ps-autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .ps-autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  /* Multiselect */
+  .ps-multiselect-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  .ps-multiselect-input-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid $ps-border-color;
+    border-radius: $ps-border-radius;
+    padding: 4px 8px;
+    min-height: 32px;
+    background: white;
+    cursor: text;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+      border-color: $ps-primary-color;
+    }
+  }
+  .ps-multiselect-input {
+    flex: 1;
+    min-width: 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 2px 0;
+    font-family: inherit;
+    background: transparent;
+  }
+  .ps-multiselect-tag {
+    display: inline-flex;
+    align-items: center;
+    background: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 2px;
+    padding: 0 4px 0 8px;
+    font-size: 12px;
+    color: #004085;
+    white-space: nowrap;
+  }
+  .ps-multiselect-tag-close {
+    margin: 3px 0 3px 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #999;
+    transition: color 0.2s;
+    width: 1.5em;
+    border: 1px solid #91d5ff;
+    border-radius: 2px;
+    text-align: center;
+
+    &:hover {
+      color: #666;
+    }
+  }
+  .ps-multiselect-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .ps-multiselect-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+
+    &.selected {
+      background: #e6f7ff;
+      color: $ps-primary-color;
+    }
+  }
+  .ps-multiselect-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 1px solid $ps-border-color;
+    border-radius: 2px;
+    position: relative;
+  }
+  .ps-multiselect-item.selected .ps-multiselect-checkbox {
+    background: $ps-primary-color;
+    border-color: $ps-primary-color;
+
+    &::after {
+      content: "✓";
+      color: white;
+      font-size: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  /* Upload */
+  .ps-upload-container {
+    display: inline-block;
+    border: 2px dashed $ps-border-color;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    background-color: #f9f9f9;
+
+    &:hover {
+      border-color: $ps-primary-color;
+      background-color: #f0f7ff;
+    }
+
+    &.dragging {
+      border-color: #28a745 !important;
+      background-color: #e8f5e9 !important;
+      opacity: 1 !important;
+    }
+  }
 }
 
 // Global styles scoped by .ps-root
