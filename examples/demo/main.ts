@@ -54,6 +54,7 @@ if (uiRoot) {
         const formBaseGroup = group2.add.Flex({gap: '15px', direction: 'column'});
         const dataInput = {
             v: 'alice',
+            area: '这是一段多行文本\n第二行内容',
         }
         formBaseGroup.add.Input({
             placeholder: '请输入内容...',
@@ -72,6 +73,16 @@ if (uiRoot) {
         const radioRow = formBaseGroup.add.Flex({gap: '20px'});
         radioRow.add.Radio({label: '男', name: 'sex', value: 'male', checked: true});
         radioRow.add.Radio({label: '女', name: 'sex', value: 'female', checked: false});
+
+        formBaseGroup.add.TextArea({
+            placeholder: '请输入多行内容...',
+            rows: 3,
+            value: makeRef(dataInput, 'area'),
+            onInput: (v: string) => {
+                console.log('TextArea:', v);
+                dataInput.area = v;
+            },
+        });
 
         const group3 = basicTab.add.Group({title: '选择器与滑动条'});
         const selGroup = group3.add.Flex({gap: '15px', direction: 'column'});

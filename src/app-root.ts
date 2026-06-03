@@ -112,6 +112,7 @@ declare module './app-root' {
         Slider: typeof BasicComponents.Slider;
         ColorPicker: typeof BasicComponents.ColorPicker;
         ProgressBar: typeof BasicComponents.ProgressBar;
+        TextArea: typeof BasicComponents.TextArea;
 
         Flex: typeof LayoutComponents.Flex;
         Container: typeof LayoutComponents.Container;

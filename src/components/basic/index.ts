@@ -204,12 +204,86 @@ export class Input extends BaseComponent<IInputConfig> {
     public render(): void {
         super.render();
         const input = this.element as HTMLInputElement;
-        const val = this.state.value !== undefined ? this.state.value : this.resolveValue(this.config.value);
+        const configVal = this.resolveValue(this.config.value);
+        const val = configVal !== undefined ? configVal : this.state.value;
+
         if (input.value !== val && val !== undefined) {
             input.value = val;
         }
         if (this.config.placeholder !== undefined) {
             input.placeholder = this.resolveValue(this.config.placeholder);
+        }
+    }
+}
+
+/**
+ * 文本域组件配置。
+ */
+export interface ITextAreaConfig extends IComponentConfig {
+    /** 输入值（可双向绑定）。 */
+    value?: DynamicValue<string>;
+    /** 占位文本。 */
+    placeholder?: DynamicValue<string>;
+    /** 行数。 */
+    rows?: number;
+    /** 列数。 */
+    cols?: number;
+    /** input 事件回调。 */
+    onInput?: (value: string, self: TextArea) => void;
+    /** change 事件回调。 */
+    onChange?: (value: string, self: TextArea) => void;
+}
+
+/**
+ * 文本域组件。
+ */
+export class TextArea extends BaseComponent<ITextAreaConfig> {
+    /** 返回组件基础样式类名。 */
+    protected getBaseClassName(): string | null {
+        return 'ps-textarea';
+    }
+
+    /**
+     * 创建 textarea 元素并绑定 input/change 事件。
+     */
+    protected createHTMLElement(): HTMLTextAreaElement {
+        const textarea = document.createElement('textarea');
+        if (this.config.rows) textarea.rows = this.config.rows;
+        if (this.config.cols) textarea.cols = this.config.cols;
+
+        textarea.addEventListener('input', () => {
+            const run = () => {
+                this.state.value = textarea.value;
+                if (this.config.value) this.setValue(this.config.value, textarea.value);
+                if (this.config.onInput) this.config.onInput(textarea.value, this);
+            };
+            this.zoneWrapper.run(run);
+        });
+        textarea.addEventListener('change', () => {
+            const run = () => {
+                this.state.value = textarea.value;
+                if (this.config.value) this.setValue(this.config.value, textarea.value);
+                if (this.config.onChange) this.config.onChange(textarea.value, this);
+            };
+            this.zoneWrapper.run(run);
+        });
+        return textarea;
+    }
+
+    /**
+     * 渲染输入值与占位符。
+     */
+    public render(): void {
+        super.render();
+        const textarea = this.element as HTMLTextAreaElement;
+        const configVal = this.resolveValue(this.config.value);
+        const val = configVal !== undefined ? configVal : this.state.value;
+
+        if (textarea.value !== val && val !== undefined) {
+            textarea.value = val;
+        }
+        if (this.config.placeholder !== undefined) {
+            textarea.placeholder = this.resolveValue(this.config.placeholder);
         }
     }
 }
