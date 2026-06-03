@@ -16,6 +16,8 @@ export interface IUploadConfig extends IComponentConfig {
     onUpload?: (files: FileList | null, self: Upload) => void;
     /** 是否禁用。 */
     disabled?: DynamicValue<boolean>;
+    /** 拖拽文件进入时的 CSS 类名。 */
+    dragOverClass?: string;
 }
 
 /**
@@ -25,6 +27,7 @@ export interface IUploadConfig extends IComponentConfig {
 export class Upload extends BaseComponent<IUploadConfig> {
     private fileInput!: HTMLInputElement;
     private button!: HTMLButtonElement;
+    private _isDragging = false;
 
     protected getBaseClassName(): string | null {
         return 'ps-upload';
@@ -32,7 +35,7 @@ export class Upload extends BaseComponent<IUploadConfig> {
 
     protected createHTMLElement(): HTMLElement {
         const container = document.createElement('div');
-        container.style.display = 'inline-block';
+        container.className = 'ps-upload-container';
 
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -55,9 +58,55 @@ export class Upload extends BaseComponent<IUploadConfig> {
             });
         });
 
+        // 拖拽支持
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.resolveValue(this.config.disabled)) return;
+
+            if (!this._isDragging) {
+                this._isDragging = true;
+                container.classList.add('dragging');
+                if (this.config.dragOverClass) {
+                    container.classList.add(this.config.dragOverClass);
+                }
+            }
+        });
+
+        container.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.clearDragState(container);
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.clearDragState(container);
+
+            if (this.resolveValue(this.config.disabled)) return;
+
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+                this.zoneWrapper.run(() => {
+                    if (this.config.onUpload) {
+                        this.config.onUpload(files, this);
+                    }
+                });
+            }
+        });
+
         container.appendChild(fileInput);
         container.appendChild(button);
         return container;
+    }
+
+    private clearDragState(container: HTMLElement) {
+        this._isDragging = false;
+        container.classList.remove('dragging');
+        if (this.config.dragOverClass) {
+            container.classList.remove(this.config.dragOverClass);
+        }
     }
 
     public render(): void {

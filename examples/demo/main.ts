@@ -346,12 +346,12 @@ if (uiRoot) {
         const upDownRow = operatorGroup1.add.Row({gap: '10px'});
 
         upDownRow.add.Upload({
-            text: '选择文件',
+            text: '点击或拖拽文件上传',
             onUpload: (files) => {
                 if (files && files.length > 0) {
                     const file = files[0];
                     if (file) {
-                        alert(`选中了文件: ${file.name}`);
+                        alert(`选中了文件: ${file.name} (${files.length} 个文件)`);
                     }
                 }
             }

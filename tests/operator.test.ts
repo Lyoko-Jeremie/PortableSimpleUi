@@ -56,6 +56,40 @@ describe('Operator Components', () => {
             expect(input?.type).toBe('file');
             expect(input?.accept).toBe('.txt');
         });
+
+        it('should handle drop event', () => {
+            const onUpload = jest.fn();
+            const upload = new Upload({
+                text: 'Upload File',
+                onUpload: onUpload
+            }, zoneWrapper);
+            zoneWrapper.run(() => upload.render());
+
+            const container = upload.getElement();
+            
+            // 模拟 dragover
+            const dragOverEvent = new (global as any).window.CustomEvent('dragover', { bubbles: true });
+            dragOverEvent.preventDefault = jest.fn();
+            dragOverEvent.stopPropagation = jest.fn();
+            container.dispatchEvent(dragOverEvent);
+            
+            expect(container.classList.contains('dragging')).toBe(true);
+            expect(dragOverEvent.preventDefault).toHaveBeenCalled();
+
+            // 模拟 drop
+            const dropEvent = new (global as any).window.CustomEvent('drop', { bubbles: true });
+            dropEvent.preventDefault = jest.fn();
+            dropEvent.stopPropagation = jest.fn();
+            (dropEvent as any).dataTransfer = {
+                files: [{ name: 'test.txt' }]
+            };
+            
+            container.dispatchEvent(dropEvent);
+            
+            expect(container.classList.contains('dragging')).toBe(false);
+            expect(onUpload).toHaveBeenCalled();
+            expect(onUpload.mock.calls[0][0][0].name).toBe('test.txt');
+        });
     });
 
     describe('Download Component', () => {
