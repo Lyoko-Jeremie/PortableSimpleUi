@@ -95,6 +95,7 @@ export interface IComponentRegistry {
 import * as BasicComponents from './components/basic/index';
 import * as LayoutComponents from './components/layout/index';
 import * as ComplexComponents from './components/complex/index';
+import * as AdvancedComponents from './components/advanced/index';
 
 declare module './app-root' {
     interface IComponentRegistry {
@@ -139,6 +140,7 @@ declare module './app-root' {
         Calendar: typeof ComplexComponents.Calendar;
         TreeView: typeof ComplexComponents.TreeView;
 
+        Autocomplete: typeof AdvancedComponents.Autocomplete;
     }
 }
 
@@ -177,6 +179,12 @@ Object.keys(LayoutComponents).forEach(key => {
 });
 Object.keys(ComplexComponents).forEach(key => {
     const component = (ComplexComponents as any)[key];
+    if (component && component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
+Object.keys(AdvancedComponents).forEach(key => {
+    const component = (AdvancedComponents as any)[key];
     if (component && component.prototype instanceof BaseComponent) {
         registerComponent(key as any, component);
     }

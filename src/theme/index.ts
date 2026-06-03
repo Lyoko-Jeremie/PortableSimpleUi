@@ -235,6 +235,7 @@ export const DEFAULT_THEME_CSS = `
   margin-top: 10px;
 }
 
+/* Pagination */
 .ps-shadow-root .psu-pagination-item, .ps-root .psu-pagination-item {
   min-width: 32px;
   height: 32px;
@@ -248,6 +249,50 @@ export const DEFAULT_THEME_CSS = `
   background: #007bff;
   color: white;
   border-color: #007bff;
+}
+
+/* Autocomplete */
+.ps-shadow-root .ps-autocomplete-container, .ps-root .ps-autocomplete-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.ps-shadow-root .ps-autocomplete-input, .ps-root .ps-autocomplete-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.ps-shadow-root .ps-autocomplete-input:focus, .ps-root .ps-autocomplete-input:focus {
+  border-color: #007bff;
+}
+.ps-shadow-root .ps-autocomplete-dropdown, .ps-root .ps-autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.ps-shadow-root .ps-autocomplete-item, .ps-root .ps-autocomplete-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.ps-shadow-root .ps-autocomplete-item:hover, .ps-root .ps-autocomplete-item:hover {
+  background: #f0f0f0;
 }
 
 /* 全局样式支持 (当 mode 为 none 时) */

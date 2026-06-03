@@ -5,4 +5,6 @@ export * from './utils';
 export * from './types';
 export * from './components/basic/index';
 export * from './components/layout/index';
+export * from './components/complex/index';
+export * from './components/advanced/index';
 export * from './theme/index';
