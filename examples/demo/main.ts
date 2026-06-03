@@ -24,6 +24,7 @@ if (uiRoot) {
                 {id: 'complex', label: '复合组件'},
                 {id: 'advanced', label: '高级组件'},
                 {id: 'form', label: '表单演示'},
+                {id: 'graphics', label: '图形组件'},
                 {id: 'signal', label: '响应式数据'}
             ],
             activeTabId: 'basic'
@@ -35,6 +36,7 @@ if (uiRoot) {
         const complexTab = tabs.add.Container({});
         const advancedTab = tabs.add.Container({});
         const formTab = tabs.add.Container({});
+        const graphicsTab = tabs.add.Container({});
         const signalTab = tabs.add.Container({});
 
         // --- 基础组件页 ---
@@ -262,6 +264,52 @@ if (uiRoot) {
             text: '显示 Toast', onClick: () => {
                 app.add.Toast({text: '这是一条通知消息', duration: 3000});
             }
+        });
+
+        // --- 图形组件页 ---
+        const graphicsGroup1 = graphicsTab.add.Group({title: 'Canvas 基础'});
+        const canvasWidth = signal(300);
+        const canvasHeight = signal(150);
+        
+        const canvasComp = graphicsGroup1.add.Canvas({
+            width: canvasWidth,
+            height: canvasHeight,
+            style: {
+                border: '1px solid #ccc',
+                marginBottom: '10px'
+            }
+        });
+
+        // 演示如何操作 Canvas
+        const drawOnCanvas = () => {
+            const canvas = canvasComp.getCanvas();
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#007bff';
+                ctx.fillRect(10, 10, canvas.width - 20, canvas.height - 20);
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Arial';
+                ctx.fillText('Hello Canvas!', 20, 40);
+            }
+        };
+
+        // 初始绘制
+        setTimeout(myZone.wrapInZone(() => drawOnCanvas()), 100);
+
+        const canvasControls = graphicsGroup1.add.Row({gap: '10px'});
+        canvasControls.add.Button({
+            text: '随机大小',
+            onClick: () => {
+                canvasWidth.set(Math.floor(Math.random() * 200) + 200);
+                canvasHeight.set(Math.floor(Math.random() * 100) + 100);
+                // 重新渲染后绘制
+                setTimeout(myZone.wrapInZone(() => drawOnCanvas()), 0);
+            }
+        });
+        canvasControls.add.Button({
+            text: '重绘内容',
+            onClick: () => drawOnCanvas()
         });
 
         // --- 响应式数据页 ---

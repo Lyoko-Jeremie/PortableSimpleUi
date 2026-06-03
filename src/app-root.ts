@@ -96,6 +96,7 @@ import * as BasicComponents from './components/basic/index';
 import * as LayoutComponents from './components/layout/index';
 import * as ComplexComponents from './components/complex/index';
 import * as AdvancedComponents from './components/advanced/index';
+import * as GraphicsComponents from './components/graphics/index';
 
 declare module './app-root' {
     interface IComponentRegistry {
@@ -142,6 +143,8 @@ declare module './app-root' {
 
         Autocomplete: typeof AdvancedComponents.Autocomplete;
         Multiselect: typeof AdvancedComponents.Multiselect;
+
+        Canvas: typeof GraphicsComponents.Canvas;
     }
 }
 
@@ -186,6 +189,12 @@ Object.keys(ComplexComponents).forEach(key => {
 });
 Object.keys(AdvancedComponents).forEach(key => {
     const component = (AdvancedComponents as any)[key];
+    if (component && component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
+Object.keys(GraphicsComponents).forEach(key => {
+    const component = (GraphicsComponents as any)[key];
     if (component && component.prototype instanceof BaseComponent) {
         registerComponent(key as any, component);
     }
