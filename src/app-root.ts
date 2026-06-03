@@ -141,6 +141,7 @@ declare module './app-root' {
         TreeView: typeof ComplexComponents.TreeView;
 
         Autocomplete: typeof AdvancedComponents.Autocomplete;
+        Multiselect: typeof AdvancedComponents.Multiselect;
     }
 }
 

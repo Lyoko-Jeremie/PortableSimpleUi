@@ -295,6 +295,112 @@ export const DEFAULT_THEME_CSS = `
   background: #f0f0f0;
 }
 
+/* Multiselect */
+.ps-shadow-root .ps-multiselect-container, .ps-root .ps-multiselect-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.ps-shadow-root .ps-multiselect-input-wrapper, .ps-root .ps-multiselect-input-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  min-height: 32px;
+  background: white;
+  cursor: text;
+  transition: border-color 0.2s;
+}
+.ps-shadow-root .ps-multiselect-input-wrapper:focus-within, .ps-root .ps-multiselect-input-wrapper:focus-within {
+  border-color: #007bff;
+}
+.ps-shadow-root .ps-multiselect-input, .ps-root .ps-multiselect-input {
+  flex: 1;
+  min-width: 40px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 2px 0;
+  font-family: inherit;
+  background: transparent;
+}
+.ps-shadow-root .ps-multiselect-tag, .ps-root .ps-multiselect-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #e6f7ff;
+  border: 1px solid #91d5ff;
+  border-radius: 2px;
+  padding: 0 4px 0 8px;
+  font-size: 12px;
+  color: #004085;
+  white-space: nowrap;
+}
+.ps-shadow-root .ps-multiselect-tag-close, .ps-root .ps-multiselect-tag-close {
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+  transition: color 0.2s;
+}
+.ps-shadow-root .ps-multiselect-tag-close:hover, .ps-root .ps-multiselect-tag-close:hover {
+  color: #666;
+}
+.ps-shadow-root .ps-multiselect-dropdown, .ps-root .ps-multiselect-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.ps-shadow-root .ps-multiselect-item, .ps-root .ps-multiselect-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.ps-shadow-root .ps-multiselect-item:hover, .ps-root .ps-multiselect-item:hover {
+  background: #f0f0f0;
+}
+.ps-shadow-root .ps-multiselect-item.selected, .ps-root .ps-multiselect-item.selected {
+  background: #e6f7ff;
+  color: #007bff;
+}
+.ps-shadow-root .ps-multiselect-checkbox, .ps-root .ps-multiselect-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  position: relative;
+}
+.ps-shadow-root .ps-multiselect-item.selected .ps-multiselect-checkbox, .ps-root .ps-multiselect-item.selected .ps-multiselect-checkbox {
+  background: #007bff;
+  border-color: #007bff;
+}
+.ps-shadow-root .ps-multiselect-item.selected .ps-multiselect-checkbox::after, .ps-root .ps-multiselect-item.selected .ps-multiselect-checkbox::after {
+  content: "✓";
+  color: white;
+  font-size: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* 全局样式支持 (当 mode 为 none 时) */
 .ps-root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

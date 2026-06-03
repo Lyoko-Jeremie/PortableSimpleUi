@@ -208,6 +208,27 @@ if (uiRoot) {
             }
         });
         advancedGroup2.add.Label({text: computed(() => `当前输入: ${asyncAutoData.get()}`)});
+        
+        const advancedGroup3 = advancedTab.add.Group({title: '多选选择器 (Multiselect)'});
+        const multiValue = signal(['apple', 'cherry']);
+        advancedGroup3.add.Multiselect({
+            placeholder: '请选择水果...',
+            value: multiValue,
+            options: [
+                {label: 'Apple (苹果)', key: 'apple'},
+                {label: 'Banana (香蕉)', key: 'banana'},
+                {label: 'Cherry (樱桃)', key: 'cherry'},
+                {label: 'Date (枣)', key: 'date'},
+                {label: 'Elderberry (接骨木莓)', key: 'elderberry'},
+                {label: 'Fig (无花果)', key: 'fig'},
+                {label: 'Grape (葡萄)', key: 'grape'}
+            ],
+            onSelect: (opts) => {
+                console.log('Multiselect Selected:', opts);
+                multiValue.set(opts.map(o => o.key));
+            }
+        });
+        advancedGroup3.add.Label({text: computed(() => `当前选中: ${multiValue.get().join(', ')}`)});
 
         // --- 表单演示页 ---
 
