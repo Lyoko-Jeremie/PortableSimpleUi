@@ -210,7 +210,7 @@ if (uiRoot) {
             }
         });
         advancedGroup2.add.Label({text: computed(() => `当前输入: ${asyncAutoData.get()}`)});
-        
+
         const advancedGroup3 = advancedTab.add.Group({title: '多选选择器 (Multiselect)'});
         const multiValue = signal(['apple', 'cherry']);
         advancedGroup3.add.Multiselect({
@@ -270,7 +270,7 @@ if (uiRoot) {
         const graphicsGroup1 = graphicsTab.add.Group({title: 'Canvas 基础'});
         const canvasWidth = signal(300);
         const canvasHeight = signal(150);
-        
+
         const canvasComp = graphicsGroup1.add.Canvas({
             width: canvasWidth,
             height: canvasHeight,
@@ -310,6 +310,20 @@ if (uiRoot) {
         canvasControls.add.Button({
             text: '重绘内容',
             onClick: () => drawOnCanvas()
+        });
+
+        const graphicsGroup2 = graphicsTab.add.Group({title: '图片组件 (Image)'});
+        const imgId = signal(300);
+        graphicsGroup2.add.Image({
+            src: computed(() => `https://picsum.photos/id/${imgId.value}/200/100`),
+            width: 200,
+            height: 100,
+            style: {border: '1px solid #ccc', borderRadius: '4px', display: 'block'}
+        });
+        graphicsGroup2.add.Button({
+            text: '随机切换图片',
+            style: {marginTop: '10px'},
+            onClick: () => imgId.set(Math.floor(Math.random() * 500))
         });
 
         // --- 响应式数据页 ---

@@ -103,7 +103,7 @@ declare module './app-root' {
         Text: typeof BasicComponents.Text;
         Label: typeof BasicComponents.Label;
         Button: typeof BasicComponents.Button;
-        Image: typeof BasicComponents.Image;
+        Image: typeof GraphicsComponents.Image;
         Input: typeof BasicComponents.Input;
         Checkbox: typeof BasicComponents.Checkbox;
         Radio: typeof BasicComponents.Radio;
