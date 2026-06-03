@@ -341,11 +341,15 @@ export const DEFAULT_THEME_CSS = `
   white-space: nowrap;
 }
 .ps-shadow-root .ps-multiselect-tag-close, .ps-root .ps-multiselect-tag-close {
-  margin-left: 4px;
+  margin: 3px 0 3px 6px;
   cursor: pointer;
   font-size: 14px;
   color: #999;
   transition: color 0.2s;
+  width: 1.5em;
+  border: 1px solid #91d5ff;
+  border-radius: 2px;
+  text-align: center;
 }
 .ps-shadow-root .ps-multiselect-tag-close:hover, .ps-root .ps-multiselect-tag-close:hover {
   color: #666;
