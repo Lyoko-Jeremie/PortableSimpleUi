@@ -24,7 +24,7 @@ export type StyleDeclaration = {
 export interface IComponentConfig {
     id?: string;
     style?: StyleDeclaration;
-    tabTitle?: DynamicValue<string>;
+    // tabTitle?: DynamicValue<string>;
 }
 
 /**

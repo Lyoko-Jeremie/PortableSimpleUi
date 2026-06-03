@@ -34,32 +34,32 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         this._tabItems = config.items || [];
         this._activeTabId = config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : '');
 
-        // 覆盖 add 代理
-        const self = this;
-        const originalAdd = this.add;
-        this.add = new Proxy(originalAdd, {
-            get(target, prop) {
-                const value = (target as any)[prop];
-                if (typeof value === 'function') {
-                    return (...args: any[]) => {
-                        const childConfig = args[0] || {};
-                        if (childConfig.tabTitle || self.config.autoCreateTab !== false) {
-                            const tabId = childConfig.id || `tab-${Math.random().toString(36).substr(2, 9)}`;
-                            const tabLabel = childConfig.tabTitle || childConfig.id || (childConfig.id ? null : 'Tab');
-                            if (!self._tabItems.find(item => item.id === tabId)) {
-                                self._tabItems.push({ id: tabId, label: tabLabel || tabId });
-                                if (!self._activeTabId) self._activeTabId = tabId;
-                            }
-                        }
-                        const component = value.apply(target, args);
-                        // 在组件添加后同步渲染 header
-                        self.renderHeader();
-                        return component;
-                    };
-                }
-                return value;
-            }
-        }) as any;
+        // // 覆盖 add 代理
+        // const self = this;
+        // const originalAdd = this.add;
+        // this.add = new Proxy(originalAdd, {
+        //     get(target, prop) {
+        //         const value = (target as any)[prop];
+        //         if (typeof value === 'function') {
+        //             return (...args: any[]) => {
+        //                 const childConfig = args[0] || {};
+        //                 if (childConfig.tabTitle || self.config.autoCreateTab !== false) {
+        //                     const tabId = childConfig.id || `tab-${Math.random().toString(36).substr(2, 9)}`;
+        //                     const tabLabel = childConfig.tabTitle || childConfig.id || (childConfig.id ? null : 'Tab');
+        //                     if (!self._tabItems.find(item => item.id === tabId)) {
+        //                         self._tabItems.push({ id: tabId, label: tabLabel || tabId });
+        //                         if (!self._activeTabId) self._activeTabId = tabId;
+        //                     }
+        //                 }
+        //                 const component = value.apply(target, args);
+        //                 // 在组件添加后同步渲染 header
+        //                 self.renderHeader();
+        //                 return component;
+        //             };
+        //         }
+        //         return value;
+        //     }
+        // }) as any;
     }
 
     protected getBaseClassName(): string | null {
@@ -100,13 +100,13 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             get: (target, prop: string) => {
                 return (config: any) => {
                     const childConfig = config || {};
-                    // 将 addTab 的配置注入到组件配置中
-                    if (tabConfig.id && !childConfig.id) {
-                        childConfig.id = tabConfig.id;
-                    }
-                    if (tabConfig.title && !childConfig.tabTitle) {
-                        childConfig.tabTitle = tabConfig.title;
-                    }
+                    // // 将 addTab 的配置注入到组件配置中
+                    // if (tabConfig.id && !childConfig.id) {
+                    //     childConfig.id = tabConfig.id;
+                    // }
+                    // if (tabConfig.title && !childConfig.tabTitle) {
+                    //     childConfig.tabTitle = tabConfig.title;
+                    // }
 
                     // 调用正常的 add 代理
                     return (self.add as any)[prop](childConfig);
