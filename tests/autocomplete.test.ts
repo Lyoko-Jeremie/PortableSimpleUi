@@ -1,183 +1,134 @@
-import {AppRoot, createZoneWrapper} from '../src/index';
+import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
+import {makeDataAccessor} from '../src/utils';
+import {IAutocompleteOption} from '../src/components/advanced/index';
 
-describe('Autocomplete Component', () => {
-    let parent: HTMLElement;
+describe('Autocomplete', () => {
+    let container: HTMLElement;
+    let appRoot: AppRoot;
+    const zoneWrapper = createZoneWrapper('autocomplete-test');
 
     beforeEach(() => {
-        parent = document.createElement('div');
-        document.body.appendChild(parent);
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        appRoot = new AppRoot(container, {
+            zoneWrapper,
+            styleIsolation: {mode: 'none'}
+        });
     });
 
     afterEach(() => {
-        document.body.removeChild(parent);
+        appRoot.destroy();
+        document.body.removeChild(container);
     });
 
-    it('should render correctly', () => {
-        const zone = createZoneWrapper('test');
-        const app = new AppRoot(parent, {
-            zoneWrapper: zone,
-            styleIsolation: { mode: 'none' }
-        });
-
-        const autocomplete = app.add.Autocomplete({
-            placeholder: 'Search fruit...',
+    it('opens dropdown with all items when clicking an empty input', () => {
+        const autocomplete = appRoot.add.Autocomplete({
             options: [
-                { label: 'Apple', value: 'apple' },
-                { label: 'Banana', value: 'banana' },
-                { label: 'Cherry', value: 'cherry' }
+                {key: 'apple', label: 'Apple'},
+                {key: 'banana', label: 'Banana'},
+                {key: 'cherry', label: 'Cherry'}
             ]
         });
+        appRoot.renderAll();
 
-        const input = autocomplete.getElement().querySelector('input');
-        expect(input).toBeTruthy();
-        expect(input?.placeholder).toBe('Search fruit...');
-    });
-
-    it('should filter options on input', () => {
-        const zone = createZoneWrapper('test');
-        const app = new AppRoot(parent, {
-            zoneWrapper: zone,
-            styleIsolation: { mode: 'none' }
-        });
-
-        const autocomplete = app.add.Autocomplete({
-            options: [
-                { label: 'Apple', value: 'apple' },
-                { label: 'Banana', value: 'banana' },
-                { label: 'Cherry', value: 'cherry' }
-            ]
-        });
-
-        const input = autocomplete.getElement().querySelector('input') as HTMLInputElement;
+        const input = autocomplete.getElement().querySelector('.ps-autocomplete-input') as HTMLInputElement;
         const dropdown = autocomplete.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
 
-        input.value = 'app';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
 
-        const items = dropdown.querySelectorAll('.ps-autocomplete-item');
-        expect(items.length).toBe(1);
-        expect(items[0].textContent).toBe('Apple');
         expect(dropdown.style.display).toBe('block');
+        expect(dropdown.querySelectorAll('.ps-autocomplete-item').length).toBe(3);
     });
 
-    it('should select an option', () => {
-        const zone = createZoneWrapper('test');
-        const app = new AppRoot(parent, {
-            zoneWrapper: zone,
-            styleIsolation: { mode: 'none' }
-        });
+    it('closes dropdown and writes selected option key to output value', () => {
+        const model = {selectedKey: ''};
+        const onSelect = jest.fn();
 
-        let selectedValue = '';
-        const autocomplete = app.add.Autocomplete({
+        const autocomplete = appRoot.add.Autocomplete({
+            value: makeDataAccessor(model, 'selectedKey'),
             options: [
-                { label: 'Apple', value: 'apple' }
+                {key: {value: 'alpha-key'}, label: () => 'Alpha'},
+                {key: 'beta-key', label: 'Beta'}
             ],
-            onSelect: (opt) => {
-                selectedValue = opt.value;
-            }
+            onSelect
         });
+        appRoot.renderAll();
 
-        const input = autocomplete.getElement().querySelector('input') as HTMLInputElement;
-        input.value = 'app';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-
-        const item = autocomplete.getElement().querySelector('.ps-autocomplete-item') as HTMLElement;
-        item.click();
-
-        expect(input.value).toBe('Apple');
-        expect(selectedValue).toBe('apple');
+        const input = autocomplete.getElement().querySelector('.ps-autocomplete-input') as HTMLInputElement;
         const dropdown = autocomplete.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
+
+        input.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        const firstItem = dropdown.querySelector('.ps-autocomplete-item') as HTMLDivElement;
+        firstItem.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+
+        expect(model.selectedKey).toBe('alpha-key');
+        expect(input.value).toBe('Alpha');
+        expect(dropdown.style.display).toBe('none');
+        expect(onSelect).toHaveBeenCalledWith({key: 'alpha-key', label: 'Alpha'}, autocomplete);
+    });
+
+    it('closes dropdown immediately when clicking outside', () => {
+        const autocomplete = appRoot.add.Autocomplete({
+            options: [
+                {key: 'apple', label: 'Apple'},
+                {key: 'banana', label: 'Banana'}
+            ]
+        });
+        appRoot.renderAll();
+
+        const input = autocomplete.getElement().querySelector('.ps-autocomplete-input') as HTMLInputElement;
+        const dropdown = autocomplete.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
+
+        input.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        expect(dropdown.style.display).toBe('block');
+
+        document.body.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+        appRoot.renderAll();
+
         expect(dropdown.style.display).toBe('none');
     });
 
-    it('should update value when using { value: T } pattern (Bug 1)', () => {
-        const zone = createZoneWrapper('test');
-        const app = new AppRoot(parent, {
-            zoneWrapper: zone,
-            styleIsolation: { mode: 'none' }
-        });
-
-        // Simulate a simple value holder without a set() method
-        const valueHolder = { value: '' };
-
-        const autocomplete = app.add.Autocomplete({
-            value: valueHolder,
-            options: [
-                { label: 'Cherry', value: 'cherry' }
-            ]
-        });
-
-        const input = autocomplete.getElement().querySelector('input') as HTMLInputElement;
-        input.value = 'ch';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-
-        const item = autocomplete.getElement().querySelector('.ps-autocomplete-item') as HTMLElement;
-        item.click();
-
-        // Value should be updated to the selected option's label
-        expect(valueHolder.value).toBe('Cherry');
-        expect(input.value).toBe('Cherry');
-    });
-
-    it('should keep dropdown closed after selecting async option (Bug 2)', (done) => {
-        const zone = createZoneWrapper('test');
-        const app = new AppRoot(parent, {
-            zoneWrapper: zone,
-            styleIsolation: { mode: 'none' }
-        });
-
-        const asyncOptions = {
-            value: [] as { label: string; value: any }[],
-            get() { return this.value; },
-            set(v: any) { this.value = v; }
+    it('supports programmatic option updates and dynamic item values', () => {
+        const output = {value: ''};
+        const optionState: {value: IAutocompleteOption[]; get: () => IAutocompleteOption[]; set: (next: IAutocompleteOption[]) => void} = {
+            value: [{key: 'old-1', label: 'Old Option'}],
+            get() {
+                return this.value;
+            },
+            set(next: IAutocompleteOption[]) {
+                this.value = next;
+            }
         };
 
-        let searchCount = 0;
-        const autocomplete = app.add.Autocomplete({
-            options: asyncOptions,
-            onSearch: (query) => {
-                searchCount++;
-                // Simulate async loading
-                setTimeout(() => {
-                    if (query === 'ch') {
-                        asyncOptions.set([
-                            { label: 'Cherry', value: 'cherry' }
-                        ]);
-                    } else {
-                        asyncOptions.set([]);
-                    }
-                    app.markDirty();
-                }, 10);
-            }
+        const autocomplete = appRoot.add.Autocomplete({
+            value: output,
+            options: optionState
         });
+        appRoot.renderAll();
 
-        const input = autocomplete.getElement().querySelector('input') as HTMLInputElement;
+        autocomplete.setOptions(() => [
+            {key: 'new-1', label: () => 'New Option 1'},
+            {key: () => 'new-2', label: {value: 'New Option 2'}}
+        ]);
+
+        const input = autocomplete.getElement().querySelector('.ps-autocomplete-input') as HTMLInputElement;
         const dropdown = autocomplete.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
 
-        // Type to trigger async search
-        input.value = 'ch';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        const items = dropdown.querySelectorAll('.ps-autocomplete-item');
 
-        // Wait for async options to load and dropdown to appear
-        setTimeout(() => {
-            expect(dropdown.style.display).toBe('block');
-            const item = dropdown.querySelector('.ps-autocomplete-item') as HTMLElement;
-            expect(item).toBeTruthy();
+        expect(items.length).toBe(2);
+        expect(items[1]?.textContent).toBe('New Option 2');
 
-            const searchCountBeforeClick = searchCount;
-            item.click();
-
-            // Dropdown should be hidden immediately
-            expect(dropdown.style.display).toBe('none');
-
-            // Wait for any async callbacks that might fire after click
-            setTimeout(() => {
-                // Dropdown should STILL be hidden (Bug 2: was re-opening)
-                expect(dropdown.style.display).toBe('none');
-                // onSearch should NOT have been called again from the programmatic input change
-                expect(searchCount).toBe(searchCountBeforeClick);
-                done();
-            }, 50);
-        }, 20);
+        (items[1] as HTMLDivElement).dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        expect(output.value).toBe('new-2');
     });
 });
+

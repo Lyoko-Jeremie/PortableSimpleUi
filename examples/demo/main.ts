@@ -169,11 +169,11 @@ if (uiRoot) {
             placeholder: '输入 "a" 试试...',
             value: autoData,
             options: [
-                {label: 'Apple', value: 'apple'},
-                {label: 'Banana', value: 'banana'},
-                {label: 'Cherry', value: 'cherry'},
-                {label: 'Date', value: 'date'},
-                {label: 'Elderberry', value: 'elderberry'}
+                {label: 'Apple', key: 'apple'},
+                {label: 'Banana', key: 'banana'},
+                {label: 'Cherry', key: 'cherry'},
+                {label: 'Date', key: 'date'},
+                {label: 'Elderberry', key: 'elderberry'}
             ],
             onSelect: (opt) => console.log('Autocomplete Selected:', opt)
         });
@@ -181,7 +181,7 @@ if (uiRoot) {
 
         const advancedGroup2 = advancedTab.add.Group({title: '异步自动补全'});
         const asyncAutoData = signal('');
-        const asyncOptions = signal<{ label: string, value: any }[]>([]);
+        const asyncOptions = signal<{ label: string, key: string }[]>([]);
         advancedGroup2.add.Autocomplete({
             placeholder: '输入内容异步加载...',
             value: asyncAutoData,
@@ -193,9 +193,9 @@ if (uiRoot) {
                     console.log('Searching setTimeout:', query);
                     if (query) {
                         asyncOptions.set([
-                            {label: `${query} 1`, value: 1},
-                            {label: `${query} 2`, value: 2},
-                            {label: `${query} 3`, value: 3},
+                            {label: `${query} 1`, key: `${query}-1`},
+                            {label: `${query} 2`, key: `${query}-2`},
+                            {label: `${query} 3`, key: `${query}-3`},
                         ]);
                     } else {
                         asyncOptions.set([]);
