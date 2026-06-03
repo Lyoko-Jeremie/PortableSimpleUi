@@ -162,6 +162,17 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     // 记录绑定到 document 上的 mousedown 处理函数，便于销毁时移除事件监听。
     private onDocumentMouseDown!: (event: MouseEvent) => void;
 
+    /**
+     * 构造函数：初始化组件。
+     *
+     * 父类负责调用 `createHTMLElement()` 建立 DOM 骨架，本构造函数在其基础上：
+     * 1. 从已建立的 DOM 中查找并缓存 `inputEl`、`dropdownEl` 两个关键节点；
+     * 2. 绑定输入框交互事件与全局点击外部关闭事件；
+     * 3. 将 `state.query` 和 `state.selectedKey` 初始化为空值。
+     *
+     * @param config       组件配置，包含选项列表、受控值、回调函数等
+     * @param zoneWrapper  变更检测区域包装器，所有状态变更须在其 `run()` 内执行
+     */
     constructor(config: IAutocompleteConfig, zoneWrapper: IZoneWrapper) {
         super(config, zoneWrapper);
         // 组件 DOM 已由父类创建完成，这里直接缓存关键节点，后续渲染和交互都会频繁使用。
@@ -178,11 +189,29 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         this.state.selectedKey = undefined as string | undefined;
     }
 
+    /**
+     * 返回组件根节点的基础 CSS 类名。
+     *
+     * 父类会将此值设置到根元素的 `className` 上，
+     * 供外部样式表和测试用例通过类名定位组件。
+     *
+     * @returns 固定返回 `'ps-autocomplete-container'`
+     */
     protected getBaseClassName(): string | null {
         // 返回组件根节点的基础 class，便于样式控制与外部定位。
         return 'ps-autocomplete-container';
     }
 
+    /**
+     * 构建并返回组件的初始 DOM 结构。
+     *
+     * 由父类在构造阶段调用一次，生成：
+     * - 一个外层容器 `<div>`
+     * - 其中包含 `<input>` 输入框（autocomplete 属性关闭，避免浏览器原生提示干扰）
+     * - 以及初始隐藏的下拉容器 `<div>`
+     *
+     * @returns 组件根 DOM 节点
+     */
     protected createHTMLElement(): HTMLElement {
         // 先创建容器，再依次创建输入框与下拉容器，最后组合成完整组件 DOM。
         const container = document.createElement('div');
@@ -202,12 +231,30 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         return container;
     }
 
+    /**
+     * 外部更新选项列表的公开接口。
+     *
+     * 将新的选项列表写入配置后立即调用 `markDirty()`，
+     * 通知调度器在下一帧重新执行 `render()` 刷新下拉候选项。
+     *
+     * @param options 新的选项列表，支持动态值（函数或直接值）
+     */
     public setOptions(options: DynamicValue<IAutocompleteOption[]>): void {
         // 外部更新选项后只需要标记组件脏状态，由 render 统一刷新视图。
         this.config.options = options;
         this.markDirty();
     }
 
+    /**
+     * 渲染函数：将当前配置与状态同步到 DOM。
+     *
+     * 由父类调度器在 `markDirty()` 后的下一帧调用，执行顺序为：
+     * 1. 调用 `super.render()` 完成父类通用渲染；
+     * 2. 同步 `placeholder` 到输入框；
+     * 3. 解析动态选项列表 → 同步外部受控值 → 读取当前查询词；
+     * 4. 筛选候选项并重新渲染下拉列表；
+     * 5. 根据 `isDropdownOpen` 控制下拉可见性。
+     */
     public render(): void {
         // 先交给父类执行基础渲染逻辑，例如应用状态和配置的通用处理。
         super.render();
@@ -243,6 +290,13 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
     }
 
+    /**
+     * 销毁组件，释放所有外部资源。
+     *
+     * 移除挂载在 `document` 上的 `mousedown` 全局监听，
+     * 防止组件销毁后仍响应事件导致内存泄漏或错误。
+     * 最后调用 `super.destroy()` 执行父类清理逻辑。
+     */
     public destroy(): void {
         // 销毁时需要移除全局监听，避免内存泄漏以及组件销毁后继续响应事件。
         if (this.onDocumentMouseDown) {
@@ -252,11 +306,25 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         super.destroy();
     }
 
+    /**
+     * 将下拉状态标记为"打开"。
+     *
+     * 仅修改 `isDropdownOpen` 标志，不直接操作 DOM；
+     * 实际的显示/隐藏由 `render()` 统一处理，保持单向数据流。
+     */
     private openDropdown(): void {
         // 仅更新状态，真正的显示由 render 统一控制。
         this.isDropdownOpen = true;
     }
 
+    /**
+     * 绑定输入框的所有交互事件。
+     *
+     * 监听三个事件，统一通过 `zoneWrapper.run()` 触发变更检测：
+     * - `input`：用户键入时更新 `state.query`、清空 `selectedKey`、打开下拉并触发 `onSearch`；
+     * - `focus`：获得焦点时打开下拉并触发 `onSearch`；
+     * - `click`：点击输入框时打开下拉并触发 `onSearch`（与 focus 共用同一处理函数）。
+     */
     private bindInputEvents(): void {
         // 输入事件：用户键入内容时，更新查询词、清空已选项，并通知外部执行搜索。
         this.inputEl.addEventListener('input', () => {
@@ -290,6 +358,17 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         this.inputEl.addEventListener('click', handleActivate);
     }
 
+    /**
+     * 在 `document` 上注册全局 `mousedown` 监听，实现"点击外部关闭下拉"的交互。
+     *
+     * 判断逻辑：
+     * 1. 下拉已关闭时直接跳过；
+     * 2. 事件目标不是 DOM 节点时跳过；
+     * 3. 事件目标不在组件根节点内时，关闭下拉并触发重新渲染。
+     *
+     * 注意：监听函数被保存在 `this.onDocumentMouseDown` 中，
+     * 以便在 `destroy()` 时精确移除，不影响其他全局监听。
+     */
     private bindDocumentOutsideClick(): void {
         // 监听 document 上的 mousedown，用于判断是否点击到了组件外部。
         this.onDocumentMouseDown = (event: MouseEvent) => {
@@ -316,11 +395,24 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         document.addEventListener('mousedown', this.onDocumentMouseDown);
     }
 
+    /**
+     * 将下拉状态标记为"关闭"。
+     *
+     * 仅修改 `isDropdownOpen` 标志，实际隐藏由 `render()` 负责。
+     */
     private closeDropdown(): void {
         // 仅切换状态，视图层由 render 根据状态决定是否显示。
         this.isDropdownOpen = false;
     }
 
+    /**
+     * 从 `state` 中安全地读取当前查询词。
+     *
+     * `state` 是动态对象，`query` 字段不能保证始终为字符串类型；
+     * 本方法做类型守卫，确保返回值始终是字符串，避免输入框被写入非字符串值。
+     *
+     * @returns 当前查询词字符串，若 state 中不存在或类型不符则返回 `''`
+     */
     private getCurrentQuery(): string {
         // query 预期是字符串；如果状态中暂时不是字符串，则回退为空字符串，避免污染输入框。
         const queryState = this.state.query;
@@ -330,6 +422,17 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         return '';
     }
 
+    /**
+     * 将配置中的原始选项列表解析为统一的字符串结构。
+     *
+     * 处理逻辑：
+     * - 先通过 `resolveValue` 展开 `config.options` 的动态值；
+     * - 对每项优先取 `key`，无 `key` 时回退到 `value` 字段以兼容旧数据；
+     * - 同时通过 `resolveValue` 展开 `label` 的动态值；
+     * - 跳过既无 `key` 也无 `value` 的无效选项。
+     *
+     * @returns 解析后的选项数组，所有字段均为普通字符串
+     */
     private resolveOptions(): IResolvedAutocompleteOption[] {
         // 将可能包含动态值的原始选项解析成稳定的字符串数组。
         const rawOptions = this.resolveValue(this.config.options) || [];
@@ -352,6 +455,17 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         return resolved;
     }
 
+    /**
+     * 将外部受控值（`config.value`）同步到组件内部状态与输入框显示文本。
+     *
+     * 仅在以下全部条件满足时执行同步，避免不必要的覆盖：
+     * 1. `config.value` 已配置（受控模式）；
+     * 2. 解析后的外部 key 不为空字符串；
+     * 3. 当前内部 `selectedKey` 与外部值不一致，或 `query` 为空；
+     * 4. 能在已解析的选项列表中找到对应项。
+     *
+     * @param options 当前已解析的选项列表，用于根据 key 反查 label
+     */
     private syncInputFromExternalValue(options: IResolvedAutocompleteOption[]): void {
         // 如果没有受控 value，则不做外部同步，完全由用户输入驱动。
         if (this.config.value === undefined) {
@@ -381,6 +495,18 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         this.state.query = selectedOption.label;
     }
 
+    /**
+     * 根据查询词对选项列表进行筛选，返回匹配的候选项。
+     *
+     * 筛选优先级：
+     * 1. 若查询词为空（含纯空格），直接返回全部选项；
+     * 2. 若 `config.filter` 已提供，完全委托给外部自定义逻辑；
+     * 3. 默认规则：`label` 或 `key` 中（忽略大小写）包含查询词即视为匹配。
+     *
+     * @param query   当前用户输入的查询文本
+     * @param options 待筛选的已解析选项列表
+     * @returns 满足筛选条件的选项数组
+     */
     private filterOptions(query: string, options: IResolvedAutocompleteOption[]): IResolvedAutocompleteOption[] {
         // 先做统一的文本规范化，忽略前后空格并按小写比较，提高匹配宽容度。
         const normalizedQuery = query.trim().toLowerCase();
@@ -401,6 +527,16 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         });
     }
 
+    /**
+     * 将筛选后的选项渲染为下拉列表中的 DOM 节点。
+     *
+     * 每次调用前先清空容器（`innerHTML = ''`），再按顺序插入新节点；
+     * 每个选项节点绑定两个事件：
+     * - `mousedown`：阻止默认行为，防止输入框在点击选项时失焦从而触发外部关闭逻辑；
+     * - `click`：更新 `state`、写回外部 `value`（受控模式）、触发 `onSelect` 回调，然后关闭下拉。
+     *
+     * @param options 经过筛选的选项列表，每项都将生成一个可点击的下拉条目
+     */
     private renderDropdownItems(options: IResolvedAutocompleteOption[]): void {
         // 每次重新渲染前先清空容器，避免旧节点残留造成重复显示。
         this.dropdownEl.innerHTML = '';
@@ -438,6 +574,4 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         }
     }
 }
-
-
 
