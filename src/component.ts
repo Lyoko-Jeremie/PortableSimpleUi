@@ -86,6 +86,8 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         if (accessor && typeof accessor === 'object') {
             if ('set' in accessor && typeof (accessor as any).set === 'function') {
                 (accessor as any).set(value);
+            } else if ('value' in accessor) {
+                (accessor as any).value = value;
             }
         }
     }

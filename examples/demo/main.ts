@@ -204,6 +204,7 @@ if (uiRoot) {
                 }), 500);
             }
         });
+        advancedGroup2.add.Label({text: computed(() => `当前输入: ${asyncAutoData.get()}`)});
 
         // --- 表单演示页 ---
 

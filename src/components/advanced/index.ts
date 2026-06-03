@@ -26,11 +26,16 @@ export interface IAutocompleteConfig extends IComponentConfig {
 }
 
 export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
-    private inputElement!: HTMLInputElement;
-    private dropdownElement!: HTMLDivElement;
+    // 使用 declare 避免 useDefineForClassFields 将字段覆盖为 undefined（这些字段在 createHTMLElement 中初始化）
+    private declare inputElement: HTMLInputElement;
+    private declare dropdownElement: HTMLDivElement;
     private isOpen: boolean = false;
     private filteredOptions: IAutocompleteOption[] = [];
     private currentQuery: string = '';
+    /** 标记正在执行选项选择，防止 handleInput 再次触发 onSearch 导致下拉菜单重新打开 */
+    private isSelecting: boolean = false;
+    /** 标记刚刚完成了选项选择，防止紧随其后的 render 周期重新打开下拉菜单 */
+    private justSelected: boolean = false;
 
     protected getBaseClassName(): string {
         return 'ps-autocomplete';
@@ -77,9 +82,15 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
 
     private handleInput(query: string) {
         this.currentQuery = query;
+        this.justSelected = false;
 
         if (this.config.value) {
             this.setValue(this.config.value, query);
+        }
+
+        // 选择选项触发的 input 事件不应再次触发 onSearch（避免异步回调重新打开下拉菜单）
+        if (this.isSelecting) {
+            return;
         }
 
         if (this.config.onSearch) {
@@ -103,41 +114,32 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
             );
         }
 
-        const dropdown = this.element.querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
-        if (dropdown) {
-            dropdown.innerHTML = '';
-            if (this.filteredOptions.length > 0) {
-                this.filteredOptions.forEach(option => {
-                    const item = document.createElement('div');
-                    item.classList.add('ps-autocomplete-item');
-                    item.textContent = option.label;
-                    item.addEventListener('click', () => {
-                        this.selectOption(option);
-                    });
-                    dropdown.appendChild(item);
+        this.dropdownElement.innerHTML = '';
+        if (this.filteredOptions.length > 0) {
+            this.filteredOptions.forEach(option => {
+                const item = document.createElement('div');
+                item.classList.add('ps-autocomplete-item');
+                item.textContent = option.label;
+                item.addEventListener('click', () => {
+                    this.selectOption(option);
                 });
-                dropdown.style.display = 'block';
-                this.isOpen = true;
-            } else {
-                dropdown.style.display = 'none';
-                this.isOpen = false;
-            }
+                this.dropdownElement.appendChild(item);
+            });
+            this.dropdownElement.style.display = 'block';
+            this.isOpen = true;
+        } else {
+            this.dropdownElement.style.display = 'none';
+            this.isOpen = false;
         }
     }
 
     private showDropdown() {
-        const dropdown = this.element.querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
-        if (dropdown) {
-            dropdown.style.display = 'block';
-        }
+        this.dropdownElement.style.display = 'block';
         this.isOpen = true;
     }
 
     private hideDropdown() {
-        const dropdown = this.element.querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
-        if (dropdown) {
-            dropdown.style.display = 'none';
-        }
+        this.dropdownElement.style.display = 'none';
         this.isOpen = false;
     }
 
@@ -161,13 +163,13 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     }
 
     private selectOption(option: IAutocompleteOption) {
-        const input = this.element.querySelector('input');
-        if (input) {
-            input.value = option.label;
-        }
+        this.isSelecting = true;
+        this.inputElement.value = option.label;
         if (this.config.value) {
             this.setValue(this.config.value, option.label);
         }
+        this.isSelecting = false;
+        this.justSelected = true;
         this.hideDropdown();
 
         if (this.config.onSelect) {
@@ -181,15 +183,20 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
     public render(): void {
         super.render();
         if (!this.inputElement) return;
-        const val = this.resolveValue(this.config.value || '');
-        if (this.inputElement.value !== val) {
-            this.inputElement.value = val;
+        // 仅在显式配置了 value 时才同步 input 的值（避免覆盖用户选择）
+        if (this.config.value !== undefined) {
+            const val = this.resolveValue(this.config.value);
+            if (this.inputElement.value !== val) {
+                this.inputElement.value = val;
+            }
         }
         this.inputElement.placeholder = this.resolveValue(this.config.placeholder || '');
 
         // Re-sync options from signal (critical for async mode where options change after render)
-        if (this.config.onSearch) {
+        // Skip during selection or immediately after selection to prevent re-opening the dropdown
+        if (this.config.onSearch && !this.isSelecting && !this.justSelected) {
             this.updateFilteredOptions(this.currentQuery);
         }
+        this.justSelected = false;
     }
 }
