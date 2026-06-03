@@ -21,26 +21,50 @@ import {BaseComponent, IComponentConfig} from '../../component';
 import {IZoneWrapper} from '../../core';
 import {DynamicValue} from '../../types';
 
+/**
+ * 多选项配置接口
+ */
 export interface IMultiselectOption {
+    /** 选项的唯一标识符，如果未提供则使用 value */
     key?: DynamicValue<string>;
+    /** 选项的值 */
     value?: DynamicValue<string>;
+    /** 选项显示的文本标签 */
     label: DynamicValue<string>;
 }
 
+/**
+ * 解析后的多选项接口（移除 DynamicValue 后的状态）
+ */
 export interface IResolvedMultiselectOption {
+    /** 选项的唯一标识符 */
     key: string;
+    /** 选项显示的文本标签 */
     label: string;
 }
 
+/**
+ * Multiselect 组件配置接口
+ */
 export interface IMultiselectConfig extends IComponentConfig {
+    /** 选项列表 */
     options: DynamicValue<IMultiselectOption[]>;
-    value?: DynamicValue<string[]>; // 多选，值为字符串数组
+    /** 已选中的值数组 (多选) */
+    value?: DynamicValue<string[]>;
+    /** 输入框占位符 */
     placeholder?: DynamicValue<string>;
+    /** 当搜索输入发生变化时的回调 */
     onSearch?: (query: string, self: Multiselect) => void;
+    /** 当选中状态发生变化时的回调 */
     onSelect?: (options: IResolvedMultiselectOption[], self: Multiselect) => void;
+    /** 自定义过滤逻辑 */
     filter?: (query: string, option: IResolvedMultiselectOption) => boolean;
 }
 
+/**
+ * Multiselect 多选组件
+ * 支持搜索、多选标签展示、下拉选择等功能
+ */
 export class Multiselect extends BaseComponent<IMultiselectConfig> {
     private inputEl: HTMLInputElement = null as any;
     private inputWrapperEl: HTMLDivElement = null as any;
@@ -88,11 +112,19 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         return container;
     }
 
+    /**
+     * 设置组件的选项列表
+     * @param options 选项数组或动态值
+     */
     public setOptions(options: DynamicValue<IMultiselectOption[]>): void {
         this.config.options = options;
         this.markDirty();
     }
 
+    /**
+     * 渲染组件
+     * 处理选项解析、值同步、标签渲染及下拉列表更新
+     */
     public render(): void {
         super.render();
 
@@ -122,6 +154,10 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
     }
 
+    /**
+     * 销毁组件
+     * 移除全局事件监听器并清理资源
+     */
     public destroy(): void {
         if (this.onDocumentMouseDown) {
             document.removeEventListener('mousedown', this.onDocumentMouseDown);
@@ -129,14 +165,17 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         super.destroy();
     }
 
+    /** 打开下拉列表 */
     private openDropdown(): void {
         this.isDropdownOpen = true;
     }
 
+    /** 关闭下拉列表 */
     private closeDropdown(): void {
         this.isDropdownOpen = false;
     }
 
+    /** 绑定输入框相关的事件（输入、焦点等） */
     private bindInputEvents(): void {
         this.inputEl.addEventListener('input', () => {
             this.zoneWrapper.run(() => {
@@ -162,6 +201,7 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         });
     }
 
+    /** 绑定点击外部关闭下拉列表的事件 */
     private bindDocumentOutsideClick(): void {
         this.onDocumentMouseDown = (event: MouseEvent) => {
             if (!this.isDropdownOpen) return;
@@ -187,6 +227,7 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         return Array.isArray(this.state.selectedKeys) ? this.state.selectedKeys : [];
     }
 
+    /** 解析当前配置中的选项为具体的值 */
     private resolveOptions(): IResolvedMultiselectOption[] {
         const rawOptions = this.resolveValue(this.config.options) || [];
         const resolved: IResolvedMultiselectOption[] = [];
@@ -201,6 +242,7 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         return resolved;
     }
 
+    /** 从外部配置同步选中状态到内部 state */
     private syncFromExternalValue(): void {
         if (this.config.value === undefined) return;
         const externalValue = this.resolveValue(this.config.value);
@@ -213,6 +255,11 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         }
     }
 
+    /**
+     * 根据查询条件过滤选项
+     * @param query 搜索关键词
+     * @param options 待过滤的选项列表
+     */
     private filterOptions(query: string, options: IResolvedMultiselectOption[]): IResolvedMultiselectOption[] {
         const normalizedQuery = query.trim().toLowerCase();
         if (!normalizedQuery) return options;
@@ -227,6 +274,11 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         });
     }
 
+    /**
+     * 渲染已选中的标签
+     * @param selectedKeys 已选中的 key 数组
+     * @param options 解析后的选项列表
+     */
     private renderTags(selectedKeys: string[], options: IResolvedMultiselectOption[]): void {
         // 清理旧的 tags
         const oldTags = this.inputWrapperEl.querySelectorAll('.ps-multiselect-tag');
@@ -255,6 +307,11 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         });
     }
 
+    /**
+     * 渲染下拉列表项
+     * @param options 过滤后的选项列表
+     * @param selectedKeys 当前选中的 key 数组
+     */
     private renderDropdownItems(options: IResolvedMultiselectOption[], selectedKeys: string[]): void {
         this.dropdownEl.innerHTML = '';
 
@@ -280,6 +337,10 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
         }
     }
 
+    /**
+     * 切换某个选项的选中状态
+     * @param key 选项的唯一标识
+     */
     private toggleSelection(key: string): void {
         let keys = this.getSelectedKeys();
         if (keys.includes(key)) {
