@@ -549,9 +549,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
 
             // 选中项时同步内部状态、外部 value，并关闭下拉。
             itemEl.addEventListener('mousedown', (event) => {
-                // console.log('Item mousedown:', option.label);
                 this.zoneWrapper.run(() => {
-                    // console.log('Selected option:', option.label);
                     this.state.query = option.label;
                     this.state.selectedKey = option.key;
                     if (this.config.value) {

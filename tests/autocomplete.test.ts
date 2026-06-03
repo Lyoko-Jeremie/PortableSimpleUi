@@ -62,7 +62,7 @@ describe('Autocomplete', () => {
         input.dispatchEvent(new MouseEvent('click', {bubbles: true}));
         appRoot.renderAll();
         const firstItem = dropdown.querySelector('.ps-autocomplete-item') as HTMLDivElement;
-        firstItem.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        firstItem.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
         appRoot.renderAll();
 
         expect(model.selectedKey).toBe('alpha-key');
@@ -126,7 +126,7 @@ describe('Autocomplete', () => {
         expect(items.length).toBe(2);
         expect(items[1]?.textContent).toBe('New Option 2');
 
-        (items[1] as HTMLDivElement).dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        (items[1] as HTMLDivElement).dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
         appRoot.renderAll();
         expect(output.value).toBe('new-2');
     });
