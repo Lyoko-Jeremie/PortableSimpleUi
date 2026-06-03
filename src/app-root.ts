@@ -97,6 +97,7 @@ import * as LayoutComponents from './components/layout/index';
 import * as ComplexComponents from './components/complex/index';
 import * as AdvancedComponents from './components/advanced/index';
 import * as GraphicsComponents from './components/graphics/index';
+import * as OperatorComponents from './components/operator/index';
 
 declare module './app-root' {
     interface IComponentRegistry {
@@ -146,6 +147,11 @@ declare module './app-root' {
 
         Canvas: typeof GraphicsComponents.Canvas;
         Svg: typeof GraphicsComponents.Svg;
+
+        Upload: typeof OperatorComponents.Upload;
+        Download: typeof OperatorComponents.Download;
+        CopyToClipboard: typeof OperatorComponents.CopyToClipboard;
+        QRCode: typeof OperatorComponents.QRCode;
     }
 }
 
@@ -196,6 +202,12 @@ Object.keys(AdvancedComponents).forEach(key => {
 });
 Object.keys(GraphicsComponents).forEach(key => {
     const component = (GraphicsComponents as any)[key];
+    if (component && component.prototype instanceof BaseComponent) {
+        registerComponent(key as any, component);
+    }
+});
+Object.keys(OperatorComponents).forEach(key => {
+    const component = (OperatorComponents as any)[key];
     if (component && component.prototype instanceof BaseComponent) {
         registerComponent(key as any, component);
     }

@@ -25,6 +25,7 @@ if (uiRoot) {
                 {id: 'advanced', label: '高级组件'},
                 {id: 'form', label: '表单演示'},
                 {id: 'graphics', label: '图形组件'},
+                {id: 'operator', label: '操作组件'},
                 {id: 'signal', label: '响应式数据'}
             ],
             activeTabId: 'basic'
@@ -37,6 +38,7 @@ if (uiRoot) {
         const advancedTab = tabs.add.Container({});
         const formTab = tabs.add.Container({});
         const graphicsTab = tabs.add.Container({});
+        const operatorTab = tabs.add.Container({});
         const signalTab = tabs.add.Container({});
 
         // --- 基础组件页 ---
@@ -338,6 +340,44 @@ if (uiRoot) {
             text: '切换颜色',
             onClick: () => svgColor.set(svgColor.value === 'red' ? 'blue' : 'red')
         });
+
+        // --- 操作组件页 ---
+        const operatorGroup1 = operatorTab.add.Group({title: '上传与下载'});
+        const upDownRow = operatorGroup1.add.Row({gap: '10px'});
+
+        upDownRow.add.Upload({
+            text: '选择文件',
+            onUpload: (files) => {
+                if (files && files.length > 0) {
+                    const file = files[0];
+                    if (file) {
+                        alert(`选中了文件: ${file.name}`);
+                    }
+                }
+            }
+        });
+
+        upDownRow.add.Download({
+            text: '下载文本文件',
+            fileName: 'hello.txt',
+            content: 'Hello, world! This is a file from PortableSimpleUi.'
+        });
+
+        const operatorGroup2 = operatorTab.add.Group({title: '剪贴板与二维码'});
+        const copyQrRow = operatorGroup2.add.Row({gap: '20px', alignItems: 'flex-start'});
+
+        copyQrRow.add.CopyToClipboard({
+            text: '复制测试文本',
+            content: 'PortableSimpleUi is awesome!',
+            onCopy: (content, success) => {
+                alert(success ? `成功复制: ${content}` : '复制失败');
+            }
+        });
+
+        // copyQrRow.add.QRCode({
+        //     value: 'https://github.com/KinkiestDungeon/PortableSimpleUi',
+        //     size: 150
+        // });
 
         // --- 响应式数据页 ---
 
