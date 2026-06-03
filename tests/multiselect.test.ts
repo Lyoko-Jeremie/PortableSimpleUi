@@ -97,7 +97,7 @@ describe('Multiselect', () => {
         appRoot.renderAll();
 
         const closeBtn = multiselect.getElement().querySelector('.ps-multiselect-tag-close') as HTMLElement;
-        closeBtn.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        closeBtn.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
         appRoot.renderAll();
 
         expect(model.selected).toEqual(['2']);

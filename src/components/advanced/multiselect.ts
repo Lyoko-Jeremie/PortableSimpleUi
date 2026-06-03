@@ -342,7 +342,6 @@ export class Multiselect extends BaseComponent<IMultiselectConfig> {
      * @param key 选项的唯一标识
      */
     private toggleSelection(key: string): void {
-        console.log('Toggling selection for key:', key);
         let keys = this.getSelectedKeys();
         if (keys.includes(key)) {
             keys = keys.filter(k => k !== key);
