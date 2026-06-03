@@ -145,6 +145,7 @@ declare module './app-root' {
         Multiselect: typeof AdvancedComponents.Multiselect;
 
         Canvas: typeof GraphicsComponents.Canvas;
+        Svg: typeof GraphicsComponents.Svg;
     }
 }
 

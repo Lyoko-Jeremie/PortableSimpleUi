@@ -326,6 +326,19 @@ if (uiRoot) {
             onClick: () => imgId.set(Math.floor(Math.random() * 500))
         });
 
+        const graphicsGroup3 = graphicsTab.add.Group({title: 'SVG 组件 (Svg)'});
+        const svgColor = signal('red');
+        graphicsGroup3.add.Svg({
+            content: computed(() => `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="${svgColor.value}" /></svg>`),
+            width: 100,
+            height: 100
+        });
+
+        graphicsGroup3.add.Row({gap: '10px', style: {marginTop: '10px'}}).add.Button({
+            text: '切换颜色',
+            onClick: () => svgColor.set(svgColor.value === 'red' ? 'blue' : 'red')
+        });
+
         // --- 响应式数据页 ---
 
         const count = signal(0);
