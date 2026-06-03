@@ -157,6 +157,21 @@ if (uiRoot) {
         });
         complexTab.add.Pagination({current: 1, total: 50, pageSize: 10});
 
+        const complexGroupTable = complexTab.add.Group({title: '表格 (Table)'});
+        complexGroupTable.add.Table({
+            columns: [
+                {title: 'ID', key: 'id'},
+                {title: '姓名', key: 'name'},
+                {title: '角色', key: 'role'},
+                {title: '状态', key: 'status'}
+            ],
+            dataSource: [
+                {id: 1, name: '张三', role: '管理员', status: '在线'},
+                {id: 2, name: '李四', role: '编辑', status: '离线'},
+                {id: 3, name: '王五', role: '访客', status: '在线'}
+            ]
+        });
+
         const complexGroup2 = complexTab.add.Group({title: '树形视图 (可折叠)'});
         complexGroup2.add.TreeView({
             data: [
