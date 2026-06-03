@@ -161,6 +161,47 @@ if (uiRoot) {
             onExpand: (keys: string[]) => console.log('Expanded Keys:', keys)
         });
 
+        // --- 高级组件页 ---
+        const advancedGroup1 = advancedTab.add.Group({title: '自动补全 (Autocomplete)'});
+        const autoData = signal('');
+        advancedGroup1.add.Autocomplete({
+            placeholder: '输入 "a" 试试...',
+            value: autoData,
+            options: [
+                {label: 'Apple', value: 'apple'},
+                {label: 'Banana', value: 'banana'},
+                {label: 'Cherry', value: 'cherry'},
+                {label: 'Date', value: 'date'},
+                {label: 'Elderberry', value: 'elderberry'}
+            ],
+            onSelect: (opt) => console.log('Autocomplete Selected:', opt)
+        });
+        advancedGroup1.add.Label({text: computed(() => `当前输入: ${autoData.get()}`)});
+
+        const advancedGroup2 = advancedTab.add.Group({title: '异步自动补全'});
+        const asyncAutoData = signal('');
+        const asyncOptions = signal<{ label: string, value: any }[]>([]);
+        advancedGroup2.add.Autocomplete({
+            placeholder: '输入内容异步加载...',
+            value: asyncAutoData,
+            options: asyncOptions,
+            onSearch: (query) => {
+                console.log('Searching for:', query);
+                // 模拟异步加载
+                setTimeout(() => {
+                    if (query) {
+                        asyncOptions.set([
+                            {label: `${query} 1`, value: 1},
+                            {label: `${query} 2`, value: 2},
+                            {label: `${query} 3`, value: 3},
+                        ]);
+                    } else {
+                        asyncOptions.set([]);
+                    }
+                }, 500);
+            }
+        });
+
         // --- 表单演示页 ---
 
         formTab.add.Form({
