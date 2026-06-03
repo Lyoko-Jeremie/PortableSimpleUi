@@ -52,6 +52,7 @@ $ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helveti
     font-size: 14px;
     outline: none;
     font-family: inherit;
+    transition: border-color 0.2s;
 
     &:focus {
       border-color: $ps-primary-color;

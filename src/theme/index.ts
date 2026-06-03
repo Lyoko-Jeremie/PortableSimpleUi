@@ -29,7 +29,7 @@ export const DEFAULT_THEME_CSS = `
   cursor: not-allowed;
   color: #666;
 }
-.ps-shadow-root .ps-input, .ps-root .ps-input, .ps-shadow-root .ps-select, .ps-root .ps-select {
+.ps-shadow-root .ps-input, .ps-root .ps-input, .ps-shadow-root .ps-select, .ps-root .ps-select, .ps-shadow-root .ps-textarea, .ps-root .ps-textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 6px 12px;
@@ -38,8 +38,12 @@ export const DEFAULT_THEME_CSS = `
   font-family: inherit;
   transition: border-color 0.2s;
 }
-.ps-shadow-root .ps-input:focus, .ps-root .ps-input:focus, .ps-shadow-root .ps-select:focus, .ps-root .ps-select:focus {
+.ps-shadow-root .ps-input:focus, .ps-root .ps-input:focus, .ps-shadow-root .ps-select:focus, .ps-root .ps-select:focus, .ps-shadow-root .ps-textarea:focus, .ps-root .ps-textarea:focus {
   border-color: #007bff;
+}
+.ps-shadow-root .ps-textarea, .ps-root .ps-textarea {
+  resize: vertical;
+  min-height: 60px;
 }
 .ps-shadow-root .ps-label, .ps-root .ps-label {
   font-size: 14px;
@@ -90,6 +94,7 @@ export const DEFAULT_THEME_CSS = `
   flex-wrap: wrap;
   border-bottom: 1px solid #ddd;
   margin-bottom: 15px;
+  gap: 0;
 }
 .ps-shadow-root .ps-tabs-item, .ps-root .ps-tabs-item {
   padding: 10px 20px;
