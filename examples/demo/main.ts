@@ -49,6 +49,7 @@ if (uiRoot) {
         btnGroup.add.Button({text: '禁用按钮', disabled: true});
         btnGroup.add.Label({text: '这是一个标签'});
         btnGroup.add.Text({text: '这是普通文本'});
+        btnGroup.add.Text({text: '这是禁用文本', disabled: true});
 
         const group2 = basicTab.add.Group({title: '表单基础'});
         const formBaseGroup = group2.add.Flex({gap: '15px', direction: 'column'});
@@ -63,6 +64,10 @@ if (uiRoot) {
                 console.log('Input:', v);
                 dataInput.v = v;
             },
+        });
+        formBaseGroup.add.Input({
+            placeholder: '这是一个禁用的输入框',
+            disabled: true
         });
         formBaseGroup.add.Label({text: () => dataInput.v})
 
@@ -82,6 +87,11 @@ if (uiRoot) {
                 console.log('TextArea:', v);
                 dataInput.area = v;
             },
+        });
+        formBaseGroup.add.TextArea({
+            placeholder: '这是一个禁用的文本域',
+            rows: 2,
+            disabled: true
         });
 
         const group3 = basicTab.add.Group({title: '选择器与滑动条'});

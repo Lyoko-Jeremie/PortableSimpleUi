@@ -66,6 +66,33 @@ describe('Basic Components', () => {
             appRoot.renderAll();
             expect(text.getElement().innerHTML).toBe('<span>Nested</span>');
         });
+
+        it('should support disabled property', () => {
+            const context = { isDisabled: false };
+            const text = appRoot.add.Text({
+                text: 'Disabled text',
+                disabled: makeDataAccessor(context, 'isDisabled')
+            });
+            appRoot.renderAll();
+
+            const el = text.getElement();
+            expect(el.style.pointerEvents).toBe('');
+            expect(el.style.opacity).toBe('');
+
+            zoneWrapper.run(() => {
+                context.isDisabled = true;
+            });
+            appRoot.renderAll();
+            expect(el.style.pointerEvents).toBe('none');
+            expect(el.style.opacity).toBe('0.5');
+
+            zoneWrapper.run(() => {
+                context.isDisabled = false;
+            });
+            appRoot.renderAll();
+            expect(el.style.pointerEvents).toBe('');
+            expect(el.style.opacity).toBe('');
+        });
     });
 
     describe('Input Two-way Binding', () => {
@@ -83,6 +110,23 @@ describe('Basic Components', () => {
             inputEl.dispatchEvent(new Event('input'));
 
             expect(context.name).toBe('Bob');
+        });
+
+        it('should support disabled property', () => {
+            const context = { isDisabled: false };
+            const input = appRoot.add.Input({
+                disabled: makeDataAccessor(context, 'isDisabled')
+            });
+            appRoot.renderAll();
+
+            const el = input.getElement() as HTMLInputElement;
+            expect(el.disabled).toBe(false);
+
+            zoneWrapper.run(() => {
+                context.isDisabled = true;
+            });
+            appRoot.renderAll();
+            expect(el.disabled).toBe(true);
         });
     });
 

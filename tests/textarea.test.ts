@@ -76,4 +76,27 @@ describe('TextArea Component', () => {
         el.dispatchEvent(new Event('change'));
         expect(changeVal).toBe('Testing');
     });
+
+    it('should support disabled property', () => {
+        const context = { isDisabled: false };
+        const textArea = appRoot.add.TextArea({
+            disabled: makeDataAccessor(context, 'isDisabled')
+        });
+        appRoot.renderAll();
+
+        const el = textArea.getElement() as HTMLTextAreaElement;
+        expect(el.disabled).toBe(false);
+
+        zoneWrapper.run(() => {
+            context.isDisabled = true;
+        });
+        appRoot.renderAll();
+        expect(el.disabled).toBe(true);
+
+        zoneWrapper.run(() => {
+            context.isDisabled = false;
+        });
+        appRoot.renderAll();
+        expect(el.disabled).toBe(false);
+    });
 });

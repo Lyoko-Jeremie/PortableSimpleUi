@@ -10,6 +10,8 @@ export interface ITextConfig extends IComponentConfig {
     text?: DynamicValue<string>;
     /** HTML 内容（会写入 innerHTML，优先级高于 text）。 */
     html?: DynamicValue<string>;
+    /** 是否禁用。 */
+    disabled?: DynamicValue<boolean>;
 }
 
 /**
@@ -37,6 +39,17 @@ export class Text extends BaseComponent<ITextConfig> {
             this.element.innerHTML = this.resolveValue(this.config.html);
         } else if (this.config.text !== undefined) {
             this.element.textContent = this.resolveValue(this.config.text);
+        }
+
+        if (this.config.disabled !== undefined) {
+            const disabled = !!this.resolveValue(this.config.disabled);
+            if (disabled) {
+                this.element.style.pointerEvents = 'none';
+                this.element.style.opacity = '0.5';
+            } else {
+                this.element.style.pointerEvents = '';
+                this.element.style.opacity = '';
+            }
         }
     }
 }
@@ -160,6 +173,8 @@ export interface IInputConfig extends IComponentConfig {
     onInput?: (value: string, self: Input) => void;
     /** change 事件回调。 */
     onChange?: (value: string, self: Input) => void;
+    /** 是否禁用。 */
+    disabled?: DynamicValue<boolean>;
 }
 
 /**
@@ -213,6 +228,10 @@ export class Input extends BaseComponent<IInputConfig> {
         if (this.config.placeholder !== undefined) {
             input.placeholder = this.resolveValue(this.config.placeholder);
         }
+
+        if (this.config.disabled !== undefined) {
+            input.disabled = !!this.resolveValue(this.config.disabled);
+        }
     }
 }
 
@@ -232,6 +251,8 @@ export interface ITextAreaConfig extends IComponentConfig {
     onInput?: (value: string, self: TextArea) => void;
     /** change 事件回调。 */
     onChange?: (value: string, self: TextArea) => void;
+    /** 是否禁用。 */
+    disabled?: DynamicValue<boolean>;
 }
 
 /**
@@ -284,6 +305,10 @@ export class TextArea extends BaseComponent<ITextAreaConfig> {
         }
         if (this.config.placeholder !== undefined) {
             textarea.placeholder = this.resolveValue(this.config.placeholder);
+        }
+
+        if (this.config.disabled !== undefined) {
+            textarea.disabled = !!this.resolveValue(this.config.disabled);
         }
     }
 }
