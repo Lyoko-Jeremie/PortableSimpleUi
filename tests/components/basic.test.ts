@@ -128,6 +128,29 @@ describe('Basic Components', () => {
             appRoot.renderAll();
             expect(el.disabled).toBe(true);
         });
+
+        it('should support dynamic readOnly property', () => {
+            const context = { isReadOnly: false };
+            const input = appRoot.add.Input({
+                readOnly: makeDataAccessor(context, 'isReadOnly')
+            });
+            appRoot.renderAll();
+
+            const el = input.getElement() as HTMLInputElement;
+            expect(el.readOnly).toBe(false);
+
+            zoneWrapper.run(() => {
+                context.isReadOnly = true;
+            });
+            appRoot.renderAll();
+            expect(el.readOnly).toBe(true);
+
+            zoneWrapper.run(() => {
+                context.isReadOnly = false;
+            });
+            appRoot.renderAll();
+            expect(el.readOnly).toBe(false);
+        });
     });
 
     describe('Checkbox Two-way Binding', () => {

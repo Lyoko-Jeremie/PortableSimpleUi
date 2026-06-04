@@ -179,6 +179,8 @@ export interface IInputConfig extends IComponentConfig {
     onChange?: (value: string, self: Input) => void;
     /** 是否禁用。 */
     disabled?: DynamicValue<boolean>;
+    /** 是否只读。 */
+    readOnly?: DynamicValue<boolean>;
 }
 
 export interface IInputState {
@@ -240,6 +242,9 @@ export class Input extends BaseComponent<IInputConfig, IInputState> {
         if (this.config.disabled !== undefined) {
             input.disabled = !!this.resolveValue(this.config.disabled);
         }
+        if (this.config.readOnly !== undefined) {
+            input.readOnly = !!this.resolveValue(this.config.readOnly);
+        }
     }
 }
 
@@ -261,6 +266,8 @@ export interface ITextAreaConfig extends IComponentConfig {
     onChange?: (value: string, self: TextArea) => void;
     /** 是否禁用。 */
     disabled?: DynamicValue<boolean>;
+    /** 是否只读。 */
+    readOnly?: DynamicValue<boolean>;
 }
 
 export interface ITextAreaState {
@@ -321,6 +328,9 @@ export class TextArea extends BaseComponent<ITextAreaConfig, ITextAreaState> {
 
         if (this.config.disabled !== undefined) {
             textarea.disabled = !!this.resolveValue(this.config.disabled);
+        }
+        if (this.config.readOnly !== undefined) {
+            textarea.readOnly = !!this.resolveValue(this.config.readOnly);
         }
     }
 }

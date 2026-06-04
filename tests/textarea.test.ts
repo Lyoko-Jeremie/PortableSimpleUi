@@ -99,4 +99,27 @@ describe('TextArea Component', () => {
         appRoot.renderAll();
         expect(el.disabled).toBe(false);
     });
+
+    it('should support dynamic readOnly property', () => {
+        const context = { isReadOnly: false };
+        const textArea = appRoot.add.TextArea({
+            readOnly: makeDataAccessor(context, 'isReadOnly')
+        });
+        appRoot.renderAll();
+
+        const el = textArea.getElement() as HTMLTextAreaElement;
+        expect(el.readOnly).toBe(false);
+
+        zoneWrapper.run(() => {
+            context.isReadOnly = true;
+        });
+        appRoot.renderAll();
+        expect(el.readOnly).toBe(true);
+
+        zoneWrapper.run(() => {
+            context.isReadOnly = false;
+        });
+        appRoot.renderAll();
+        expect(el.readOnly).toBe(false);
+    });
 });

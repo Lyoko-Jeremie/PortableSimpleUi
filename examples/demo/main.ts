@@ -57,13 +57,24 @@ if (uiRoot) {
             v: 'alice',
             area: '这是一段多行文本\n第二行内容',
         }
+        const formReadOnly = signal(false);
+        formBaseGroup.add.Button({
+            text: () => formReadOnly.value ? '切换为可编辑' : '切换为只读',
+            onClick: () => formReadOnly.set(!formReadOnly.value),
+        });
         formBaseGroup.add.Input({
             placeholder: '请输入内容...',
             value: makeRef(dataInput, 'v'),
+            readOnly: () => formReadOnly.value,
             onInput: (v: string) => {
                 console.log('Input:', v);
                 dataInput.v = v;
             },
+        });
+        formBaseGroup.add.Input({
+            placeholder: '这是一个只读输入框',
+            value: '只读 Input 示例',
+            readOnly: true
         });
         formBaseGroup.add.Input({
             placeholder: '这是一个禁用的输入框',
@@ -83,10 +94,17 @@ if (uiRoot) {
             placeholder: '请输入多行内容...',
             rows: 3,
             value: makeRef(dataInput, 'area'),
+            readOnly: () => formReadOnly.value,
             onInput: (v: string) => {
                 console.log('TextArea:', v);
                 dataInput.area = v;
             },
+        });
+        formBaseGroup.add.TextArea({
+            placeholder: '这是一个只读文本域',
+            rows: 2,
+            value: '只读 TextArea 示例',
+            readOnly: true
         });
         formBaseGroup.add.TextArea({
             placeholder: '这是一个禁用的文本域',
