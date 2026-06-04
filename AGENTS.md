@@ -18,3 +18,11 @@
 
 不使用 PowerShell 的文件读写命令（如 `Get-Content`、`Set-Content` 等）来处理文件操作，避免出现编码问题。
 
+要保证以下的三个样式文件等价
+```
+src/theme/css/theme.css
+src/theme/scss/theme.scss
+src/theme/index.ts
+```
+
+
