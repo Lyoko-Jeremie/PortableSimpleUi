@@ -18,6 +18,8 @@
 
 不使用 PowerShell 的文件读写命令（如 `Get-Content`、`Set-Content` 等）来处理文件操作，避免出现编码问题。
 
+优先使用工具而不是命令来搜索和查看文件内容，确保更好的兼容性。
+
 要保证以下的三个样式文件等价
 ```
 src/theme/css/theme.css
