@@ -1,7 +1,7 @@
 import {DynamicValue} from './types';
 import {IZoneWrapper} from './core';
 
-import type {ComponentContainerProxy} from './app-root';
+import type {AppRoot, ComponentContainerProxy} from './app-root';
 
 /**
  * 组件样式声明类型。
@@ -28,6 +28,7 @@ export interface IComponentConfig {
 }
 
 export type ComponentState = Record<string, unknown>;
+export type ComponentParent = BaseComponent<IComponentConfig, object>;
 
 /**
  * 所有组件的抽象基类。
@@ -49,6 +50,8 @@ export abstract class BaseComponent<
     public config: TConfig;
     /** 当前组件所处的 Zone 包装器，用于在受控上下文中执行渲染。 */
     public zoneWrapper: IZoneWrapper;
+    /** 父组件引用；根组件没有父组件。 */
+    private _parentComponent: ComponentParent | null = null;
 
     /**
      * 获取组件的原生 HTML 元素。
@@ -58,6 +61,15 @@ export abstract class BaseComponent<
      */
     public getElement(): HTMLElement {
         return this.element;
+    }
+
+    /**
+     * 当前组件的直接父组件。
+     *
+     * 对于根组件 `AppRoot`，该值为 `null`。
+     */
+    public get parentComponent(): ComponentParent | null {
+        return this._parentComponent;
     }
     /** 组件内部状态容器，供子类按需存放运行时数据。 */
     public state: TState = {} as TState;
@@ -83,6 +95,73 @@ export abstract class BaseComponent<
      * 由子类实现，用于创建组件的根 HTML 元素。
      */
     protected abstract createHTMLElement(): HTMLElement;
+
+    /**
+     * 设置当前组件的父组件。
+     *
+     * 该方法主要由框架内部的 `ComponentContainer` 调用，用于维护组件树。
+     */
+    public setParentComponent(parentComponent: ComponentParent | null): void {
+        if (parentComponent === null) {
+            this._parentComponent = null;
+            return;
+        }
+
+        let current: ComponentParent | null = parentComponent;
+        while (current) {
+            if (current === this) {
+                throw new Error('A component cannot be its own ancestor.');
+            }
+            current = current.parentComponent;
+        }
+
+        this._parentComponent = parentComponent;
+    }
+
+    /**
+     * 获取从直接父组件到根组件的父链。
+     */
+    public getParentComponents(): ComponentParent[] {
+        const parents: ComponentParent[] = [];
+        let current = this.parentComponent;
+
+        while (current) {
+            parents.push(current);
+            current = current.parentComponent;
+        }
+
+        return parents;
+    }
+
+    /**
+     * 获取当前组件所属组件树的根组件。
+     */
+    public getRootComponent(): ComponentParent {
+        let root: ComponentParent = this as ComponentParent;
+
+        while (root.parentComponent) {
+            root = root.parentComponent;
+        }
+
+        return root;
+    }
+
+    /**
+     * 获取当前组件所属的 `AppRoot`。
+     *
+     * 当组件尚未挂载到 `AppRoot` 组件树时返回 `null`。
+     */
+    public getAppRoot(): AppRoot | null {
+        const root = this.getRootComponent();
+        return root.isAppRootComponent() ? root as AppRoot : null;
+    }
+
+    /**
+     * 用于在不引入运行时循环依赖的前提下识别根组件类型。
+     */
+    protected isAppRootComponent(): boolean {
+        return false;
+    }
 
     /**
      * 应用基础配置到根元素上。
@@ -170,6 +249,7 @@ export abstract class BaseComponent<
         if (this.element && this.element.parentElement) {
             this.element.parentElement.removeChild(this.element);
         }
+        this.setParentComponent(null);
     }
 
     /**
@@ -246,7 +326,7 @@ export abstract class ContainerComponent<
     constructor(config: TConfig, zoneWrapper: IZoneWrapper) {
         super(config, zoneWrapper);
         this.zoneWrapper = zoneWrapper;
-        this._container = new ComponentContainer(this.getChildrenHost(), zoneWrapper);
+        this._container = new ComponentContainer(this.getChildrenHost(), zoneWrapper, this);
         // 显式读取一次，保证布局标记在静态检查中被视为已使用。
         void this.isLayout;
     }
@@ -301,7 +381,11 @@ export class ComponentContainer {
      * @param host 子组件挂载宿主，可以是普通 DOM 元素或 ShadowRoot。
      * @param zoneWrapper 用于在 Zone 环境下执行组件渲染。
      */
-    constructor(private host: HTMLElement | ShadowRoot, private zoneWrapper: IZoneWrapper) {
+    constructor(
+        private host: HTMLElement | ShadowRoot,
+        private zoneWrapper: IZoneWrapper,
+        private parentComponent: ComponentParent | null = null
+    ) {
     }
 
     /**
@@ -315,6 +399,7 @@ export class ComponentContainer {
      */
     public addComponent<T extends BaseComponent<any, any>>(ctor: ComponentConstructor<T>, config: any): T {
         const component = new ctor(config, this.zoneWrapper);
+        component.setParentComponent(this.parentComponent);
         const host = this.host instanceof ShadowRoot ? this.host : this.host;
         host.appendChild(component.getElement());
         this.components.push(component);

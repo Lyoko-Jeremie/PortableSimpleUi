@@ -845,8 +845,7 @@ export class Form extends BaseComponent<IFormConfig> {
                 label.style.display = 'block';
                 itemEl.appendChild(label);
 
-                // @ts-ignore
-                const container = new ComponentContainer(itemEl, (window as any).Zone?.current);
+                const container = new ComponentContainer(itemEl, this.zoneWrapper, this);
                 // @ts-ignore
                 const ctor = (window as any).psuComponentRegistry?.[item.component as string];
                 if (!ctor) {

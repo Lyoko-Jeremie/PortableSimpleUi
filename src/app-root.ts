@@ -1,4 +1,5 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ComponentConstructor} from './component';
+import type {ComponentParent} from './component';
 import {IZoneWrapper} from './core';
 import {DEFAULT_THEME_CSS} from './theme';
 
@@ -47,12 +48,12 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
                 styleEl.textContent = styles;
                 this.rootShadow.appendChild(styleEl);
             }
-            this._container = new ComponentContainer(this.rootElement , targetZone);
+            this._container = new ComponentContainer(this.rootElement , targetZone, this);
         } else {
             this.rootShadow = this.host;
             this.rootElement = this.host;
             this.host.classList.add('ps-root');
-            this._container = new ComponentContainer(this.rootShadow, targetZone);
+            this._container = new ComponentContainer(this.rootShadow, targetZone, this);
         }
 
         this.add = createComponentContainerProxyFromContainer(this._container);
@@ -67,6 +68,10 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
 
     public render(): void {
         // AppRoot 自身渲染逻辑
+    }
+
+    protected isAppRootComponent(): boolean {
+        return true;
     }
 
     public renderAll(): void {
@@ -228,7 +233,11 @@ export function createComponentContainerProxyFromContainer(container: ComponentC
     }) as any;
 }
 
-export function createComponentContainerProxy(host: HTMLElement | ShadowRoot, zoneWrapper: IZoneWrapper): ComponentContainerProxy {
-    const container = new ComponentContainer(host, zoneWrapper);
+export function createComponentContainerProxy(
+    host: HTMLElement | ShadowRoot,
+    zoneWrapper: IZoneWrapper,
+    parentComponent: ComponentParent | null = null
+): ComponentContainerProxy {
+    const container = new ComponentContainer(host, zoneWrapper, parentComponent);
     return createComponentContainerProxyFromContainer(container);
 }
