@@ -87,4 +87,25 @@ describe('Canvas', () => {
         expect(canvasComp.getCanvas().width).toBe(500);
         expect(canvasComp.getElement().style.width).toBe('500px');
     });
+
+    it('should keep function-controlled size driven by external state', () => {
+        const state = { w: 100, h: 100 };
+        const canvasComp = appRoot.add.Canvas({
+            width: () => state.w,
+            height: () => state.h
+        });
+        appRoot.renderAll();
+
+        canvasComp.setSize(300, 200);
+
+        expect(canvasComp.getCanvas().width).toBe(100);
+        expect(canvasComp.getCanvas().height).toBe(100);
+
+        state.w = 300;
+        state.h = 200;
+        appRoot.renderAll();
+
+        expect(canvasComp.getCanvas().width).toBe(300);
+        expect(canvasComp.getCanvas().height).toBe(200);
+    });
 });

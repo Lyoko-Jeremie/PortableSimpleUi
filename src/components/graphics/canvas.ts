@@ -59,12 +59,34 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         return this.canvasElement;
     }
 
+    private syncDimensionConfig(key: 'width' | 'height', value: number): void {
+        const current = this.config[key];
+
+        if (typeof current === 'function') {
+            return;
+        }
+
+        if (current && typeof current === 'object') {
+            if ('set' in current && typeof current.set === 'function') {
+                current.set(value);
+            } else if ('value' in current) {
+                current.value = value;
+            }
+            return;
+        }
+
+        this.config[key] = value;
+    }
+
     /**
      * 设置 Canvas 大小，并同步调整外层容器大小
      * @param width 宽度 (px)
      * @param height 高度 (px)
      */
     public setSize(width: number, height: number) {
+        this.syncDimensionConfig('width', width);
+        this.syncDimensionConfig('height', height);
+
         this.canvasElement.width = width;
         this.canvasElement.height = height;
 
