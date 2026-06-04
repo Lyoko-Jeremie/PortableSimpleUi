@@ -165,7 +165,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
     // 当前下拉是否处于打开状态：控制 dropdown 的显示/隐藏。
     private isDropdownOpen = false;
     // 记录绑定到 document 上的 mousedown 处理函数，便于销毁时移除事件监听。
-    private onDocumentMouseDown!: (event: MouseEvent) => void;
+    private onDocumentMouseDown!: (event?: MouseEvent | Event) => void;
 
     /**
      * 构造函数：初始化组件。
@@ -306,6 +306,8 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         // 销毁时需要移除全局监听，避免内存泄漏以及组件销毁后继续响应事件。
         if (this.onDocumentMouseDown) {
             document.removeEventListener('mousedown', this.onDocumentMouseDown);
+            this.getAppRoot()?.rootElement.removeEventListener('mousedown', this.onDocumentMouseDown);
+            this.getAppRoot()?.rootShadow.removeEventListener('mousedown', this.onDocumentMouseDown);
         }
         // 再调用父类销毁逻辑，释放父类持有的资源。
         super.destroy();
@@ -377,13 +379,16 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
      */
     private bindDocumentOutsideClick(): void {
         // 监听 document 上的 mousedown，用于判断是否点击到了组件外部。
-        this.onDocumentMouseDown = (event: MouseEvent) => {
+        this.onDocumentMouseDown = (event?: MouseEvent | Event) => {
             // 下拉本身已经关闭时，不需要继续做任何判断。
             if (!this.isDropdownOpen) {
                 return;
             }
 
-            const target = event.target;
+            console.log('onDocumentMouseDown', event);
+
+
+            const target = event?.target;
             if (!(target instanceof Node)) {
                 // 某些极端情况下事件目标可能不是 Node，直接忽略即可。
                 return;
@@ -399,6 +404,8 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         };
         // 将全局监听挂载到 document，确保点击页面任意区域都能被捕获。
         document.addEventListener('mousedown', this.onDocumentMouseDown);
+        this.getAppRoot()?.rootElement.addEventListener('mousedown', this.onDocumentMouseDown);
+        this.getAppRoot()?.rootShadow.addEventListener('mousedown', this.onDocumentMouseDown);
     }
 
     /**
