@@ -72,9 +72,11 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this.element.style.width = `${width}px`;
         this.element.style.height = `${height}px`;
 
-        if (this.config.onResize) {
-            this.config.onResize(width, height, this);
-        }
+        this.zoneWrapper.wrapInZone(() => {
+            if (this.config.onResize) {
+                this.config.onResize(width, height, this);
+            }
+        });
     }
 
     public syncSizeFromCanvasSize() {
