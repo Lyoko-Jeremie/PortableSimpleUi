@@ -111,10 +111,14 @@ export interface IButtonConfig extends IComponentConfig {
     disabled?: DynamicValue<boolean>;
 }
 
+export interface IButtonState {
+    text?: string;
+}
+
 /**
  * 按钮组件。
  */
-export class Button extends BaseComponent<IButtonConfig> {
+export class Button extends BaseComponent<IButtonConfig, IButtonState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-button';
@@ -177,10 +181,14 @@ export interface IInputConfig extends IComponentConfig {
     disabled?: DynamicValue<boolean>;
 }
 
+export interface IInputState {
+    value?: string;
+}
+
 /**
  * 输入框组件。
  */
-export class Input extends BaseComponent<IInputConfig> {
+export class Input extends BaseComponent<IInputConfig, IInputState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-input';
@@ -255,10 +263,14 @@ export interface ITextAreaConfig extends IComponentConfig {
     disabled?: DynamicValue<boolean>;
 }
 
+export interface ITextAreaState {
+    value?: string;
+}
+
 /**
  * 文本域组件。
  */
-export class TextArea extends BaseComponent<ITextAreaConfig> {
+export class TextArea extends BaseComponent<ITextAreaConfig, ITextAreaState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-textarea';
@@ -325,10 +337,14 @@ export interface ICheckboxConfig extends IComponentConfig {
     onChange?: (checked: boolean, self: Checkbox) => void;
 }
 
+export interface ICheckboxState {
+    checked?: boolean;
+}
+
 /**
  * 复选框组件，结构为 label > input[type=checkbox] + span。
  */
-export class Checkbox extends BaseComponent<ICheckboxConfig> {
+export class Checkbox extends BaseComponent<ICheckboxConfig, ICheckboxState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-checkbox';
@@ -415,10 +431,14 @@ export interface IRadioConfig extends IComponentConfig {
     onChange?: (checked: boolean, self: Radio) => void;
 }
 
+export interface IRadioState {
+    checked?: boolean;
+}
+
 /**
  * 单选框组件，结构为 label > input[type=radio] + span。
  */
-export class Radio extends BaseComponent<IRadioConfig> {
+export class Radio extends BaseComponent<IRadioConfig, IRadioState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-radio';
@@ -511,10 +531,14 @@ export interface ISelectConfig extends IComponentConfig {
     onChange?: (value: string, self: Select) => void;
 }
 
+export interface ISelectState {
+    value?: string;
+}
+
 /**
  * 下拉框组件。
  */
-export class Select extends BaseComponent<ISelectConfig> {
+export class Select extends BaseComponent<ISelectConfig, ISelectState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-select';
@@ -577,10 +601,14 @@ export interface ISliderConfig extends IComponentConfig {
     onChange?: (value: number, self: Slider) => void;
 }
 
+export interface ISliderState {
+    value?: number;
+}
+
 /**
  * 滑块组件，基于 input[type=range]。
  */
-export class Slider extends BaseComponent<ISliderConfig> {
+export class Slider extends BaseComponent<ISliderConfig, ISliderState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-slider';
@@ -627,10 +655,14 @@ export interface IColorPickerConfig extends IComponentConfig {
     onChange?: (value: string, self: ColorPicker) => void;
 }
 
+export interface IColorPickerState {
+    value?: string;
+}
+
 /**
  * 颜色选择器组件，基于 input[type=color]。
  */
-export class ColorPicker extends BaseComponent<IColorPickerConfig> {
+export class ColorPicker extends BaseComponent<IColorPickerConfig, IColorPickerState> {
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
         return 'ps-color-picker';

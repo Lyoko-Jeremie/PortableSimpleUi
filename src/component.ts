@@ -27,6 +27,8 @@ export interface IComponentConfig {
     // tabTitle?: DynamicValue<string>;
 }
 
+export type ComponentState = Record<string, unknown>;
+
 /**
  * 所有组件的抽象基类。
  *
@@ -37,7 +39,10 @@ export interface IComponentConfig {
  * - 销毁时从 DOM 中移除
  * - 动态值的读取与写入
  */
-export abstract class BaseComponent<TConfig extends IComponentConfig = IComponentConfig> {
+export abstract class BaseComponent<
+    TConfig extends IComponentConfig = IComponentConfig,
+    TState extends object = ComponentState
+> {
     /** 组件对应的原生 DOM 元素。 */
     protected element: HTMLElement;
     /** 组件配置对象，保存初始化参数。 */
@@ -55,7 +60,7 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
         return this.element;
     }
     /** 组件内部状态容器，供子类按需存放运行时数据。 */
-    public state: any = {};
+    public state: TState = {} as TState;
     /** 脏标记：当组件需要重新渲染时置为 true。 */
     protected _dirty = false;
 
@@ -209,7 +214,10 @@ export abstract class BaseComponent<TConfig extends IComponentConfig = IComponen
  * - 面板容器
  * - 选项卡容器
  */
-export abstract class ContainerComponent<TConfig extends IComponentConfig = IComponentConfig> extends BaseComponent<TConfig> {
+export abstract class ContainerComponent<
+    TConfig extends IComponentConfig = IComponentConfig,
+    TState extends object = ComponentState
+> extends BaseComponent<TConfig, TState> {
     /** 标记该组件属于布局类容器。 */
     public get isLayout(): boolean {
         return true;
@@ -265,7 +273,7 @@ export abstract class ContainerComponent<TConfig extends IComponentConfig = ICom
  *
  * 统一描述“接收配置与 Zone 包装器，并返回具体组件实例”的构造函数签名。
  */
-export type ComponentConstructor<T extends BaseComponent<any>> = new (config: any, zoneWrapper: IZoneWrapper) => T;
+export type ComponentConstructor<T extends BaseComponent<any, any>> = new (config: any, zoneWrapper: IZoneWrapper) => T;
 
 /**
  * 组件容器。
@@ -278,7 +286,7 @@ export type ComponentConstructor<T extends BaseComponent<any>> = new (config: an
  */
 export class ComponentContainer {
     /** 容器中已创建并管理的所有组件实例。 */
-    public components: BaseComponent<any>[] = [];
+    public components: BaseComponent<any, any>[] = [];
 
     /**
      * @param host 子组件挂载宿主，可以是普通 DOM 元素或 ShadowRoot。
@@ -296,7 +304,7 @@ export class ComponentContainer {
      * 3. 缓存到容器列表中
      * 4. 在 Zone 中执行一次初始渲染
      */
-    public addComponent<T extends BaseComponent<any>>(ctor: ComponentConstructor<T>, config: any): T {
+    public addComponent<T extends BaseComponent<any, any>>(ctor: ComponentConstructor<T>, config: any): T {
         const component = new ctor(config, this.zoneWrapper);
         const host = this.host instanceof ShadowRoot ? this.host : this.host;
         host.appendChild(component.getElement());

@@ -151,8 +151,13 @@ export interface IAutocompleteConfig extends IComponentConfig {
     filter?: (query: string, option: IResolvedAutocompleteOption) => boolean;
 }
 
+export interface IAutocompleteState {
+    query: string;
+    selectedKey: string | undefined;
+}
+
 // 自动完成组件：负责管理输入框、下拉列表、选项筛选以及外部值同步。
-export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
+export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocompleteState> {
     // 输入框 DOM 节点，构造完成后从根元素中查找并缓存，避免后续重复查询。
     private inputEl: HTMLInputElement = null as any;
     // 下拉容器 DOM 节点，负责承载所有候选项。
@@ -186,7 +191,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
 
         // 初始化内部状态：query 保存当前输入内容，selectedKey 保存当前选中的选项键值。
         this.state.query = '';
-        this.state.selectedKey = undefined as string | undefined;
+        this.state.selectedKey = undefined;
     }
 
     /**
@@ -575,4 +580,3 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig> {
         }
     }
 }
-

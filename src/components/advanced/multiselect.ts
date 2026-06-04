@@ -61,11 +61,16 @@ export interface IMultiselectConfig extends IComponentConfig {
     filter?: (query: string, option: IResolvedMultiselectOption) => boolean;
 }
 
+export interface IMultiselectState {
+    query: string;
+    selectedKeys: string[];
+}
+
 /**
  * Multiselect 多选组件
  * 支持搜索、多选标签展示、下拉选择等功能
  */
-export class Multiselect extends BaseComponent<IMultiselectConfig> {
+export class Multiselect extends BaseComponent<IMultiselectConfig, IMultiselectState> {
     private inputEl: HTMLInputElement = null as any;
     private inputWrapperEl: HTMLDivElement = null as any;
     private dropdownEl: HTMLDivElement = null as any;
