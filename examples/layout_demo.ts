@@ -1,4 +1,4 @@
-import {createZoneWrapper, AppRoot} from '../src/index';
+import {createZoneWrapper, AppRoot, signal} from '../src/index';
 
 /**
  * 这是一个展示所有布局组件的示例
@@ -33,7 +33,16 @@ async function runExample() {
         const mainLayout = appRoot.add.Column({gap: '20px'});
 
         // 1. Container
-        const containerSection = mainLayout.add.Group({title: '1. Container (基础容器)'});
+        const containerStyle = signal({
+            display: 'block',
+            padding: '12px',
+            backgroundColor: '#fff7e6',
+            borderRadius: '6px'
+        });
+        const containerSection = mainLayout.add.Group({
+            title: '1. Container (基础容器)',
+            styleContainer: containerStyle
+        });
         const container = containerSection.add.Container({
             padding: '15px',
             style: {backgroundColor: '#fff', border: '1px dashed #aaa', borderRadius: '4px'}

@@ -1,4 +1,4 @@
-import {createZoneWrapper, AppRoot, IZoneWrapper} from '../src/index';
+import {createZoneWrapper, AppRoot, IZoneWrapper, signal} from '../src/index';
 
 describe('Layout Components', () => {
     let zoneWrapper: IZoneWrapper;
@@ -75,6 +75,43 @@ describe('Layout Components', () => {
             const legend = group.getElement().querySelector('legend');
             expect(legend).not.toBeNull();
             expect(legend?.textContent).toBe('My Group');
+        });
+    });
+
+    it('Group should apply dynamic styleContainer to content element', () => {
+        zoneWrapper.run(() => {
+            const containerEl = document.createElement('div');
+            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const contentStyle = signal({
+                display: 'grid',
+                gap: '8px',
+                backgroundColor: 'red'
+            });
+
+            const group = appRoot.add.Group({
+                title: 'Styled Group',
+                style: {
+                    backgroundColor: 'blue'
+                },
+                styleContainer: contentStyle
+            });
+            const contentElement = group.getElement().querySelector('div') as HTMLDivElement;
+
+            expect(group.getElement().style.backgroundColor).toBe('blue');
+            expect(contentElement.style.display).toBe('grid');
+            expect(contentElement.style.gap).toBe('8px');
+            expect(contentElement.style.backgroundColor).toBe('red');
+
+            contentStyle.set({
+                display: 'flex',
+                gap: '12px',
+                backgroundColor: 'green'
+            });
+            appRoot.renderAll();
+
+            expect(contentElement.style.display).toBe('flex');
+            expect(contentElement.style.gap).toBe('12px');
+            expect(contentElement.style.backgroundColor).toBe('green');
         });
     });
 

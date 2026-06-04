@@ -122,13 +122,22 @@ export abstract class BaseComponent<
      * - 写入到 `element.style`
      */
     protected applyStyle() {
-        if (this.config.style) {
-            for (const key in this.config.style) {
-                const value = this.config.style[key as keyof StyleDeclaration];
-                if (value !== undefined) {
-                    // 这里使用 any 是为了兼容所有 CSS 样式字段的动态写入。
-                    (this.element.style as any)[key] = this.resolveValue(value as any);
-                }
+        this.applyStyleToElement(this.element, this.config.style);
+    }
+
+    /**
+     * 将样式声明应用到指定元素。
+     *
+     * 子类在需要给内部节点应用样式时可复用该逻辑，保持动态样式解析行为一致。
+     */
+    protected applyStyleToElement(element: HTMLElement, style?: StyleDeclaration): void {
+        if (!style) return;
+
+        for (const key in style) {
+            const value = style[key as keyof StyleDeclaration];
+            if (value !== undefined) {
+                // 这里使用 any 是为了兼容所有 CSS 样式字段的动态写入。
+                (element.style as any)[key] = this.resolveValue(value as any);
             }
         }
     }

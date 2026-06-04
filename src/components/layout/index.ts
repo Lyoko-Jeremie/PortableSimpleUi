@@ -1,4 +1,5 @@
 import {BaseComponent, IComponentConfig, ComponentContainer, ContainerComponent} from '../../component';
+import type {StyleDeclaration} from '../../component';
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
 import {IZoneWrapper} from '../../core';
 import {DynamicValue} from '../../types';
@@ -154,6 +155,7 @@ export class Grid extends ContainerComponent<IGridConfig> {
  */
 export interface IGroupConfig extends IComponentConfig {
     title?: DynamicValue<string>;
+    styleContainer?: DynamicValue<StyleDeclaration>;
 }
 
 export class Group extends ContainerComponent<IGroupConfig> {
@@ -167,8 +169,8 @@ export class Group extends ContainerComponent<IGroupConfig> {
         return 'ps-group';
     }
 
-    private _titleElement!: HTMLElement;
-    private _contentElement!: HTMLElement;
+    declare private _titleElement: HTMLElement;
+    declare private _contentElement: HTMLElement;
 
     protected createHTMLElement(): HTMLElement {
         const fieldset = document.createElement('fieldset');
@@ -195,6 +197,11 @@ export class Group extends ContainerComponent<IGroupConfig> {
 
     public render(): void {
         super.render();
+        const containerStyle = this.config.styleContainer;
+        if (containerStyle !== undefined) {
+            this.applyStyleToElement(this._contentElement, this.resolveValue(containerStyle));
+        }
+
         const legend = this.getElement().querySelector('legend');
         if (legend) {
             const val = this.config.title;
