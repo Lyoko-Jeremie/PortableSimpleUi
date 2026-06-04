@@ -308,6 +308,8 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
             document.removeEventListener('mousedown', this.onDocumentMouseDown);
             this.getAppRoot()?.rootElement.removeEventListener('mousedown', this.onDocumentMouseDown);
             this.getAppRoot()?.rootShadow.removeEventListener('mousedown', this.onDocumentMouseDown);
+            this.getAppRoot()?.rootElement.removeEventListener('click', this.onDocumentMouseDown);
+            this.getAppRoot()?.rootShadow.removeEventListener('click', this.onDocumentMouseDown);
         }
         // 再调用父类销毁逻辑，释放父类持有的资源。
         super.destroy();
@@ -380,12 +382,11 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
     private bindDocumentOutsideClick(): void {
         // 监听 document 上的 mousedown，用于判断是否点击到了组件外部。
         this.onDocumentMouseDown = (event?: MouseEvent | Event) => {
+            console.log('onDocumentMouseDown', event);
             // 下拉本身已经关闭时，不需要继续做任何判断。
             if (!this.isDropdownOpen) {
                 return;
             }
-
-            console.log('onDocumentMouseDown', event);
 
 
             const target = event?.target;
@@ -406,6 +407,8 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         document.addEventListener('mousedown', this.onDocumentMouseDown);
         this.getAppRoot()?.rootElement.addEventListener('mousedown', this.onDocumentMouseDown);
         this.getAppRoot()?.rootShadow.addEventListener('mousedown', this.onDocumentMouseDown);
+        this.getAppRoot()?.rootElement.addEventListener('click', this.onDocumentMouseDown);
+        this.getAppRoot()?.rootShadow.addEventListener('click', this.onDocumentMouseDown);
     }
 
     /**
