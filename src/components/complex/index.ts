@@ -121,7 +121,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
     public set activeTabId(id: string) {
         if (this._activeTabId !== id) {
-            this.zoneWrapper.wrapInZone(() => {
+            this.zoneWrapper.runInZone(() => {
                 this._activeTabId = id;
                 this.config.onChange?.(id, this);
                 this.markDirty();
@@ -838,7 +838,7 @@ export class Form extends BaseComponent<IFormConfig> {
                 const component = container.addComponent(ctor, {
                     ...(item.componentConfig as any),
                     onChange: (val: any) => {
-                        this.zoneWrapper.wrapInZone(() => {
+                        this.zoneWrapper.runInZone(() => {
                             this._values[item.key] = val;
                             (item.componentConfig as any).onChange?.(val);
                         });
@@ -904,7 +904,7 @@ export class TimePicker extends BaseComponent<ITimePickerConfig> {
         el.type = 'time';
         el.className = 'psu-timepicker';
         el.onchange = (e) => {
-            this.zoneWrapper.wrapInZone(() => {
+            this.zoneWrapper.runInZone(() => {
                 const val = (e.target as HTMLInputElement).value;
                 this.config.onChange?.(val);
             });
@@ -936,7 +936,7 @@ export class FilePicker extends BaseComponent<IFilePickerConfig> {
         el.type = 'file';
         el.className = 'psu-filepicker';
         el.addEventListener('change', (e) => {
-            this.zoneWrapper.wrapInZone(() => {
+            this.zoneWrapper.runInZone(() => {
                 const files = (e.target as HTMLInputElement).files;
                 this.config.onChange?.(files);
             });

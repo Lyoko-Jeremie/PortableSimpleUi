@@ -72,7 +72,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this.element.style.width = `${width}px`;
         this.element.style.height = `${height}px`;
 
-        this.zoneWrapper.wrapInZone(() => {
+        this.zoneWrapper.runInZone(() => {
             if (this.config.onResize) {
                 this.config.onResize(width, height, this);
             }
