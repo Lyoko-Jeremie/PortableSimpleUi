@@ -11,6 +11,11 @@ export interface ITabItem {
     id: string;
 }
 
+export interface IAddTabConfig {
+    id?: string;
+    title?: DynamicValue<string>;
+}
+
 export interface ITabsConfig extends IComponentConfig {
     items?: ITabItem[];
     activeTabId?: string;
@@ -32,6 +37,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         super(config, zoneWrapper);
         this.add = createComponentContainerProxyFromContainer(this._container);
         this._tabItems = config.items || [];
+        this.config.items = this._tabItems;
         this._activeTabId = config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : '');
 
         // // 覆盖 add 代理
@@ -94,25 +100,37 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
      * 添加一个带配置的标签页并返回一个代理以添加内容组件
      * @param tabConfig 标签页配置
      */
-    public addTab(tabConfig: { id?: string, title?: DynamicValue<string> }): ComponentContainerProxy {
-        const self = this;
-        return new Proxy({}, {
-            get: (target, prop: string) => {
-                return (config: any) => {
-                    const childConfig = config || {};
-                    // // 将 addTab 的配置注入到组件配置中
-                    // if (tabConfig.id && !childConfig.id) {
-                    //     childConfig.id = tabConfig.id;
-                    // }
-                    // if (tabConfig.title && !childConfig.tabTitle) {
-                    //     childConfig.tabTitle = tabConfig.title;
-                    // }
+    public addTab(tabConfig: IAddTabConfig = {}): ComponentContainerProxy {
+        const tabId = tabConfig.id || this.createAutoTabId();
+        if (this._tabItems.some(item => item.id === tabId)) {
+            console.error(`Tab with id [${tabId}] already exists. Please provide a unique id for the new tab.`);
+            throw new Error(`Tab ${tabId} already exists.`);
+        }
 
-                    // 调用正常的 add 代理
-                    return (self.add as any)[prop](childConfig);
-                };
-            }
-        }) as any;
+        this._tabItems.push({
+            id: tabId,
+            label: tabConfig.title ?? tabId
+        });
+
+        if (!this._activeTabId) {
+            this._activeTabId = tabId;
+        }
+
+        const tabContainer = this.add.Container({id: tabId});
+        this.renderHeader();
+        this.renderBody();
+
+        return tabContainer.add;
+    }
+
+    private createAutoTabId(): string {
+        let index = this._tabItems.length + 1;
+        let tabId = `tab-${index}`;
+        while (this._tabItems.some(item => item.id === tabId)) {
+            index += 1;
+            tabId = `tab-${index}`;
+        }
+        return tabId;
     }
 
     public get activeTabId() {
