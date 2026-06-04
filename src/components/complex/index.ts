@@ -121,9 +121,11 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
 
     public set activeTabId(id: string) {
         if (this._activeTabId !== id) {
-            this._activeTabId = id;
-            this.config.onChange?.(id, this);
-            this.markDirty();
+            this.zoneWrapper.wrapInZone(() => {
+                this._activeTabId = id;
+                this.config.onChange?.(id, this);
+                this.markDirty();
+            });
         }
     }
 
@@ -209,6 +211,7 @@ export class Modal extends ContainerComponent<IModalConfig> {
         super(config, zoneWrapper);
         this.add = createComponentContainerProxyFromContainer(this._container);
     }
+
     private _overlay!: HTMLElement;
     private _content!: HTMLElement;
     private _header!: HTMLElement;
@@ -282,6 +285,7 @@ export class Card extends ContainerComponent<ICardConfig> {
         super(config, zoneWrapper);
         this.add = createComponentContainerProxyFromContainer(this._container);
     }
+
     private _header!: HTMLElement;
     private _body!: HTMLElement;
 
@@ -834,8 +838,10 @@ export class Form extends BaseComponent<IFormConfig> {
                 const component = container.addComponent(ctor, {
                     ...(item.componentConfig as any),
                     onChange: (val: any) => {
-                        this._values[item.key] = val;
-                        (item.componentConfig as any).onChange?.(val);
+                        this.zoneWrapper.wrapInZone(() => {
+                            this._values[item.key] = val;
+                            (item.componentConfig as any).onChange?.(val);
+                        });
                     }
                 });
 
@@ -898,8 +904,10 @@ export class TimePicker extends BaseComponent<ITimePickerConfig> {
         el.type = 'time';
         el.className = 'psu-timepicker';
         el.onchange = (e) => {
-            const val = (e.target as HTMLInputElement).value;
-            this.config.onChange?.(val);
+            this.zoneWrapper.wrapInZone(() => {
+                const val = (e.target as HTMLInputElement).value;
+                this.config.onChange?.(val);
+            });
         };
         return el;
     }
@@ -928,16 +936,10 @@ export class FilePicker extends BaseComponent<IFilePickerConfig> {
         el.type = 'file';
         el.className = 'psu-filepicker';
         el.addEventListener('change', (e) => {
-            const run = () => {
+            this.zoneWrapper.wrapInZone(() => {
                 const files = (e.target as HTMLInputElement).files;
                 this.config.onChange?.(files);
-            };
-            const zone = (window as any).Zone?.current;
-            if (zone) {
-                zone.run(run);
-            } else {
-                run();
-            }
+            });
         });
         return el;
     }
