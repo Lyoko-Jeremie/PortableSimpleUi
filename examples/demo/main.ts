@@ -142,9 +142,9 @@ if (uiRoot) {
         card.add.Text({text: '这是卡片的内容区域。'});
         card.add.Button({text: '卡片操作'});
 
-        const avatarGroup = complexTab.add.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
-        avatarGroup.add.Avatar({src: '#', size: 40});
-        avatarGroup.add.Badge({text: '99+', color: 'red'});
+        const avatarBadgeGroup = complexTab.add.Flex({gap: '10px', alignItems: 'center', style: {margin: '15px 0'}});
+        avatarBadgeGroup.add.Avatar({src: 'https://picsum.photos/40', size: 40});
+        avatarBadgeGroup.add.Badge({text: '99+', color: 'red'});
 
         const complexGroup1 = complexTab.add.Group({title: '列表与分页'});
         complexGroup1.add.List({
@@ -155,7 +155,34 @@ if (uiRoot) {
                 return el;
             }
         });
-        complexTab.add.Pagination({current: 1, total: 50, pageSize: 10});
+        complexGroup1.add.Pagination({current: 1, total: 50, pageSize: 10});
+
+        const breadcrumbGroup = complexTab.add.Group({title: '面包屑 (Breadcrumb)'});
+        breadcrumbGroup.add.Breadcrumb({
+            items: [
+                {label: '首页'},
+                {label: '组件'},
+                {label: '复合组件'}
+            ]
+        });
+
+        const timelineGroup = complexTab.add.Group({title: '时间轴 (Timeline)'});
+        timelineGroup.add.Timeline({
+            items: [
+                {content: '项目启动', description: '2026-01-01', color: 'green'},
+                {content: '开发中', description: '2026-06-04', color: 'blue'},
+                {content: '计划发布', description: '2026-12-31'}
+            ]
+        });
+
+        const calendarGroup = complexTab.add.Group({title: '日历 (Calendar)'});
+        calendarGroup.add.Calendar({});
+
+        const pickerGroup = complexTab.add.Group({title: '选择器 (Pickers)'});
+        const pickerFlex = pickerGroup.add.Flex({gap: '10px', direction: 'column'});
+        pickerFlex.add.DatePicker({onChange: (v) => console.log('DatePicker:', v)});
+        pickerFlex.add.TimePicker({onChange: (v) => console.log('TimePicker:', v)});
+        pickerFlex.add.FilePicker({onChange: (v) => console.log('FilePicker:', v)});
 
         const complexGroupTable = complexTab.add.Group({title: '表格 (Table)'});
         complexGroupTable.add.Table({
@@ -272,34 +299,35 @@ if (uiRoot) {
 
         // --- 表单演示页 ---
 
-        formTab.add.Form({
+        const formExample = formTab.add.Form({
             items: [
-                {label: '用户名', key: 'username', component: 'Input', componentConfig: {placeholder: '请输入'}},
+                {label: '用户名', key: 'username', component: 'Input', componentConfig: {placeholder: '请输入用户名'}},
+                {label: '邮箱', key: 'email', component: 'Input', componentConfig: {placeholder: '请输入邮箱'}},
                 {label: '出生日期', key: 'birthday', component: 'DatePicker', componentConfig: {}},
+                {label: '偏好时间', key: 'prefTime', component: 'TimePicker', componentConfig: {}},
                 {label: '上传头像', key: 'avatar', component: 'FilePicker', componentConfig: {}}
             ],
             onFinish: (values: any) => {
                 console.log('Form Values:', values);
-                alert('提交成功，请看控制台');
+                app.add.Toast({text: '提交成功，请看控制台', duration: 3000});
             }
         });
 
         // 弹窗演示
-        formTab.add.Button({
-            text: '打开弹窗',
-            style: {margin: '20px 0'},
+        const actionRow = formTab.add.Flex({gap: '10px', style: {margin: '20px 0'}});
+        actionRow.add.Button({
+            text: '打开弹窗 (Modal)',
             onClick: () => {
                 const modal = app.add.Modal({title: '演示弹窗'});
-                // const modalAdd = modal.add;
                 modal.add.Text({text: '这是一个通过 Modal 组件创建的弹窗。'});
                 modal.add.Button({text: '关闭', onClick: () => modal.hide()});
                 modal.show();
             }
         });
 
-        // 吐司演示
-        formTab.add.Button({
-            text: '显示 Toast', onClick: () => {
+        actionRow.add.Button({
+            text: '显示消息 (Toast)',
+            onClick: () => {
                 app.add.Toast({text: '这是一条通知消息', duration: 3000});
             }
         });
