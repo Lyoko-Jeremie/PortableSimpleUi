@@ -1061,6 +1061,7 @@ export class TreeView extends BaseComponent<ITreeViewConfig> {
                     e.stopPropagation();
                     this.zoneWrapper.run(() => this.toggleExpand(node.key));
                 };
+                switcher.addEventListener('mousedown', toggle);
                 switcher.addEventListener('click', toggle);
             } else {
                 switcher.style.visibility = 'hidden';
