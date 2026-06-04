@@ -200,6 +200,8 @@
 .ps-root .ps-table {
   width: 100%;
   border-collapse: collapse;
+  --ps-table-stripe-bg: #fbfcff;
+  --ps-table-hover-bg: #f0f7ff;
 }
 .ps-root .ps-table th,
 .ps-root .ps-table td {
@@ -210,6 +212,15 @@
 .ps-root .ps-table th {
   background-color: #fafafa;
   font-weight: 500;
+}
+.ps-root .ps-table tbody tr {
+  transition: background-color 0.2s;
+}
+.ps-root .ps-table tbody tr:nth-child(even) {
+  background-color: var(--ps-table-stripe-bg);
+}
+.ps-root .ps-table tbody tr:hover {
+  background-color: var(--ps-table-hover-bg);
 }
 .ps-root .ps-list {
   list-style: none;
@@ -607,6 +618,8 @@
 .ps-shadow-root .ps-table {
   width: 100%;
   border-collapse: collapse;
+  --ps-table-stripe-bg: #fbfcff;
+  --ps-table-hover-bg: #f0f7ff;
 }
 .ps-shadow-root .ps-table th,
 .ps-shadow-root .ps-table td {
@@ -617,6 +630,15 @@
 .ps-shadow-root .ps-table th {
   background-color: #fafafa;
   font-weight: 500;
+}
+.ps-shadow-root .ps-table tbody tr {
+  transition: background-color 0.2s;
+}
+.ps-shadow-root .ps-table tbody tr:nth-child(even) {
+  background-color: var(--ps-table-stripe-bg);
+}
+.ps-shadow-root .ps-table tbody tr:hover {
+  background-color: var(--ps-table-hover-bg);
 }
 .ps-shadow-root .ps-list {
   list-style: none;

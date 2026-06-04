@@ -210,6 +210,8 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-table, .ps-root .ps-table {
   width: 100%;
   border-collapse: collapse;
+  --ps-table-stripe-bg: #fbfcff;
+  --ps-table-hover-bg: #f0f7ff;
 }
 .ps-shadow-root .ps-table th, .ps-root .ps-table th,
 .ps-shadow-root .ps-table td, .ps-root .ps-table td {
@@ -220,6 +222,15 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-table th, .ps-root .ps-table th {
   background-color: #fafafa;
   font-weight: 500;
+}
+.ps-shadow-root .ps-table tbody tr, .ps-root .ps-table tbody tr {
+  transition: background-color 0.2s;
+}
+.ps-shadow-root .ps-table tbody tr:nth-child(even), .ps-root .ps-table tbody tr:nth-child(even) {
+  background-color: var(--ps-table-stripe-bg);
+}
+.ps-shadow-root .ps-table tbody tr:hover, .ps-root .ps-table tbody tr:hover {
+  background-color: var(--ps-table-hover-bg);
 }
 
 /* List */

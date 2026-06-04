@@ -69,4 +69,11 @@ describe('Theme and Style Isolation', () => {
             }
         });
     });
+
+    it('should include table stripe and hover row styles in default theme', () => {
+        expect(DEFAULT_THEME_CSS).toContain('--ps-table-stripe-bg');
+        expect(DEFAULT_THEME_CSS).toContain('--ps-table-hover-bg');
+        expect(DEFAULT_THEME_CSS).toContain('.ps-shadow-root .ps-table tbody tr:nth-child(even), .ps-root .ps-table tbody tr:nth-child(even)');
+        expect(DEFAULT_THEME_CSS).toContain('.ps-shadow-root .ps-table tbody tr:hover, .ps-root .ps-table tbody tr:hover');
+    });
 });
