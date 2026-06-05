@@ -24,8 +24,6 @@ export interface ICanvasConfig extends IComponentConfig {
  */
 export class Canvas extends BaseComponent<ICanvasConfig> {
     private _canvasElement: HTMLCanvasElement | null = null;
-    private _resizeObserver: ResizeObserver | null = null;
-    private _isInternalResizing = false;
 
     private get canvasElement(): HTMLCanvasElement {
         if (!this._canvasElement) {
@@ -43,18 +41,18 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this._canvasElement = document.createElement('canvas');
         this._canvasElement.style.display = 'block';
         this._canvasElement.classList.add('psu-canvas');
-        this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
 
-        // 监听外部修改 Canvas 大小的情况
-        if (typeof ResizeObserver !== 'undefined') {
-            this._resizeObserver = new ResizeObserver(() => {
-                if (this._isInternalResizing) return;
-                // 只有当 Canvas 元素的属性（width/height）与当前记录的不同时才同步
-                // ResizeObserver 在 Canvas 属性变化时也会触发
-                this.syncSizeFromCanvasSize();
-            });
-            this._resizeObserver.observe(this._canvasElement);
+        // 初始宽高仅在创建时使用一次
+        const initialWidth = this.resolveValue(this.config.width);
+        const initialHeight = this.resolveValue(this.config.height);
+        if (initialWidth !== undefined) {
+            this._canvasElement.width = initialWidth;
         }
+        if (initialHeight !== undefined) {
+            this._canvasElement.height = initialHeight;
+        }
+
+        this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
     }
 
     protected createHTMLElement(): HTMLElement {
@@ -64,6 +62,11 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         container.style.overflow = 'hidden';
 
         this.initCanvas();
+
+        // 初始同步容器大小
+        container.style.width = `${this._canvasElement!.width}px`;
+        container.style.height = `${this._canvasElement!.height}px`;
+
         container.appendChild(this._canvasElement!);
         return container;
     }
@@ -91,82 +94,60 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
             return;
         }
 
-        this.config[key] = value;
+        // 如果是原始值，我们这里不再主动修改它，除非它是 DynamicValue
     }
 
     /**
-     * 设置 Canvas 大小，并同步调整外层容器大小
+     * 手动设置 Canvas 大小，并同步调整外层容器大小
      * @param width 宽度 (px)
      * @param height 高度 (px)
      */
     public setSize(width: number, height: number) {
-        const wasInternal = this._isInternalResizing;
-        this._isInternalResizing = true;
-        try {
-            this.syncDimensionConfig('width', width);
-            this.syncDimensionConfig('height', height);
-
-            let changed = false;
-            // 检查容器样式是否与目标大小一致，作为是否发生变化的依据
-            if (this.element.style.width !== `${width}px` || this.element.style.height !== `${height}px`) {
-                changed = true;
-            }
-
-            if (this.canvasElement.width !== width) {
-                this.canvasElement.width = width;
-            }
-            if (this.canvasElement.height !== height) {
-                this.canvasElement.height = height;
-            }
-
-            // 自动调整外包装 html 节点的相关样式来适配
-            this.element.style.width = `${width}px`;
-            this.element.style.height = `${height}px`;
-
-            if (changed) {
-                this.zoneWrapper.runInZone(() => {
-                    if (this.config.onResize) {
-                        this.config.onResize(width, height, this);
-                    }
-                });
-            }
-        } finally {
-            // 使用 setTimeout 确保在 ResizeObserver 触发后（如果有的话）再恢复标识
-            // 或者由于 ResizeObserver 是异步触发的，其实可以直接恢复，
-            // 但为了保险，我们在这里结束。
-            this._isInternalResizing = wasInternal;
+        let changed = false;
+        if (this.canvasElement.width !== width) {
+            this.canvasElement.width = width;
+            changed = true;
         }
+        if (this.canvasElement.height !== height) {
+            this.canvasElement.height = height;
+            changed = true;
+        }
+
+        // 同步到容器和配置
+        this.syncSizeFromCanvasSize();
     }
 
+    /**
+     * 从 _canvasElement 的当前大小同步到容器和配置中
+     */
     public syncSizeFromCanvasSize() {
-        this.setSize(this.canvasElement.width, this.canvasElement.height);
+        const width = this.canvasElement.width;
+        const height = this.canvasElement.height;
+
+        let changed = false;
+        if (this.element.style.width !== `${width}px` || this.element.style.height !== `${height}px`) {
+            this.element.style.width = `${width}px`;
+            this.element.style.height = `${height}px`;
+            changed = true;
+        }
+
+        // 同步到配置中的 DynamicValue (只写不读)
+        this.syncDimensionConfig('width', width);
+        this.syncDimensionConfig('height', height);
+
+        if (changed) {
+            this.zoneWrapper.runInZone(() => {
+                if (this.config.onResize) {
+                    this.config.onResize(width, height, this);
+                }
+            });
+        }
     }
 
     public render(): void {
-        const width = this.resolveValue(this.config.width);
-        const height = this.resolveValue(this.config.height);
-
-        // 获取当前 Canvas 的实际属性值，避免不必要的重设
-        const currentWidth = this.canvasElement.width;
-        const currentHeight = this.canvasElement.height;
-
-        if (width !== undefined && height !== undefined) {
-            // 只有当目标大小与当前大小不一致时，才调用 setSize
-            // setSize 会触发 width/height 的赋值，从而导致 Canvas 内容清空
-            if (width !== currentWidth || height !== currentHeight) {
-                this.setSize(width, height);
-            }
-        } else if (width !== undefined) {
-            if (currentWidth !== width) {
-                this.canvasElement.width = width;
-                this.element.style.width = `${width}px`;
-            }
-        } else if (height !== undefined) {
-            if (currentHeight !== height) {
-                this.canvasElement.height = height;
-                this.element.style.height = `${height}px`;
-            }
-        }
+        // render 时，自动读取 _canvasElement 的大小并同步到 container 的大小以及组件的输入变量 DynamicValue 中
+        // 不再读取 config.width/height 来主动设置 canvas 大小
+        this.syncSizeFromCanvasSize();
 
         this.applyStyle();
         if (this._canvasElement) {
@@ -175,10 +156,6 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
     }
 
     public destroy() {
-        if (this._resizeObserver) {
-            this._resizeObserver.disconnect();
-            this._resizeObserver = null;
-        }
         super.destroy();
     }
 }

@@ -383,6 +383,7 @@ if (uiRoot) {
                 ctx.font = '20px Arial';
                 ctx.fillText('Hello Canvas!', 20, 40);
             }
+            canvasComp.syncSizeFromCanvasSize();
         };
 
         // 初始绘制

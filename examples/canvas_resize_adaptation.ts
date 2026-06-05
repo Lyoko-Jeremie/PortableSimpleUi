@@ -48,20 +48,21 @@ async function runExample() {
                 el.width = 300;
                 el.height = 200;
                 console.log('Modified canvas element directly to 300x200');
-                
-                // 检查容器是否也同步了 (当前实现应该不会自动同步，除非手动调用 syncSizeFromCanvasSize)
+
+                // 外部修改后，现在需要手动触发同步或等待下一次 render
                 setTimeout(() => {
+                    canvasComp.syncSizeFromCanvasSize();
                     const container = canvasComp.getElement();
-                    console.log(`Container size: ${container.style.width} x ${container.style.height}`);
+                    console.log(`Container size after manual sync: ${container.style.width} x ${container.style.height}`);
                 }, 100);
             }
         });
 
         appRoot.add.Button({
-            text: 'Call syncSizeFromCanvasSize()',
+            text: 'Trigger Render Sync',
             style: {marginTop: '10px', display: 'block'},
             onClick: () => {
-                canvasComp.syncSizeFromCanvasSize();
+                appRoot.renderAll();
             }
         });
     });

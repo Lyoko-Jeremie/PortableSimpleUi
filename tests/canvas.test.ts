@@ -71,7 +71,7 @@ describe('Canvas', () => {
         expect(onResize).toHaveBeenCalledWith(400, 300, canvasComp);
     });
 
-    it('should reflect dynamic width and height changes', () => {
+    it('should NOT reflect dynamic width and height changes after initialization', () => {
         const state = { w: 100, h: 100 };
         const canvasComp = appRoot.add.Canvas({
             width: () => state.w,
@@ -84,44 +84,29 @@ describe('Canvas', () => {
         state.w = 500;
         appRoot.renderAll();
 
-        expect(canvasComp.getCanvas().width).toBe(500);
-        expect(canvasComp.getElement().style.width).toBe('500px');
+        // 核心变更：不再自动跟随 config 变化
+        expect(canvasComp.getCanvas().width).toBe(100);
     });
 
-    it('should keep function-controlled size driven by external state', () => {
-        const state = { w: 100, h: 100 };
+    it('should update DynamicValue when resized', () => {
+        let currentW = 100;
+        const width = {
+            get value() { return currentW; },
+            set value(v: number) { currentW = v; }
+        };
         const canvasComp = appRoot.add.Canvas({
-            width: () => state.w,
-            height: () => state.h
+            width,
+            height: 100
         });
         appRoot.renderAll();
 
         canvasComp.setSize(300, 200);
 
-        expect(canvasComp.getCanvas().width).toBe(100);
-        expect(canvasComp.getCanvas().height).toBe(100);
-
-        state.w = 300;
-        state.h = 200;
-        appRoot.renderAll();
-
+        expect(currentW).toBe(300);
         expect(canvasComp.getCanvas().width).toBe(300);
-        expect(canvasComp.getCanvas().height).toBe(200);
     });
 
-    it('should sync container size when canvas element is resized externally', (done) => {
-        // Mock ResizeObserver
-        const originalResizeObserver = global.ResizeObserver;
-        let callback: any;
-        global.ResizeObserver = class {
-            constructor(cb: any) {
-                callback = cb;
-            }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-        } as any;
-
+    it('should sync container size when render is called after external resize', () => {
         const onResize = jest.fn();
         const canvasComp = appRoot.add.Canvas({
             width: 100,
@@ -129,27 +114,21 @@ describe('Canvas', () => {
             onResize
         });
         appRoot.renderAll();
-        // 渲染时会调用一次 setSize，所以 onResize 会被调用一次
-        expect(onResize).toHaveBeenCalledTimes(1);
+        expect(onResize).toHaveBeenCalledTimes(0);
 
         const canvasEl = canvasComp.getCanvas();
         // 模拟外部修改
         canvasEl.width = 300;
         canvasEl.height = 200;
 
-        // 模拟 ResizeObserver 触发
-        if (callback) {
-            callback();
-        }
+        // 手动触发 render 同步
+        appRoot.renderAll();
 
         // 检查是否同步到了容器
         const el = canvasComp.getElement();
         expect(el.style.width).toBe('300px');
         expect(el.style.height).toBe('200px');
-        expect(onResize).toHaveBeenCalledTimes(2);
+        expect(onResize).toHaveBeenCalledTimes(1);
         expect(onResize).toHaveBeenLastCalledWith(300, 200, canvasComp);
-
-        global.ResizeObserver = originalResizeObserver;
-        done();
     });
 });
