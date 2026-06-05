@@ -290,11 +290,11 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-autocomplete-close, .ps-root .ps-autocomplete-close {
   position: absolute;
   right: 8px;
-  top: 50%;
+  top: 37%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #999;
-  font-size: 18px;
+  font-size: 37px;
   line-height: 1;
   z-index: 5;
   user-select: none;
