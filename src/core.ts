@@ -48,8 +48,15 @@ export function createZoneWrapper(name: string): IZoneWrapper {
     }
 
     const rootsToRender = new Set<any>();
+    let isRendering = false;
     const triggerRender = () => {
-        rootsToRender.forEach(r => r.renderAll ? r.renderAll() : r.render());
+        if (isRendering) return;
+        isRendering = true;
+        try {
+            rootsToRender.forEach(r => r.renderAll ? r.renderAll() : r.render());
+        } finally {
+            isRendering = false;
+        }
     };
 
     const zone = Zone.current.fork({
