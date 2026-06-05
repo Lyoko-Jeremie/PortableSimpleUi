@@ -345,6 +345,8 @@ export interface ICheckboxConfig extends IComponentConfig {
     label?: DynamicValue<string>;
     /** 选中状态变化回调。 */
     onChange?: (checked: boolean, self: Checkbox) => void;
+    /** 是否只读。 */
+    readOnly?: DynamicValue<boolean>;
 }
 
 export interface ICheckboxState {
@@ -377,6 +379,10 @@ export class Checkbox extends BaseComponent<ICheckboxConfig, ICheckboxState> {
         if (initialChecked !== undefined) {
             inputEl.checked = !!initialChecked;
         }
+        const initialReadOnly = this.resolveValue(this.config.readOnly);
+        if (initialReadOnly !== undefined) {
+            inputEl.disabled = !!initialReadOnly;
+        }
         inputEl.addEventListener('change', () => {
             const run = () => {
                 this.state.checked = inputEl.checked;
@@ -406,12 +412,24 @@ export class Checkbox extends BaseComponent<ICheckboxConfig, ICheckboxState> {
      */
     public render(): void {
         super.render();
+        if (!this.inputEl) {
+            this.inputEl = this.getElement().querySelector('input') as HTMLInputElement;
+        }
         if (!this.inputEl) return;
+
         const checked = this.resolveValue(this.config.checked);
         if (this.inputEl.checked !== !!checked) {
             this.inputEl.checked = !!checked;
         }
 
+        const readOnly = this.resolveValue(this.config.readOnly);
+        if (this.inputEl.disabled !== !!readOnly) {
+            this.inputEl.disabled = !!readOnly;
+        }
+
+        if (!this.labelEl) {
+            this.labelEl = this.getElement().querySelector('span') as HTMLSpanElement;
+        }
         const labelText = this.resolveValue(this.config.label);
         if (this.labelEl) {
             if (labelText !== undefined && labelText !== null && labelText !== '') {

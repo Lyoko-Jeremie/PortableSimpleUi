@@ -64,10 +64,22 @@ async function runExample() {
         const checkboxSection = mainLayout.add.Flex({direction: 'column', gap: '5px'});
         checkboxSection.add.Label({text: '4. 复选框 (Checkbox)', style: {fontWeight: 'bold'}});
         const isChecked = signal(false);
+        const isCheckboxReadOnly = signal(false);
         checkboxSection.add.Checkbox({
             label: '同意条款',
             checked: isChecked,
+            readOnly: isCheckboxReadOnly,
             onChange: (val: boolean) => isChecked.set(val)
+        });
+        checkboxSection.add.Checkbox({
+            label: '只读复选框（始终选中）',
+            checked: true,
+            readOnly: true,
+        });
+        checkboxSection.add.Button({
+            text: () => isCheckboxReadOnly.value ? '切换为可编辑' : '切换为只读',
+            onClick: () => isCheckboxReadOnly.set(!isCheckboxReadOnly.value),
+            style: {fontSize: '12px', width: 'fit-content'}
         });
         checkboxSection.add.Text({text: () => `选中状态: ${isChecked.value}`, style: {fontSize: '12px'}});
 

@@ -169,5 +169,22 @@ describe('Basic Components', () => {
 
             expect(context.active).toBe(true);
         });
+
+        it('should support readOnly property', () => {
+            const context = { isReadOnly: false };
+            const checkbox = appRoot.add.Checkbox({
+                readOnly: makeDataAccessor(context, 'isReadOnly')
+            });
+            appRoot.renderAll();
+
+            const inputEl = checkbox.getElement().querySelector('input') as HTMLInputElement;
+            expect(inputEl.disabled).toBe(false);
+
+            zoneWrapper.run(() => {
+                context.isReadOnly = true;
+            });
+            appRoot.renderAll();
+            expect(inputEl.disabled).toBe(true);
+        });
     });
 });
