@@ -73,6 +73,7 @@ export interface IMultiselectState {
 export class Multiselect extends BaseComponent<IMultiselectConfig, IMultiselectState> {
     private inputEl: HTMLInputElement = null as any;
     private inputWrapperEl: HTMLDivElement = null as any;
+    private closeBtnEl: HTMLSpanElement = null as any;
     private dropdownEl: HTMLDivElement = null as any;
     private isDropdownOpen = false;
     private onDocumentMouseDown!: (event: MouseEvent) => void;
@@ -81,10 +82,20 @@ export class Multiselect extends BaseComponent<IMultiselectConfig, IMultiselectS
         super(config, zoneWrapper);
         this.inputEl = this.element.querySelector('.ps-multiselect-input') as HTMLInputElement;
         this.inputWrapperEl = this.element.querySelector('.ps-multiselect-input-wrapper') as HTMLDivElement;
+        this.closeBtnEl = this.element.querySelector('.ps-multiselect-close') as HTMLSpanElement;
         this.dropdownEl = this.element.querySelector('.ps-multiselect-dropdown') as HTMLDivElement;
 
         this.bindInputEvents();
         this.bindDocumentOutsideClick();
+
+        // 绑定关闭按钮事件
+        this.closeBtnEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.zoneWrapper.run(() => {
+                this.closeDropdown();
+                this.markDirty();
+            });
+        });
 
         this.state.query = '';
         this.state.selectedKeys = [] as string[];
@@ -105,7 +116,13 @@ export class Multiselect extends BaseComponent<IMultiselectConfig, IMultiselectS
         input.autocomplete = 'off';
         input.className = 'ps-multiselect-input';
 
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'ps-multiselect-close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.display = 'none';
+
         wrapper.appendChild(input);
+        wrapper.appendChild(closeBtn);
 
         const dropdown = document.createElement('div');
         dropdown.className = 'ps-multiselect-dropdown';
@@ -157,6 +174,7 @@ export class Multiselect extends BaseComponent<IMultiselectConfig, IMultiselectS
         this.renderDropdownItems(filteredOptions, selectedKeys);
 
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
+        this.closeBtnEl.style.display = this.isDropdownOpen ? 'block' : 'none';
     }
 
     /**

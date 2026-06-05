@@ -361,6 +361,19 @@ export const DEFAULT_THEME_CSS = `
   font-family: inherit;
   background: transparent;
 }
+.ps-shadow-root .ps-multiselect-close, .ps-root .ps-multiselect-close {
+  cursor: pointer;
+  color: #999;
+  font-size: 24px;
+  line-height: 1;
+  user-select: none;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+.ps-shadow-root .ps-multiselect-close:hover, .ps-root .ps-multiselect-close:hover {
+  color: #666;
+}
 .ps-shadow-root .ps-multiselect-tag, .ps-root .ps-multiselect-tag {
   display: inline-flex;
   align-items: center;

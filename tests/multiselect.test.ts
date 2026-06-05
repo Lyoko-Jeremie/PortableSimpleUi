@@ -102,4 +102,27 @@ describe('Multiselect', () => {
 
         expect(model.selected).toEqual(['2']);
     });
+
+    it('closes dropdown when clicking close button', () => {
+        const multiselect = appRoot.add.Multiselect({
+            options: [{key: '1', label: 'Option 1'}]
+        });
+        appRoot.renderAll();
+
+        const wrapper = multiselect.getElement().querySelector('.ps-multiselect-input-wrapper') as HTMLDivElement;
+        const dropdown = multiselect.getElement().querySelector('.ps-multiselect-dropdown') as HTMLDivElement;
+        const closeBtn = multiselect.getElement().querySelector('.ps-multiselect-close') as HTMLElement;
+
+        // Open
+        wrapper.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        expect(dropdown.style.display).toBe('block');
+        expect(closeBtn.style.display).toBe('block');
+
+        // Close
+        closeBtn.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        appRoot.renderAll();
+        expect(dropdown.style.display).toBe('none');
+        expect(closeBtn.style.display).toBe('none');
+    });
 });

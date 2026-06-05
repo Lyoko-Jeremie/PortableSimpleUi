@@ -338,6 +338,19 @@
   font-family: inherit;
   background: transparent;
 }
+.ps-root .ps-multiselect-close {
+  cursor: pointer;
+  color: #999;
+  font-size: 24px;
+  line-height: 1;
+  user-select: none;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+.ps-root .ps-multiselect-close:hover {
+  color: #666;
+}
 .ps-root .ps-multiselect-tag {
   display: inline-flex;
   align-items: center;
@@ -771,6 +784,19 @@
   padding: 2px 0;
   font-family: inherit;
   background: transparent;
+}
+.ps-shadow-root .ps-multiselect-close {
+  cursor: pointer;
+  color: #999;
+  font-size: 24px;
+  line-height: 1;
+  user-select: none;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+.ps-shadow-root .ps-multiselect-close:hover {
+  color: #666;
 }
 .ps-shadow-root .ps-multiselect-tag {
   display: inline-flex;
