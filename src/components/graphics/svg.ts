@@ -23,6 +23,7 @@ export interface ISvgConfig extends IComponentConfig {
 export class Svg extends BaseComponent<ISvgConfig> {
     private _svgElement: SVGElement | null = null;
     private _lastFetchedSrc: string | null = null;
+    private _lastContent: string | null = null;
 
     /** 返回组件基础样式类名。 */
     protected getBaseClassName(): string | null {
@@ -57,6 +58,11 @@ export class Svg extends BaseComponent<ISvgConfig> {
 
     /** 更新 SVG 内容。 */
     private updateSvgContent(content: string) {
+        if (this._lastContent === content) {
+            return;
+        }
+        this._lastContent = content;
+
         const parser = new DOMParser();
         const doc = parser.parseFromString(content, 'image/svg+xml');
         const newSvg = doc.querySelector('svg');

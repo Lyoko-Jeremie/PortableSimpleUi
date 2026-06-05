@@ -33,8 +33,16 @@ export class Image extends BaseComponent<IImageConfig> {
     public render(): void {
         super.render();
         const img = this.element as HTMLImageElement;
-        img.src = this.resolveValue(this.config.src);
-        if (this.config.alt !== undefined) img.alt = this.resolveValue(this.config.alt);
+        const src = this.resolveValue(this.config.src);
+        if (img.src !== src) {
+            img.src = src;
+        }
+        if (this.config.alt !== undefined) {
+            const alt = this.resolveValue(this.config.alt);
+            if (img.alt !== alt) {
+                img.alt = alt;
+            }
+        }
 
         const width = this.resolveValue(this.config.width);
         if (width !== undefined) {
