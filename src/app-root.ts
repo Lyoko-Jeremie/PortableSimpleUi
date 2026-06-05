@@ -20,6 +20,8 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
     public add: ComponentContainerProxy;
     public zoneWrapper: IZoneWrapper;
     private _container: ComponentContainer;
+    private _isPaused: boolean = false;
+    private _needsRender: boolean = false;
 
     constructor(parentElement: HTMLElement, config: IAppRootConfig) {
         super(config, config.zoneWrapper);
@@ -75,8 +77,31 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
     }
 
     public renderAll(): void {
+        if (this._isPaused) {
+            this._needsRender = true;
+            return;
+        }
         this.render();
         this._container.renderAll();
+        this._needsRender = false;
+    }
+
+    /**
+     * 暂停渲染，用于批量构建 UI 时提高响应速度
+     */
+    public pauseRendering(): void {
+        this._isPaused = true;
+    }
+
+    /**
+     * 恢复渲染，并在需要时触发强制刷新
+     * @param force 是否强制刷新，默认为 false（如果暂停期间有渲染请求则刷新）
+     */
+    public resumeRendering(force: boolean = false): void {
+        this._isPaused = false;
+        if (this._needsRender || force) {
+            this.renderAll();
+        }
     }
 
     public destroy(): void {
