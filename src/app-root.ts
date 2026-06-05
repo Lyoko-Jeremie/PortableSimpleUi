@@ -111,6 +111,13 @@ export class AppRoot extends BaseComponent<IAppRootConfig> {
             this.host.parentElement.removeChild(this.host);
         }
     }
+
+    /**
+     * 将一个已创建的组件实例添加到根容器中。
+     */
+    public addChild<T extends BaseComponent<any, any>>(component: T): T {
+        return this._container.addChild(component);
+    }
 }
 
 /**

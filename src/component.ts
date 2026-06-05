@@ -389,6 +389,17 @@ export class ComponentContainer {
     }
 
     /**
+     * 将一个已创建的组件实例添加到容器中。
+     */
+    public addChild<T extends BaseComponent<any, any>>(component: T): T {
+        component.setParentComponent(this.parentComponent);
+        this.host.appendChild(component.getElement());
+        this.components.push(component);
+        this.zoneWrapper.run(() => component.render());
+        return component;
+    }
+
+    /**
      * 创建并挂载一个子组件。
      *
      * 流程：

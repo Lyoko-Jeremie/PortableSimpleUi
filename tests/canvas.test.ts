@@ -108,4 +108,48 @@ describe('Canvas', () => {
         expect(canvasComp.getCanvas().width).toBe(300);
         expect(canvasComp.getCanvas().height).toBe(200);
     });
+
+    it('should sync container size when canvas element is resized externally', (done) => {
+        // Mock ResizeObserver
+        const originalResizeObserver = global.ResizeObserver;
+        let callback: any;
+        global.ResizeObserver = class {
+            constructor(cb: any) {
+                callback = cb;
+            }
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as any;
+
+        const onResize = jest.fn();
+        const canvasComp = appRoot.add.Canvas({
+            width: 100,
+            height: 100,
+            onResize
+        });
+        appRoot.renderAll();
+        // 渲染时会调用一次 setSize，所以 onResize 会被调用一次
+        expect(onResize).toHaveBeenCalledTimes(1);
+
+        const canvasEl = canvasComp.getCanvas();
+        // 模拟外部修改
+        canvasEl.width = 300;
+        canvasEl.height = 200;
+
+        // 模拟 ResizeObserver 触发
+        if (callback) {
+            callback();
+        }
+
+        // 检查是否同步到了容器
+        const el = canvasComp.getElement();
+        expect(el.style.width).toBe('300px');
+        expect(el.style.height).toBe('200px');
+        expect(onResize).toHaveBeenCalledTimes(2);
+        expect(onResize).toHaveBeenLastCalledWith(300, 200, canvasComp);
+
+        global.ResizeObserver = originalResizeObserver;
+        done();
+    });
 });

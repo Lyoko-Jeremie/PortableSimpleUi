@@ -24,6 +24,8 @@ export interface ICanvasConfig extends IComponentConfig {
  */
 export class Canvas extends BaseComponent<ICanvasConfig> {
     private _canvasElement: HTMLCanvasElement | null = null;
+    private _resizeObserver: ResizeObserver | null = null;
+    private _isInternalResizing = false;
 
     private get canvasElement(): HTMLCanvasElement {
         if (!this._canvasElement) {
@@ -42,6 +44,17 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this._canvasElement.style.display = 'block';
         this._canvasElement.classList.add('psu-canvas');
         this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
+
+        // 监听外部修改 Canvas 大小的情况
+        if (typeof ResizeObserver !== 'undefined') {
+            this._resizeObserver = new ResizeObserver(() => {
+                if (this._isInternalResizing) return;
+                // 只有当 Canvas 元素的属性（width/height）与当前记录的不同时才同步
+                // ResizeObserver 在 Canvas 属性变化时也会触发
+                this.syncSizeFromCanvasSize();
+            });
+            this._resizeObserver.observe(this._canvasElement);
+        }
     }
 
     protected createHTMLElement(): HTMLElement {
@@ -87,29 +100,41 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
      * @param height 高度 (px)
      */
     public setSize(width: number, height: number) {
-        this.syncDimensionConfig('width', width);
-        this.syncDimensionConfig('height', height);
+        const wasInternal = this._isInternalResizing;
+        this._isInternalResizing = true;
+        try {
+            this.syncDimensionConfig('width', width);
+            this.syncDimensionConfig('height', height);
 
-        let changed = false;
-        if (this.canvasElement.width !== width) {
-            this.canvasElement.width = width;
-            changed = true;
-        }
-        if (this.canvasElement.height !== height) {
-            this.canvasElement.height = height;
-            changed = true;
-        }
+            let changed = false;
+            // 检查容器样式是否与目标大小一致，作为是否发生变化的依据
+            if (this.element.style.width !== `${width}px` || this.element.style.height !== `${height}px`) {
+                changed = true;
+            }
 
-        // 自动调整外包装 html 节点的相关样式来适配
-        this.element.style.width = `${width}px`;
-        this.element.style.height = `${height}px`;
+            if (this.canvasElement.width !== width) {
+                this.canvasElement.width = width;
+            }
+            if (this.canvasElement.height !== height) {
+                this.canvasElement.height = height;
+            }
 
-        if (changed) {
-            this.zoneWrapper.runInZone(() => {
-                if (this.config.onResize) {
-                    this.config.onResize(width, height, this);
-                }
-            });
+            // 自动调整外包装 html 节点的相关样式来适配
+            this.element.style.width = `${width}px`;
+            this.element.style.height = `${height}px`;
+
+            if (changed) {
+                this.zoneWrapper.runInZone(() => {
+                    if (this.config.onResize) {
+                        this.config.onResize(width, height, this);
+                    }
+                });
+            }
+        } finally {
+            // 使用 setTimeout 确保在 ResizeObserver 触发后（如果有的话）再恢复标识
+            // 或者由于 ResizeObserver 是异步触发的，其实可以直接恢复，
+            // 但为了保险，我们在这里结束。
+            this._isInternalResizing = wasInternal;
         }
     }
 
@@ -139,5 +164,13 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         if (this._canvasElement) {
             this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
         }
+    }
+
+    public destroy() {
+        if (this._resizeObserver) {
+            this._resizeObserver.disconnect();
+            this._resizeObserver = null;
+        }
+        super.destroy();
     }
 }
