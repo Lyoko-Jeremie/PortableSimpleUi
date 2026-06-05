@@ -22,7 +22,10 @@ module.exports = {
   },
   output: {
     path: distDir,
-    filename: 'assets/[name].[contenthash:8].js',
+    filename: (pathData) => {
+      return pathData.chunk.name === 'demo' && process.env.WEBPACK_SERVE ? 'assets/[name].js' : 'assets/[name].[contenthash:8].js';
+    },
+    publicPath: '/',
     clean: true,
   },
   resolve: {
@@ -134,8 +137,11 @@ module.exports = {
   devServer: {
     static: {
       directory: distDir,
+      publicPath: '/',
     },
     port: 8086,
     open: ['demo.html'],
+    hot: true,
+    liveReload: false,
   },
 };
