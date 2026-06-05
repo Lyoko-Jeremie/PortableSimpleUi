@@ -259,8 +259,14 @@ if (uiRoot) {
                 {label: 'Banana', key: 'banana'},
                 {label: 'Cherry', key: 'cherry'},
                 {label: 'Date', key: 'date'},
-                {label: 'Elderberry', key: 'elderberry'}
+                {label: 'Elderberry', key: 'elderberry'},
+                {label: 'Fig', key: 'fig'},
+                {label: 'Grape', key: 'grape'},
+                {label: 'Honeydew', key: 'honeydew'},
+                {label: 'Kiwi', key: 'kiwi'},
+                {label: 'Lemon', key: 'lemon'}
             ],
+            dropdownMaxHeight: 120, // 设置较小的高度以测试滚动
             onSearch: (value: string) => console.log('Search:', value),
             onSelect: (opt) => console.log('Autocomplete Selected:', opt)
         });

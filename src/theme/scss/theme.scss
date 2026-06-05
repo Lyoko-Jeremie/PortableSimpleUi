@@ -329,10 +329,10 @@ $ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helveti
     background: white;
     border: 1px solid #ddd;
     border-top: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 $ps-border-radius $ps-border-radius;
     max-height: 200px;
     overflow-y: auto;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   .ps-autocomplete-item {
     padding: 8px 12px;
@@ -415,10 +415,10 @@ $ps-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helveti
     background: white;
     border: 1px solid #ddd;
     border-top: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 $ps-border-radius $ps-border-radius;
     max-height: 200px;
     overflow-y: auto;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   .ps-multiselect-item {
     display: flex;

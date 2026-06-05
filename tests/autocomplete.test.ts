@@ -130,5 +130,23 @@ describe('Autocomplete', () => {
         appRoot.renderAll();
         expect(output.value).toBe('new-2');
     });
+
+    it('applies dropdownMaxHeight correctly', () => {
+        const autocomplete = appRoot.add.Autocomplete({
+            options: [{key: '1', label: '1'}],
+            dropdownMaxHeight: 150
+        });
+        appRoot.renderAll();
+        const dropdown = autocomplete.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
+        expect(dropdown.style.maxHeight).toBe('150px');
+
+        const autocomplete2 = appRoot.add.Autocomplete({
+            options: [{key: '1', label: '1'}],
+            dropdownMaxHeight: '30vh'
+        });
+        appRoot.renderAll();
+        const dropdown2 = autocomplete2.getElement().querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
+        expect(dropdown2.style.maxHeight).toBe('30vh');
+    });
 });
 

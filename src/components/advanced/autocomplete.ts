@@ -149,6 +149,8 @@ export interface IAutocompleteConfig extends IComponentConfig {
     onSearch?: (query: string, self: Autocomplete) => void;
     onSelect?: (option: IResolvedAutocompleteOption, self: Autocomplete) => void;
     filter?: (query: string, option: IResolvedAutocompleteOption) => boolean;
+    /** 下拉菜单的最大高度，支持数字（px）或字符串 */
+    dropdownMaxHeight?: DynamicValue<string | number>;
 }
 
 export interface IAutocompleteState {
@@ -290,6 +292,12 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         const filteredOptions = this.filterOptions(query, resolvedOptions);
         // 将筛选结果渲染到下拉列表中。
         this.renderDropdownItems(filteredOptions);
+
+        // 应用下拉菜单最大高度
+        if (this.config.dropdownMaxHeight !== undefined) {
+            const maxHeight = this.resolveValue(this.config.dropdownMaxHeight);
+            this.dropdownEl.style.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
+        }
 
         // 根据下拉当前状态控制可见性。
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
