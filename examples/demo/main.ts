@@ -386,7 +386,8 @@ if (uiRoot) {
         };
 
         // 初始绘制
-        setTimeout(myZone.wrapInZone(() => drawOnCanvas()), 100);
+        // setTimeout(myZone.wrapInZone(() => drawOnCanvas()), 100);
+        drawOnCanvas();
 
         const canvasControls = graphicsGroup1.add.Row({gap: '10px'});
         canvasControls.add.Button({
@@ -395,12 +396,12 @@ if (uiRoot) {
                 canvasWidth.set(Math.floor(Math.random() * 200) + 200);
                 canvasHeight.set(Math.floor(Math.random() * 100) + 100);
                 // 重新渲染后绘制
-                setTimeout(myZone.wrapInZone(() => drawOnCanvas()), 0);
+                myZone.runInZone(() => drawOnCanvas());
             }
         });
         canvasControls.add.Button({
             text: '重绘内容',
-            onClick: () => drawOnCanvas()
+            onClick: () => myZone.runInZone(() => drawOnCanvas())
         });
 
         const graphicsGroup2 = graphicsTab.add.Group({title: '图片组件 (Image)'});

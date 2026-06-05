@@ -146,18 +146,26 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         const width = this.resolveValue(this.config.width);
         const height = this.resolveValue(this.config.height);
 
+        // 获取当前 Canvas 的实际属性值，避免不必要的重设
+        const currentWidth = this.canvasElement.width;
+        const currentHeight = this.canvasElement.height;
+
         if (width !== undefined && height !== undefined) {
-            this.setSize(width, height);
+            // 只有当目标大小与当前大小不一致时，才调用 setSize
+            // setSize 会触发 width/height 的赋值，从而导致 Canvas 内容清空
+            if (width !== currentWidth || height !== currentHeight) {
+                this.setSize(width, height);
+            }
         } else if (width !== undefined) {
-            if (this.canvasElement.width !== width) {
+            if (currentWidth !== width) {
                 this.canvasElement.width = width;
+                this.element.style.width = `${width}px`;
             }
-            this.element.style.width = `${width}px`;
         } else if (height !== undefined) {
-            if (this.canvasElement.height !== height) {
+            if (currentHeight !== height) {
                 this.canvasElement.height = height;
+                this.element.style.height = `${height}px`;
             }
-            this.element.style.height = `${height}px`;
         }
 
         this.applyStyle();
