@@ -364,7 +364,7 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-multiselect-close, .ps-root .ps-multiselect-close {
   cursor: pointer;
   color: #999;
-  font-size: 24px;
+  font-size: 37px;
   line-height: 1;
   user-select: none;
   padding: 0 4px;
