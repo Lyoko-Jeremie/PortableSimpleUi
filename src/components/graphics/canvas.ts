@@ -1,4 +1,4 @@
-import {BaseComponent, IComponentConfig} from '../../component';
+import {BaseComponent, IComponentConfig, StyleDeclaration} from '../../component';
 import {IZoneWrapper} from '../../core';
 import {DynamicValue} from '../../types';
 
@@ -10,6 +10,8 @@ export interface ICanvasConfig extends IComponentConfig {
     width?: DynamicValue<number>;
     /** 初始高度 */
     height?: DynamicValue<number>;
+    /** Canvas 元素的样式 */
+    canvasStyle?: StyleDeclaration;
     /** 当 Canvas 大小改变时的回调 */
     onResize?: (width: number, height: number, self: Canvas) => void;
 }
@@ -39,6 +41,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this._canvasElement = document.createElement('canvas');
         this._canvasElement.style.display = 'block';
         this._canvasElement.classList.add('psu-canvas');
+        this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
     }
 
     protected createHTMLElement(): HTMLElement {
@@ -87,18 +90,27 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         this.syncDimensionConfig('width', width);
         this.syncDimensionConfig('height', height);
 
-        this.canvasElement.width = width;
-        this.canvasElement.height = height;
+        let changed = false;
+        if (this.canvasElement.width !== width) {
+            this.canvasElement.width = width;
+            changed = true;
+        }
+        if (this.canvasElement.height !== height) {
+            this.canvasElement.height = height;
+            changed = true;
+        }
 
         // 自动调整外包装 html 节点的相关样式来适配
         this.element.style.width = `${width}px`;
         this.element.style.height = `${height}px`;
 
-        this.zoneWrapper.runInZone(() => {
-            if (this.config.onResize) {
-                this.config.onResize(width, height, this);
-            }
-        });
+        if (changed) {
+            this.zoneWrapper.runInZone(() => {
+                if (this.config.onResize) {
+                    this.config.onResize(width, height, this);
+                }
+            });
+        }
     }
 
     public syncSizeFromCanvasSize() {
@@ -110,21 +122,22 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
         const height = this.resolveValue(this.config.height);
 
         if (width !== undefined && height !== undefined) {
-            if (this.canvasElement.width !== width || this.canvasElement.height !== height) {
-                this.setSize(width, height);
-            }
+            this.setSize(width, height);
         } else if (width !== undefined) {
             if (this.canvasElement.width !== width) {
                 this.canvasElement.width = width;
-                this.element.style.width = `${width}px`;
             }
+            this.element.style.width = `${width}px`;
         } else if (height !== undefined) {
             if (this.canvasElement.height !== height) {
                 this.canvasElement.height = height;
-                this.element.style.height = `${height}px`;
             }
+            this.element.style.height = `${height}px`;
         }
 
         this.applyStyle();
+        if (this._canvasElement) {
+            this.applyStyleToElement(this._canvasElement, this.config.canvasStyle);
+        }
     }
 }
