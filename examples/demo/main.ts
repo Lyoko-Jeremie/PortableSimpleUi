@@ -15,6 +15,7 @@ if (uiRoot) {
                 useDefaultTheme: true
             }
         });
+        app.pauseRendering();
 
         // 1. Layout: Tabs
         const tabs = app.add.Tabs({
@@ -482,6 +483,7 @@ if (uiRoot) {
             console.log('effect count', count.get());
         })
 
-        app.renderAll();
+        app.resumeRendering(true);
+        // app.renderAll();
     });
 }
