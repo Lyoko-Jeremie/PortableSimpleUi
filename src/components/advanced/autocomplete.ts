@@ -162,6 +162,8 @@ export interface IAutocompleteState {
 export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocompleteState> {
     // 输入框 DOM 节点，构造完成后从根元素中查找并缓存，避免后续重复查询。
     private inputEl: HTMLInputElement = null as any;
+    // 关闭按钮 DOM 节点，用于在下拉菜单打开时手动关闭。
+    private closeBtnEl: HTMLSpanElement = null as any;
     // 下拉容器 DOM 节点，负责承载所有候选项。
     private dropdownEl: HTMLDivElement = null as any;
     // 当前下拉是否处于打开状态：控制 dropdown 的显示/隐藏。
@@ -184,12 +186,19 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         super(config, zoneWrapper);
         // 组件 DOM 已由父类创建完成，这里直接缓存关键节点，后续渲染和交互都会频繁使用。
         this.inputEl = this.element.querySelector('.ps-autocomplete-input') as HTMLInputElement;
+        this.closeBtnEl = this.element.querySelector('.ps-autocomplete-close') as HTMLSpanElement;
         this.dropdownEl = this.element.querySelector('.ps-autocomplete-dropdown') as HTMLDivElement;
 
         // 绑定输入相关事件：输入、聚焦、点击等都会影响候选项显示与搜索回调。
         this.bindInputEvents();
         // 绑定全局点击事件：点击组件外部时自动关闭下拉，提升交互体验。
         this.bindDocumentOutsideClick();
+
+        // 绑定关闭按钮事件
+        this.closeBtnEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.closeDropdown();
+        });
 
         // 初始化内部状态：query 保存当前输入内容，selectedKey 保存当前选中的选项键值。
         this.state.query = '';
@@ -228,11 +237,17 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         input.autocomplete = 'off';
         input.className = 'ps-autocomplete-input';
 
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'ps-autocomplete-close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.display = 'none';
+
         const dropdown = document.createElement('div');
         dropdown.className = 'ps-autocomplete-dropdown';
         dropdown.style.display = 'none';
 
         container.appendChild(input);
+        container.appendChild(closeBtn);
         container.appendChild(dropdown);
 
         return container;
@@ -301,6 +316,7 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
 
         // 根据下拉当前状态控制可见性。
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
+        this.closeBtnEl.style.display = this.isDropdownOpen ? 'block' : 'none';
     }
 
     /**

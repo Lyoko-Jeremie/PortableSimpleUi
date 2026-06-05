@@ -287,6 +287,22 @@ export const DEFAULT_THEME_CSS = `
 .ps-shadow-root .ps-autocomplete-input:focus, .ps-root .ps-autocomplete-input:focus {
   border-color: #007bff;
 }
+.ps-shadow-root .ps-autocomplete-close, .ps-root .ps-autocomplete-close {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  font-size: 18px;
+  line-height: 1;
+  z-index: 5;
+  user-select: none;
+  padding: 4px;
+}
+.ps-shadow-root .ps-autocomplete-close:hover, .ps-root .ps-autocomplete-close:hover {
+  color: #666;
+}
 .ps-shadow-root .ps-autocomplete-dropdown, .ps-root .ps-autocomplete-dropdown {
   position: absolute;
   top: 100%;
