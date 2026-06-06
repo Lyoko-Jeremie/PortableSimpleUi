@@ -1,7 +1,7 @@
 import {BaseComponent, ContainerComponent, IComponentConfig, ComponentContainer} from '../../component';
 import {createComponentContainerProxyFromContainer, ComponentContainerProxy} from '../../app-root';
 import {DynamicValue} from '../../types';
-import {IZoneWrapper} from '../../core';
+import {ISignal, IZoneWrapper, signal} from '../../core';
 
 /**
  * Tabs 组件
@@ -28,7 +28,7 @@ export interface ITabsConfig extends IComponentConfig {
 }
 
 export class Tabs extends ContainerComponent<ITabsConfig> {
-    private _activeTabId: string;
+    private _activeTabId: ISignal<string>;
     private _headerElement!: HTMLElement;
     private _bodyElement!: HTMLElement;
     private _tabItems: ITabItem[] = [];
@@ -38,34 +38,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
         this.add = createComponentContainerProxyFromContainer(this._container);
         this._tabItems = config.items || [];
         this.config.items = this._tabItems;
-        this._activeTabId = config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : '');
-
-        // // 覆盖 add 代理
-        // const self = this;
-        // const originalAdd = this.add;
-        // this.add = new Proxy(originalAdd, {
-        //     get(target, prop) {
-        //         const value = (target as any)[prop];
-        //         if (typeof value === 'function') {
-        //             return (...args: any[]) => {
-        //                 const childConfig = args[0] || {};
-        //                 if (childConfig.tabTitle || self.config.autoCreateTab !== false) {
-        //                     const tabId = childConfig.id || `tab-${Math.random().toString(36).substr(2, 9)}`;
-        //                     const tabLabel = childConfig.tabTitle || childConfig.id || (childConfig.id ? null : 'Tab');
-        //                     if (!self._tabItems.find(item => item.id === tabId)) {
-        //                         self._tabItems.push({ id: tabId, label: tabLabel || tabId });
-        //                         if (!self._activeTabId) self._activeTabId = tabId;
-        //                     }
-        //                 }
-        //                 const component = value.apply(target, args);
-        //                 // 在组件添加后同步渲染 header
-        //                 self.renderHeader();
-        //                 return component;
-        //             };
-        //         }
-        //         return value;
-        //     }
-        // }) as any;
+        this._activeTabId = signal(config.activeTabId || (this._tabItems.length > 0 ? this._tabItems[0]!.id : ''));
     }
 
     protected getBaseClassName(): string | null {
@@ -112,8 +85,8 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             label: tabConfig.title ?? tabId
         });
 
-        if (!this._activeTabId) {
-            this._activeTabId = tabId;
+        if (!this._activeTabId.get()) {
+            this._activeTabId.set(tabId);
         }
 
         const tabContainer = this.add.Container({id: tabId});
@@ -134,17 +107,21 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
     }
 
     public get activeTabId() {
-        return this._activeTabId;
+        return this._activeTabId.get();
     }
 
     public set activeTabId(id: string) {
-        if (this._activeTabId !== id) {
+        if (this._activeTabId.get() !== id) {
             this.zoneWrapper.runInZone(() => {
-                this._activeTabId = id;
+                this._activeTabId.set(id);
                 this.config.onChange?.(id, this);
                 this.markDirty();
             });
         }
+    }
+
+    public get activeTabSignal(): ISignal<string> {
+        return this._activeTabId;
     }
 
     public render(): void {
@@ -179,7 +156,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             const item = this._tabItems[index];
             if (!item) return;
             const tabEl = el as HTMLElement;
-            tabEl.className = `ps-tabs-item ${item.id === this._activeTabId ? 'active' : ''}`;
+            tabEl.className = `ps-tabs-item ${item.id === this._activeTabId.get() ? 'active' : ''}`;
             tabEl.textContent = this.resolveValue(item.label);
         });
     }
@@ -195,7 +172,7 @@ export class Tabs extends ContainerComponent<ITabsConfig> {
             const item = this._tabItems[index];
             if (item) {
                 const childEl = childComp.getElement();
-                if (item.id === this._activeTabId) {
+                if (item.id === this._activeTabId.get()) {
                     const customDisplay = childComp.config.style?.display;
                     if (customDisplay !== undefined) {
                         childEl.style.display = this.resolveValue(customDisplay as any);
