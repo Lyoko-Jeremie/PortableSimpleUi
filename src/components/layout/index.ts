@@ -31,6 +31,59 @@ export class Container extends ContainerComponent<IContainerConfig> {
 }
 
 /**
+ * 原生 HTML 容器配置
+ */
+export interface IHTMLContainerConfig extends IComponentConfig {
+    /** 直接容纳的原生 HTML 元素 (可选) */
+    element?: HTMLElement;
+}
+
+/**
+ * HTML 容器组件，用于直接容纳一个原生 HTML 元素
+ */
+export class HTMLContainer extends BaseComponent<IHTMLContainerConfig> {
+    private _currentElement: HTMLElement | undefined;
+
+    constructor(config: IHTMLContainerConfig, zoneWrapper: IZoneWrapper) {
+        super(config, zoneWrapper);
+        if (config.element) {
+            this.setElement(config.element);
+        }
+    }
+
+    protected getBaseClassName(): string | null {
+        return 'ps-html-container';
+    }
+
+    protected createHTMLElement(): HTMLElement {
+        return document.createElement('div');
+    }
+
+    /**
+     * 获取当前容纳的原生 HTML 元素
+     */
+    public getElementToContain<EL extends HTMLElement = HTMLElement>(): EL | undefined {
+        return this._currentElement as EL;
+    }
+
+    /**
+     * 设置或替换当前容纳的原生 HTML 元素
+     * @param el 新的原生元素，传 null 或 undefined 则清空
+     */
+    public setElement(el: HTMLElement | null | undefined): void {
+        if (el) {
+            this._currentElement = el;
+        } else {
+            this._currentElement = undefined;
+        }
+        this.element.innerHTML = '';
+        if (this._currentElement) {
+            this.element.appendChild(this._currentElement);
+        }
+    }
+}
+
+/**
  * Flex 布局配置
  */
 export interface IFlexConfig extends IComponentConfig {

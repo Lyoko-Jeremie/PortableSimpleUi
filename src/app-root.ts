@@ -153,6 +153,7 @@ declare module './app-root' {
 
         Flex: typeof LayoutComponents.Flex;
         Container: typeof LayoutComponents.Container;
+        HTMLContainer: typeof LayoutComponents.HTMLContainer;
         Row: typeof LayoutComponents.Row;
         Column: typeof LayoutComponents.Column;
         Stack: typeof LayoutComponents.Stack;

@@ -38,6 +38,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
 
     private initCanvas() {
         if (this._canvasElement) return;
+        console.log('Initializing canvas element');
         this._canvasElement = document.createElement('canvas');
         this._canvasElement.style.display = 'block';
         this._canvasElement.classList.add('psu-canvas');
@@ -56,6 +57,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
     }
 
     protected createHTMLElement(): HTMLElement {
+        console.log('Creating canvas element');
         const container = document.createElement('div');
         container.style.display = 'inline-block';
         container.style.position = 'relative';
@@ -103,6 +105,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
      * @param height 高度 (px)
      */
     public setSize(width: number, height: number) {
+        console.log('Setting canvas size', width, height);
         let changed = false;
         if (this.canvasElement.width !== width) {
             this.canvasElement.width = width;
@@ -123,6 +126,7 @@ export class Canvas extends BaseComponent<ICanvasConfig> {
     public syncSizeFromCanvasSize() {
         const width = this.canvasElement.width;
         const height = this.canvasElement.height;
+        console.log('syncSizeFromCanvasSize', width, height);
 
         let changed = false;
         if (this.element.style.width !== `${width}px` || this.element.style.height !== `${height}px`) {
