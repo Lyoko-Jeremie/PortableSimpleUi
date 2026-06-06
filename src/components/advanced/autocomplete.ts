@@ -194,10 +194,22 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
         // 绑定全局点击事件：点击组件外部时自动关闭下拉，提升交互体验。
         this.bindDocumentOutsideClick();
 
-        // 绑定关闭按钮事件
+        // 绑定关闭/清空按钮事件
         this.closeBtnEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.closeDropdown();
+            this.zoneWrapper.run(() => {
+                // 如果下拉打开，先关闭下拉
+                if (this.isDropdownOpen) {
+                    this.closeDropdown();
+                }
+                // 清空查询词
+                this.state.query = '';
+                this.state.selectedKey = undefined;
+                // 触发搜索回调，通知外部内容已清空
+                this.config.onSearch?.('', this);
+                // 标记脏状态以重新渲染，更新输入框内容并隐藏清空按钮
+                this.markDirty();
+            });
         });
 
         // 初始化内部状态：query 保存当前输入内容，selectedKey 保存当前选中的选项键值。
@@ -316,7 +328,8 @@ export class Autocomplete extends BaseComponent<IAutocompleteConfig, IAutocomple
 
         // 根据下拉当前状态控制可见性。
         this.dropdownEl.style.display = this.isDropdownOpen ? 'block' : 'none';
-        this.closeBtnEl.style.display = this.isDropdownOpen ? 'block' : 'none';
+        // 当下拉打开或者输入框有内容时，显示关闭/清空按钮。
+        this.closeBtnEl.style.display = (this.isDropdownOpen || query) ? 'block' : 'none';
     }
 
     /**
