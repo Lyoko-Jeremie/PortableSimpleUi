@@ -1,5 +1,5 @@
-import { AppRoot } from '../src/app-root';
-import { createZoneWrapper } from '../src/core';
+import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
 
 describe('AppRoot Destruction', () => {
     let container: HTMLElement;
@@ -19,7 +19,7 @@ describe('AppRoot Destruction', () => {
         const zoneWrapper = createZoneWrapper('test');
         const appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
 
         expect(container.contains(appRoot.host)).toBe(true);
@@ -34,7 +34,7 @@ describe('AppRoot Destruction', () => {
         const zoneWrapper = createZoneWrapper('test');
         const appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
 
         expect(zoneWrapper.rootsToRender.has(appRoot)).toBe(true);
@@ -48,11 +48,11 @@ describe('AppRoot Destruction', () => {
         const zoneWrapper = createZoneWrapper('test');
         const appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
 
         // 添加一个按钮组件
-        const button = appRoot.add.Button({ text: 'Test' });
+        const button = appRoot.add.Button({text: 'Test'});
         const buttonEl = button.getElement();
 
         expect(appRoot.host.contains(buttonEl)).toBe(true);
@@ -68,15 +68,15 @@ describe('AppRoot Destruction', () => {
         const zoneWrapper = createZoneWrapper('test');
         const appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'shadow' }
+            styleIsolation: {mode: 'shadow'}
         });
 
         expect(container.contains(appRoot.host)).toBe(true);
         expect(appRoot.host.shadowRoot).not.toBeNull();
 
-        const button = appRoot.add.Button({ text: 'Shadow Test' });
+        const button = appRoot.add.Button({text: 'Shadow Test'});
         const buttonEl = button.getElement();
-        
+
         // 在 shadow mode 下，组件被添加到 shadowRoot 里的一个 div 中
         // 根据 app-root.ts，它被添加到 .ps-shadow-root 元素中
         const shadowRootEl = appRoot.host.shadowRoot!.querySelector('.ps-shadow-root');

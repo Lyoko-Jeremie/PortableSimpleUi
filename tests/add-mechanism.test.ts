@@ -1,7 +1,7 @@
-import { AppRoot } from '../src/app-root';
-import { Label, Button } from '../src/components/basic/index';
-import { Flex } from '../src/components/layout/index';
-import { createZoneWrapper, IZoneWrapper } from '../src/core';
+import {AppRoot} from '../src/app-root';
+import {Label, Button} from '../src/components/basic/index';
+import {Flex} from '../src/components/layout/index';
+import {createZoneWrapper, IZoneWrapper} from '../src/core';
 import '../src/index'; // 确保组件已注册
 
 describe('Component Add Mechanism', () => {
@@ -19,7 +19,7 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should add Label correctly via appRoot.add.Label', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
         const label = app.add.Label({
             id: 'my-label',
             text: 'Hello'
@@ -32,12 +32,14 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should add Button correctly via appRoot.add.Button', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
         let clicked = false;
         const button = app.add.Button({
             id: 'my-button',
             text: 'Click me',
-            onClick: () => { clicked = true; }
+            onClick: () => {
+                clicked = true;
+            }
         });
 
         expect(button).toBeInstanceOf(Button);
@@ -48,19 +50,19 @@ describe('Component Add Mechanism', () => {
     });
 
     it('should add Flex and nested components correctly', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
-        const flex = app.add.Flex({ id: 'my-flex' });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
+        const flex = app.add.Flex({id: 'my-flex'});
 
         expect(flex).toBeInstanceOf(Flex);
         expect(flex.getElement().style.display).toBe('flex');
 
-        const nestedLabel = flex.add.Label({ text: 'Nested' });
+        const nestedLabel = flex.add.Label({text: 'Nested'});
         expect(nestedLabel).toBeInstanceOf(Label);
         expect(flex.getElement().contains(nestedLabel.getElement())).toBe(true);
     });
 
     it('should throw error if component is not registered', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
         expect(() => {
             (app.add as any).NonExistentComponent({});
         }).toThrow('Component NonExistentComponent is not registered.');

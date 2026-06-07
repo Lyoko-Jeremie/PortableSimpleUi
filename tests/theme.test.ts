@@ -12,7 +12,7 @@ describe('Theme and Style Isolation', () => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
                 zoneWrapper,
-                styleIsolation: { mode: 'none' }
+                styleIsolation: {mode: 'none'}
             });
             expect(app.host.classList.contains('ps-root')).toBe(true);
         });
@@ -23,7 +23,7 @@ describe('Theme and Style Isolation', () => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
                 zoneWrapper,
-                styleIsolation: { mode: 'shadow', useDefaultTheme: true }
+                styleIsolation: {mode: 'shadow', useDefaultTheme: true}
             });
             const shadowRoot = app.host.shadowRoot!;
             expect(shadowRoot).toBeDefined();
@@ -42,9 +42,9 @@ describe('Theme and Style Isolation', () => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
                 zoneWrapper,
-                styleIsolation: { mode: 'none' }
+                styleIsolation: {mode: 'none'}
             });
-            const btn = app.add.Button({ text: 'Test' });
+            const btn = app.add.Button({text: 'Test'});
             expect(btn.getElement().classList.contains('ps-button')).toBe(true);
 
             const input = app.add.Input({});
@@ -60,7 +60,7 @@ describe('Theme and Style Isolation', () => {
             const container = document.createElement('div');
             const app = new AppRoot(container, {
                 zoneWrapper,
-                styleIsolation: { mode: 'shadow', useDefaultTheme: false }
+                styleIsolation: {mode: 'shadow', useDefaultTheme: false}
             });
             const shadowRoot = app.host.shadowRoot!;
             const styleTag = shadowRoot.querySelector('style');

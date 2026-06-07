@@ -11,19 +11,19 @@ describe('TreeView Collapse', () => {
     it('should collapse and expand nodes when clicking switcher', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const data = [
                 {
                     title: 'Parent',
                     key: 'parent',
                     children: [
-                        { title: 'Child 1', key: 'child1' }
+                        {title: 'Child 1', key: 'child1'}
                     ]
                 }
             ];
 
-            const treeView = appRoot.add.TreeView({ data });
+            const treeView = appRoot.add.TreeView({data});
 
             // 初始状态不展开
             expect(treeView.getElement().textContent).toContain('Parent');
@@ -53,14 +53,14 @@ describe('TreeView Collapse', () => {
     it('should support initial expandedKeys', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const data = [
                 {
                     title: 'Parent',
                     key: 'parent',
                     children: [
-                        { title: 'Child 1', key: 'child1' }
+                        {title: 'Child 1', key: 'child1'}
                     ]
                 }
             ];

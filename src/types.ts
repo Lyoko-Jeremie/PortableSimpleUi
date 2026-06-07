@@ -1,7 +1,8 @@
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
 export interface DataAccessor<T> {
     get(): T;
+
     set(value: T): void;
 }
 

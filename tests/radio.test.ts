@@ -1,5 +1,5 @@
 if (typeof (global as any).TextEncoder === 'undefined') {
-    const { TextEncoder, TextDecoder } = require('util');
+    const {TextEncoder, TextDecoder} = require('util');
     (global as any).TextEncoder = TextEncoder;
     (global as any).TextDecoder = TextDecoder;
 }
@@ -35,7 +35,7 @@ describe('Radio Component Initial Value', () => {
     });
 
     it('should respect initial true value from dataAccessor', () => {
-        const data = { checked: true };
+        const data = {checked: true};
         const dataAccessor = {
             get: () => data.checked,
             set: (v: boolean) => data.checked = v,
@@ -55,7 +55,7 @@ describe('Radio Component Initial Value', () => {
     });
 
     it('should respect initial false value from dataAccessor', () => {
-        const data = { checked: false };
+        const data = {checked: false};
         const dataAccessor = {
             get: () => data.checked,
             set: (v: boolean) => data.checked = v,

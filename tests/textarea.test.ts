@@ -12,7 +12,7 @@ describe('TextArea Component', () => {
         document.body.appendChild(container);
         appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
     });
 
@@ -38,7 +38,7 @@ describe('TextArea Component', () => {
     });
 
     it('should support two-way binding', () => {
-        const context = { text: 'Hello' };
+        const context = {text: 'Hello'};
         const textArea = appRoot.add.TextArea({
             value: makeDataAccessor(context, 'text')
         });
@@ -69,7 +69,7 @@ describe('TextArea Component', () => {
 
         const el = textArea.getElement() as HTMLTextAreaElement;
         el.value = 'Testing';
-        
+
         el.dispatchEvent(new Event('input'));
         expect(inputVal).toBe('Testing');
 
@@ -78,7 +78,7 @@ describe('TextArea Component', () => {
     });
 
     it('should support disabled property', () => {
-        const context = { isDisabled: false };
+        const context = {isDisabled: false};
         const textArea = appRoot.add.TextArea({
             disabled: makeDataAccessor(context, 'isDisabled')
         });
@@ -101,7 +101,7 @@ describe('TextArea Component', () => {
     });
 
     it('should support dynamic readOnly property', () => {
-        const context = { isReadOnly: false };
+        const context = {isReadOnly: false};
         const textArea = appRoot.add.TextArea({
             readOnly: makeDataAccessor(context, 'isReadOnly')
         });

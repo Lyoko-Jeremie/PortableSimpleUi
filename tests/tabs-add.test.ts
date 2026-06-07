@@ -1,6 +1,6 @@
-import { AppRoot } from '../src/app-root';
-import { Tabs } from '../src/components/complex/index';
-import { createZoneWrapper, IZoneWrapper } from '../src/core';
+import {AppRoot} from '../src/app-root';
+import {Tabs} from '../src/components/complex/index';
+import {createZoneWrapper, IZoneWrapper} from '../src/core';
 import '../src/index';
 
 describe('Tabs new add mechanism', () => {
@@ -38,11 +38,11 @@ describe('Tabs new add mechanism', () => {
     // });
 
     it('addTab should append a tab item and create its content Container', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
-        const tabs = app.add.Tabs({ id: 'my-tabs' });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
+        const tabs = app.add.Tabs({id: 'my-tabs'});
 
         const tabContent = tabs.addTab();
-        const label = tabContent.Label({ text: 'Tab 1 Content' });
+        const label = tabContent.Label({text: 'Tab 1 Content'});
 
         const header = tabs.getElement().querySelector('.ps-tabs-header');
         const tabItems = header?.querySelectorAll('.ps-tabs-item');
@@ -59,12 +59,12 @@ describe('Tabs new add mechanism', () => {
     });
 
     it('addTab should allow multiple child components in the generated Container', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
-        const tabs = app.add.Tabs({ id: 'my-tabs' });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
+        const tabs = app.add.Tabs({id: 'my-tabs'});
 
-        const tabContent = tabs.addTab({ id: 'details', title: 'Details' });
-        const title = tabContent.Label({ text: 'Details title' });
-        const bodyText = tabContent.Text({ text: 'Details body' });
+        const tabContent = tabs.addTab({id: 'details', title: 'Details'});
+        const title = tabContent.Label({text: 'Details title'});
+        const bodyText = tabContent.Text({text: 'Details body'});
 
         const header = tabs.getElement().querySelector('.ps-tabs-header');
         const tabItems = header?.querySelectorAll('.ps-tabs-item');
@@ -80,20 +80,20 @@ describe('Tabs new add mechanism', () => {
     });
 
     it('addTab should reject duplicate tab ids', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
         const tabs = app.add.Tabs({
             id: 'my-tabs',
-            items: [{ id: 'existing', label: 'Existing' }]
+            items: [{id: 'existing', label: 'Existing'}]
         });
 
-        expect(() => tabs.addTab({ id: 'existing', title: 'Duplicate' })).toThrow('Tab existing already exists.');
+        expect(() => tabs.addTab({id: 'existing', title: 'Duplicate'})).toThrow('Tab existing already exists.');
     });
 
     it('should respect autoCreateTab: false', () => {
-        const app = new AppRoot(container, { id: 'app', zoneWrapper });
-        const tabs = app.add.Tabs({ id: 'my-tabs', autoCreateTab: false });
+        const app = new AppRoot(container, {id: 'app', zoneWrapper});
+        const tabs = app.add.Tabs({id: 'my-tabs', autoCreateTab: false});
 
-        tabs.add.Label({ text: 'Not a tab' });
+        tabs.add.Label({text: 'Not a tab'});
 
         const header = tabs.getElement().querySelector('.ps-tabs-header');
         const tabItems = header?.querySelectorAll('.ps-tabs-item');

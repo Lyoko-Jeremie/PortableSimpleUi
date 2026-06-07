@@ -12,7 +12,7 @@ describe('Basic Components', () => {
         document.body.appendChild(container);
         appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
     });
 
@@ -22,14 +22,14 @@ describe('Basic Components', () => {
 
     describe('Label', () => {
         it('should render text content correctly', () => {
-            const label = appRoot.add.Label({ text: 'Hello World' });
+            const label = appRoot.add.Label({text: 'Hello World'});
             appRoot.renderAll();
             expect(label.getElement().textContent).toBe('Hello World');
             expect(label.getElement().innerHTML).toBe('Hello World');
         });
 
         it('should render html content correctly', () => {
-            const label = appRoot.add.Label({ html: '<b>Bold Text</b>' });
+            const label = appRoot.add.Label({html: '<b>Bold Text</b>'});
             appRoot.renderAll();
             expect(label.getElement().innerHTML).toBe('<b>Bold Text</b>');
             const boldElement = label.getElement().querySelector('b');
@@ -48,7 +48,7 @@ describe('Basic Components', () => {
         });
 
         it('should handle for attribute', () => {
-            const label = appRoot.add.Label({ text: 'Label', for: 'input-id' });
+            const label = appRoot.add.Label({text: 'Label', for: 'input-id'});
             appRoot.renderAll();
             expect(label.getElement().getAttribute('for')).toBe('input-id');
         });
@@ -56,19 +56,19 @@ describe('Basic Components', () => {
 
     describe('Text', () => {
         it('should render text content correctly', () => {
-            const text = appRoot.add.Text({ text: 'Hello' });
+            const text = appRoot.add.Text({text: 'Hello'});
             appRoot.renderAll();
             expect(text.getElement().textContent).toBe('Hello');
         });
 
         it('should render html content correctly', () => {
-            const text = appRoot.add.Text({ html: '<span>Nested</span>' });
+            const text = appRoot.add.Text({html: '<span>Nested</span>'});
             appRoot.renderAll();
             expect(text.getElement().innerHTML).toBe('<span>Nested</span>');
         });
 
         it('should support disabled property', () => {
-            const context = { isDisabled: false };
+            const context = {isDisabled: false};
             const text = appRoot.add.Text({
                 text: 'Disabled text',
                 disabled: makeDataAccessor(context, 'isDisabled')
@@ -97,7 +97,7 @@ describe('Basic Components', () => {
 
     describe('Input Two-way Binding', () => {
         it('should update context when input changes', () => {
-            const context = { name: 'Alice' };
+            const context = {name: 'Alice'};
             const input = appRoot.add.Input({
                 value: makeDataAccessor(context, 'name')
             });
@@ -113,7 +113,7 @@ describe('Basic Components', () => {
         });
 
         it('should support disabled property', () => {
-            const context = { isDisabled: false };
+            const context = {isDisabled: false};
             const input = appRoot.add.Input({
                 disabled: makeDataAccessor(context, 'isDisabled')
             });
@@ -130,7 +130,7 @@ describe('Basic Components', () => {
         });
 
         it('should support dynamic readOnly property', () => {
-            const context = { isReadOnly: false };
+            const context = {isReadOnly: false};
             const input = appRoot.add.Input({
                 readOnly: makeDataAccessor(context, 'isReadOnly')
             });
@@ -155,7 +155,7 @@ describe('Basic Components', () => {
 
     describe('Checkbox Two-way Binding', () => {
         it('should update context when checkbox changes', () => {
-            const context = { active: false };
+            const context = {active: false};
             const checkbox = appRoot.add.Checkbox({
                 checked: makeDataAccessor(context, 'active')
             });
@@ -171,7 +171,7 @@ describe('Basic Components', () => {
         });
 
         it('should support readOnly property', () => {
-            const context = { isReadOnly: false };
+            const context = {isReadOnly: false};
             const checkbox = appRoot.add.Checkbox({
                 readOnly: makeDataAccessor(context, 'isReadOnly')
             });

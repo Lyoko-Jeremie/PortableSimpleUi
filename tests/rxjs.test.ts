@@ -1,13 +1,13 @@
-import { BehaviorSubject, Subject } from 'rxjs';
-import { createZoneWrapper } from '../src/core';
-import { Text } from '../src/components/basic';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {createZoneWrapper} from '../src/core';
+import {Text} from '../src/components/basic';
 
 describe('RxJS support', () => {
     const zoneWrapper = createZoneWrapper('test-zone');
 
     it('should support BehaviorSubject in DynamicValue', () => {
         const subject = new BehaviorSubject('initial');
-        const textComp = new Text({ text: subject }, zoneWrapper);
+        const textComp = new Text({text: subject}, zoneWrapper);
 
         // 初始值解析
         textComp.render();
@@ -23,7 +23,7 @@ describe('RxJS support', () => {
 
     it('should support Subject in DynamicValue', () => {
         const subject = new Subject<string>();
-        const textComp = new Text({ text: subject }, zoneWrapper);
+        const textComp = new Text({text: subject}, zoneWrapper);
 
         textComp.render();
         expect(textComp.getElement().textContent).toBe('');
@@ -35,7 +35,7 @@ describe('RxJS support', () => {
 
     it('should unsubscribe on component destroy', () => {
         const subject = new BehaviorSubject('initial');
-        const textComp = new Text({ text: subject }, zoneWrapper);
+        const textComp = new Text({text: subject}, zoneWrapper);
 
         textComp.render();
         expect(subject.observed).toBe(true);
@@ -47,7 +47,7 @@ describe('RxJS support', () => {
 
     it('should trigger markDirty when Observable emits', () => {
         const subject = new BehaviorSubject('initial');
-        const textComp = new Text({ text: subject }, zoneWrapper);
+        const textComp = new Text({text: subject}, zoneWrapper);
 
         // 模拟 render 过程以建立订阅
         textComp.render();
@@ -62,8 +62,8 @@ describe('RxJS support', () => {
 
     it('should support two-way binding with BehaviorSubject', () => {
         const subject = new BehaviorSubject('initial');
-        const { Input } = require('../src/components/basic');
-        const inputComp = new Input({ value: subject }, zoneWrapper);
+        const {Input} = require('../src/components/basic');
+        const inputComp = new Input({value: subject}, zoneWrapper);
 
         inputComp.render();
         const el = inputComp.getElement() as HTMLInputElement;

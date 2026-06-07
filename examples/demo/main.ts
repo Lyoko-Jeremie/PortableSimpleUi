@@ -2,7 +2,7 @@ import './polyfill';
 import {AppRoot} from '../../src/app-root';
 import {computed, signal, createZoneWrapper, effect} from '../../src/core';
 import {makeDataAccessor, makeRef} from "../../src";
-import { BehaviorSubject, interval, map } from 'rxjs';
+import {BehaviorSubject, interval, map} from 'rxjs';
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -52,13 +52,13 @@ if (uiRoot) {
         const rxjsCount$ = new BehaviorSubject(0);
         const timer$ = interval(1000).pipe(map(v => `计时器: ${v}s`));
 
-        rxjsFlex.add.Text({ text: rxjsCount$.pipe(map(v => `当前计数: ${v}`)) });
+        rxjsFlex.add.Text({text: rxjsCount$.pipe(map(v => `当前计数: ${v}`))});
         rxjsFlex.add.Button({
             text: '点击增加计数 (RxJS)',
             onClick: () => rxjsCount$.next(rxjsCount$.value + 1)
         });
-        
-        rxjsFlex.add.Text({ text: timer$ });
+
+        rxjsFlex.add.Text({text: timer$});
 
         const rxjsInput$ = new BehaviorSubject('初始值');
         rxjsFlex.add.Input({
@@ -66,7 +66,7 @@ if (uiRoot) {
             value: rxjsInput$,
             onInput: (v) => rxjsInput$.next(v)
         });
-        rxjsFlex.add.Text({ text: rxjsInput$.pipe(map(v => `RxJS 内容: ${v}`)) });
+        rxjsFlex.add.Text({text: rxjsInput$.pipe(map(v => `RxJS 内容: ${v}`))});
 
         // --- 基础组件页 ---
 

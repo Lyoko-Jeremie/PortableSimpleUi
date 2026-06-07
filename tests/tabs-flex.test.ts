@@ -1,7 +1,7 @@
-import { AppRoot } from '../src/app-root';
-import { createZoneWrapper } from '../src/core';
-import { Tabs } from '../src/components/complex/index';
-import { Flex } from '../src/components/layout/index';
+import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
+import {Tabs} from '../src/components/complex/index';
+import {Flex} from '../src/components/layout/index';
 
 describe('Tabs and Flex Integration', () => {
     let app: AppRoot;
@@ -11,11 +11,11 @@ describe('Tabs and Flex Integration', () => {
         const container = document.createElement('div');
         container.id = 'app';
         document.body.appendChild(container);
-        app = new AppRoot(container, { zoneWrapper });
+        app = new AppRoot(container, {zoneWrapper});
     });
 
     it('should maintain Flex display as flex when inside Tabs', () => {
-        const tabs = app.add.Tabs({ id: 'tabs' });
+        const tabs = app.add.Tabs({id: 'tabs'});
 
         // 添加一个 Flex 组件作为 Tab
         const flexTab = tabs.addTab({
@@ -38,7 +38,7 @@ describe('Tabs and Flex Integration', () => {
     });
 
     it('should maintain Container display as default (empty) when inside Tabs', () => {
-        const tabs = app.add.Tabs({ id: 'tabs' });
+        const tabs = app.add.Tabs({id: 'tabs'});
 
         const containerTab = tabs.addTab({
             title: 'Container Tab',

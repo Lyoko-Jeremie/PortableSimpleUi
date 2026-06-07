@@ -1,6 +1,6 @@
 import 'zone.js';
-import { AppRoot } from '../src/app-root';
-import { createZoneWrapper } from '../src/core';
+import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
 
 describe('AppRoot Rendering Pause/Resume', () => {
     let container: HTMLElement;
@@ -14,7 +14,7 @@ describe('AppRoot Rendering Pause/Resume', () => {
         zoneWrapper = createZoneWrapper('test-zone');
         appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
 
         // 劫持 render 方法来计数
@@ -77,9 +77,12 @@ describe('AppRoot Rendering Pause/Resume', () => {
 
     it('should handle multiple render requests during pause with a single render after resume', () => {
         appRoot.pauseRendering();
-        zoneWrapper.run(() => {});
-        zoneWrapper.run(() => {});
-        zoneWrapper.run(() => {});
+        zoneWrapper.run(() => {
+        });
+        zoneWrapper.run(() => {
+        });
+        zoneWrapper.run(() => {
+        });
         expect(renderCount).toBe(0);
 
         appRoot.resumeRendering();

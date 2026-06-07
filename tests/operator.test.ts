@@ -1,5 +1,5 @@
 if (typeof (global as any).TextEncoder === 'undefined') {
-    const { TextEncoder, TextDecoder } = require('util');
+    const {TextEncoder, TextDecoder} = require('util');
     (global as any).TextEncoder = TextEncoder;
     (global as any).TextDecoder = TextDecoder;
 }
@@ -51,7 +51,7 @@ describe('Operator Components', () => {
 
             const btn = upload.getElement().querySelector('button');
             expect(btn?.textContent).toBe('Upload File');
-            
+
             const input = upload.getElement().querySelector('input');
             expect(input?.type).toBe('file');
             expect(input?.accept).toBe('.txt');
@@ -66,32 +66,32 @@ describe('Operator Components', () => {
             zoneWrapper.run(() => upload.render());
 
             const container = upload.getElement();
-            
+
             // 模拟 dragover
-            const dragOverEvent = new (global as any).window.CustomEvent('dragover', { bubbles: true });
+            const dragOverEvent = new (global as any).window.CustomEvent('dragover', {bubbles: true});
             dragOverEvent.preventDefault = jest.fn();
             dragOverEvent.stopPropagation = jest.fn();
             container.dispatchEvent(dragOverEvent);
-            
+
             expect(container.classList.contains('dragging')).toBe(true);
             expect(dragOverEvent.preventDefault).toHaveBeenCalled();
 
             // 模拟进入子元素（应保持 dragging 状态）
             const btn = container.querySelector('button')!;
-            const dragEnterBtnEvent = new (global as any).window.CustomEvent('dragenter', { bubbles: true });
-            Object.defineProperty(dragEnterBtnEvent, 'target', { value: btn });
+            const dragEnterBtnEvent = new (global as any).window.CustomEvent('dragenter', {bubbles: true});
+            Object.defineProperty(dragEnterBtnEvent, 'target', {value: btn});
             container.dispatchEvent(dragEnterBtnEvent);
             expect(container.classList.contains('dragging')).toBe(true);
 
             // 模拟从子元素离开回到容器（应保持 dragging 状态）
-            const dragLeaveBtnEvent = new (global as any).window.CustomEvent('dragleave', { bubbles: true });
-            Object.defineProperty(dragLeaveBtnEvent, 'target', { value: btn });
+            const dragLeaveBtnEvent = new (global as any).window.CustomEvent('dragleave', {bubbles: true});
+            Object.defineProperty(dragLeaveBtnEvent, 'target', {value: btn});
             container.dispatchEvent(dragLeaveBtnEvent);
             expect(container.classList.contains('dragging')).toBe(true);
 
             // 模拟离开容器
-            const dragLeaveEvent = new (global as any).window.CustomEvent('dragleave', { bubbles: true });
-            Object.defineProperty(dragLeaveEvent, 'target', { value: container });
+            const dragLeaveEvent = new (global as any).window.CustomEvent('dragleave', {bubbles: true});
+            Object.defineProperty(dragLeaveEvent, 'target', {value: container});
             container.dispatchEvent(dragLeaveEvent);
             expect(container.classList.contains('dragging')).toBe(false);
 
@@ -100,15 +100,15 @@ describe('Operator Components', () => {
             expect(container.classList.contains('dragging')).toBe(true);
 
             // 模拟 drop
-            const dropEvent = new (global as any).window.CustomEvent('drop', { bubbles: true });
+            const dropEvent = new (global as any).window.CustomEvent('drop', {bubbles: true});
             dropEvent.preventDefault = jest.fn();
             dropEvent.stopPropagation = jest.fn();
             (dropEvent as any).dataTransfer = {
-                files: [{ name: 'test.txt' }]
+                files: [{name: 'test.txt'}]
             };
-            
+
             container.dispatchEvent(dropEvent);
-            
+
             expect(container.classList.contains('dragging')).toBe(false);
             expect(onUpload).toHaveBeenCalled();
             expect(onUpload.mock.calls[0][0][0].name).toBe('test.txt');

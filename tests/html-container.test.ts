@@ -10,7 +10,7 @@ describe('HTMLContainer', () => {
     it('should display the provided native HTML element', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const nativeDiv = document.createElement('div');
             nativeDiv.id = 'test-native-div';
@@ -31,7 +31,7 @@ describe('HTMLContainer', () => {
     it('should allow optional element and late assignment', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             // 不传 element
             const htmlContainer = appRoot.add.HTMLContainer({});
@@ -51,11 +51,11 @@ describe('HTMLContainer', () => {
     it('should allow replacing the element', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const div1 = document.createElement('div');
             div1.textContent = 'First';
-            const htmlContainer = appRoot.add.HTMLContainer({ element: div1 });
+            const htmlContainer = appRoot.add.HTMLContainer({element: div1});
 
             expect(htmlContainer.getElement().contains(div1)).toBe(true);
 
@@ -72,7 +72,7 @@ describe('HTMLContainer', () => {
     it('should maintain the native element after app re-render', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const nativeDiv = document.createElement('div');
             nativeDiv.id = 're-render-test';

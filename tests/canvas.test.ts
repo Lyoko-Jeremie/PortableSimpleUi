@@ -1,5 +1,5 @@
-import { AppRoot } from '../src/app-root';
-import { createZoneWrapper } from '../src/core';
+import {AppRoot} from '../src/app-root';
+import {createZoneWrapper} from '../src/core';
 
 describe('Canvas', () => {
     let container: HTMLElement;
@@ -11,7 +11,7 @@ describe('Canvas', () => {
         document.body.appendChild(container);
         appRoot = new AppRoot(container, {
             zoneWrapper,
-            styleIsolation: { mode: 'none' }
+            styleIsolation: {mode: 'none'}
         });
     });
 
@@ -72,7 +72,7 @@ describe('Canvas', () => {
     });
 
     it('should NOT reflect dynamic width and height changes after initialization', () => {
-        const state = { w: 100, h: 100 };
+        const state = {w: 100, h: 100};
         const canvasComp = appRoot.add.Canvas({
             width: () => state.w,
             height: () => state.h
@@ -91,8 +91,12 @@ describe('Canvas', () => {
     it('should update DynamicValue when resized', () => {
         let currentW = 100;
         const width = {
-            get value() { return currentW; },
-            set value(v: number) { currentW = v; }
+            get value() {
+                return currentW;
+            },
+            set value(v: number) {
+                currentW = v;
+            }
         };
         const canvasComp = appRoot.add.Canvas({
             width,

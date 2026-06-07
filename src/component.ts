@@ -72,6 +72,7 @@ export abstract class BaseComponent<
     public get parentComponent(): ComponentParent | null {
         return this._parentComponent;
     }
+
     /** 组件内部状态容器，供子类按需存放运行时数据。 */
     public state: TState = {} as TState;
     /** 脏标记：当组件需要重新渲染时置为 true。 */
@@ -345,6 +346,7 @@ export abstract class ContainerComponent<
     public get isLayout(): boolean {
         return true;
     }
+
     /** 向外暴露的子组件添加代理，通常由框架内部注入。 */
     public add!: ComponentContainerProxy;
     /** 当前组件所在的 Zone 包装器。 */

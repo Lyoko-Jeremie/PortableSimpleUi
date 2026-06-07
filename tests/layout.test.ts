@@ -10,12 +10,12 @@ describe('Layout Components', () => {
     it('Container should apply padding and contain children', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const container = appRoot.add.Container({
                 padding: '20px'
             });
-            container.add.Text({ text: 'Child' });
+            container.add.Text({text: 'Child'});
 
             expect(container.getElement().style.padding).toBe('20px');
             expect(container.getElement().childNodes.length).toBe(1);
@@ -25,9 +25,9 @@ describe('Layout Components', () => {
     it('Row should have display flex and flexDirection row', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const row = appRoot.add.Row({ gap: '10px' });
+            const row = appRoot.add.Row({gap: '10px'});
 
             expect(row.getElement().style.display).toBe('flex');
             expect(row.getElement().style.flexDirection).toBe('row');
@@ -38,9 +38,9 @@ describe('Layout Components', () => {
     it('Column should have display flex and flexDirection column', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const col = appRoot.add.Column({ gap: '5px' });
+            const col = appRoot.add.Column({gap: '5px'});
 
             expect(col.getElement().style.display).toBe('flex');
             expect(col.getElement().style.flexDirection).toBe('column');
@@ -51,7 +51,7 @@ describe('Layout Components', () => {
     it('Grid should have display grid and apply templates', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
             const grid = appRoot.add.Grid({
                 templateColumns: '1fr 1fr',
@@ -67,9 +67,9 @@ describe('Layout Components', () => {
     it('Group should have fieldset and legend', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const group = appRoot.add.Group({ title: 'My Group' });
+            const group = appRoot.add.Group({title: 'My Group'});
 
             expect(group.getElement().tagName.toLowerCase()).toBe('fieldset');
             const legend = group.getElement().querySelector('legend');
@@ -81,7 +81,7 @@ describe('Layout Components', () => {
     it('Group should apply dynamic styleContainer to content element', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
             const contentStyle = signal({
                 display: 'grid',
                 gap: '8px',
@@ -118,9 +118,9 @@ describe('Layout Components', () => {
     it('Divider should apply correct styles', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const divider = appRoot.add.Divider({ color: 'red', thickness: '5px' });
+            const divider = appRoot.add.Divider({color: 'red', thickness: '5px'});
 
             expect(divider.getElement().style.backgroundColor).toBe('red');
             expect(divider.getElement().style.height).toBe('5px');
@@ -130,9 +130,9 @@ describe('Layout Components', () => {
     it('Spacer should apply flex', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const spacer = appRoot.add.Spacer({ flex: 2 });
+            const spacer = appRoot.add.Spacer({flex: 2});
 
             // 在某些浏览器/JSDOM 中，flex: 2 可能会被展开
             expect(spacer.getElement().style.flex).toMatch(/^2/);
@@ -141,13 +141,13 @@ describe('Layout Components', () => {
     it('Complex nested add should work', () => {
         zoneWrapper.run(() => {
             const containerEl = document.createElement('div');
-            const appRoot = new AppRoot(containerEl, { zoneWrapper });
+            const appRoot = new AppRoot(containerEl, {zoneWrapper});
 
-            const group = appRoot.add.Group({ title: 'Root' });
-            const col = group.add.Column({ gap: '10px' });
-            const row = col.add.Row({ gap: '10px' });
-            const btn = row.add.Button({ text: 'Click me' });
-            const text = col.add.Text({ text: 'Hello' });
+            const group = appRoot.add.Group({title: 'Root'});
+            const col = group.add.Column({gap: '10px'});
+            const row = col.add.Row({gap: '10px'});
+            const btn = row.add.Button({text: 'Click me'});
+            const text = col.add.Text({text: 'Hello'});
 
             // Verify structure
             // Group -> fieldset -> div (content) -> Column -> Row -> Button

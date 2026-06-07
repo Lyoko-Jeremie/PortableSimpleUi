@@ -95,7 +95,11 @@ describe('Autocomplete', () => {
 
     it('supports programmatic option updates and dynamic item values', () => {
         const output = {value: ''};
-        const optionState: {value: IAutocompleteOption[]; get: () => IAutocompleteOption[]; set: (next: IAutocompleteOption[]) => void} = {
+        const optionState: {
+            value: IAutocompleteOption[];
+            get: () => IAutocompleteOption[];
+            set: (next: IAutocompleteOption[]) => void
+        } = {
             value: [{key: 'old-1', label: 'Old Option'}],
             get() {
                 return this.value;

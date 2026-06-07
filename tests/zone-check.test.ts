@@ -1,5 +1,5 @@
 import 'zone.js';
-import { createZoneWrapper, IZoneWrapper } from '../src/core';
+import {createZoneWrapper, IZoneWrapper} from '../src/core';
 
 describe('ZoneWrapper Design and Constraints', () => {
     let zoneWrapper: IZoneWrapper;
@@ -9,7 +9,9 @@ describe('ZoneWrapper Design and Constraints', () => {
         renderCount = 0;
         zoneWrapper = createZoneWrapper('test-zone');
         zoneWrapper.registerRoot({
-            render: () => { renderCount++; }
+            render: () => {
+                renderCount++;
+            }
         });
     });
 
@@ -47,14 +49,14 @@ describe('ZoneWrapper Design and Constraints', () => {
     });
 
     it('should handle nested zones and runOutside correctly', () => {
-        const innerZone = zoneWrapper.zone.fork({ name: 'inner' });
+        const innerZone = zoneWrapper.zone.fork({name: 'inner'});
         let innerRenderCount = 0;
 
         // Simulating a component in inner zone
         zoneWrapper.run(() => {
-             innerZone.run(() => {
-                 // Logic in inner zone
-             });
+            innerZone.run(() => {
+                // Logic in inner zone
+            });
         });
 
         // The outer zoneWrapper's onInvoke will be triggered because innerZone is a child of zoneWrapper.zone
@@ -70,7 +72,8 @@ describe('ZoneWrapper Design and Constraints', () => {
         // Manually setting parent to null for testing if possible (Zone.current is usually not root)
         // But we can check if it throws
         expect(() => {
-            rootWrapper.runOutside(() => {});
+            rootWrapper.runOutside(() => {
+            });
         }).not.toThrow();
     });
 
