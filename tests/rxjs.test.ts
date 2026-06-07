@@ -59,4 +59,20 @@ describe('RxJS support', () => {
 
         expect((textComp as any)._dirty).toBe(true);
     });
+
+    it('should support two-way binding with BehaviorSubject', () => {
+        const subject = new BehaviorSubject('initial');
+        const { Input } = require('../src/components/basic');
+        const inputComp = new Input({ value: subject }, zoneWrapper);
+
+        inputComp.render();
+        const el = inputComp.getElement() as HTMLInputElement;
+        expect(el.value).toBe('initial');
+
+        // 模拟用户输入
+        el.value = 'user input';
+        el.dispatchEvent(new Event('input'));
+
+        expect(subject.value).toBe('user input');
+    });
 });

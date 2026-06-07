@@ -267,6 +267,12 @@ export abstract class BaseComponent<
      */
     protected setValue<T>(accessor: DynamicValue<T>, value: T): void {
         if (accessor && typeof accessor === 'object') {
+            if (isObservable(accessor)) {
+                if ('next' in accessor && typeof (accessor as any).next === 'function') {
+                    (accessor as any).next(value);
+                }
+                return;
+            }
             if ('set' in accessor && typeof (accessor as any).set === 'function') {
                 (accessor as any).set(value);
             } else if ('value' in accessor) {
