@@ -2,6 +2,7 @@ import './polyfill';
 import {AppRoot} from '../../src/app-root';
 import {computed, signal, createZoneWrapper, effect} from '../../src/core';
 import {makeDataAccessor, makeRef} from "../../src";
+import { BehaviorSubject, interval, map } from 'rxjs';
 
 const uiRoot = document.getElementById('ui-root');
 
@@ -27,7 +28,8 @@ if (uiRoot) {
                 {id: 'form', label: '表单演示'},
                 {id: 'graphics', label: '图形组件'},
                 {id: 'operator', label: '操作组件'},
-                {id: 'signal', label: '响应式数据'}
+                {id: 'signal', label: '响应式数据'},
+                {id: 'rxjs', label: 'RxJS 支持'}
             ],
             activeTabId: 'basic'
         });
@@ -41,6 +43,30 @@ if (uiRoot) {
         const graphicsTab = tabs.add.Container({});
         const operatorTab = tabs.add.Container({});
         const signalTab = tabs.add.Container({});
+        const rxjsTab = tabs.add.Container({});
+
+        // --- RxJS 支持页 ---
+        const rxjsGroup = rxjsTab.add.Group({title: 'RxJS Observable 绑定'});
+        const rxjsFlex = rxjsGroup.add.Flex({gap: '15px', direction: 'column'});
+
+        const rxjsCount$ = new BehaviorSubject(0);
+        const timer$ = interval(1000).pipe(map(v => `计时器: ${v}s`));
+
+        rxjsFlex.add.Text({ text: rxjsCount$.pipe(map(v => `当前计数: ${v}`)) });
+        rxjsFlex.add.Button({
+            text: '点击增加计数 (RxJS)',
+            onClick: () => rxjsCount$.next(rxjsCount$.value + 1)
+        });
+        
+        rxjsFlex.add.Text({ text: timer$ });
+
+        const rxjsInput$ = new BehaviorSubject('初始值');
+        rxjsFlex.add.Input({
+            placeholder: '输入同步到 RxJS...',
+            value: rxjsInput$,
+            onInput: (v) => rxjsInput$.next(v)
+        });
+        rxjsFlex.add.Text({ text: rxjsInput$.pipe(map(v => `RxJS 内容: ${v}`)) });
 
         // --- 基础组件页 ---
 

@@ -1,5 +1,6 @@
 import {DynamicValue} from './types';
 import {IZoneWrapper} from './core';
+import {Observable, Subscription, isObservable} from 'rxjs';
 
 import type {AppRoot, ComponentContainerProxy} from './app-root';
 
@@ -75,6 +76,10 @@ export abstract class BaseComponent<
     public state: TState = {} as TState;
     /** 脏标记：当组件需要重新渲染时置为 true。 */
     protected _dirty = false;
+    /** 管理所有 RxJS 订阅。 */
+    protected _subscriptions = new Subscription();
+    /** 缓存 Observable 的最新值。 */
+    protected _observableValues = new Map<Observable<any>, any>();
 
     /**
      * 创建组件实例。
@@ -246,6 +251,7 @@ export abstract class BaseComponent<
      * 默认行为是将根元素从其父节点中移除。
      */
     public destroy(): void {
+        this._subscriptions.unsubscribe();
         if (this.element && this.element.parentElement) {
             this.element.parentElement.removeChild(this.element);
         }
@@ -277,8 +283,30 @@ export abstract class BaseComponent<
      * - 函数返回值
      * - 带 `get()` 方法的对象
      * - 带 `value` 属性的对象
+     * - RxJS Observable (自动订阅并触发渲染)
      */
     protected resolveValue<T>(value: DynamicValue<T>): T {
+        if (isObservable(value)) {
+            if (!this._observableValues.has(value)) {
+                // 首次遇到此 Observable，建立订阅
+                // 默认使用 undefined 或同步获取的值（如果是 BehaviorSubject）
+                let initialValue: any = undefined;
+                const sub = value.subscribe(v => {
+                    if (this._observableValues.get(value) !== v) {
+                        this._observableValues.set(value, v);
+                        this.markDirty();
+                    }
+                });
+                this._subscriptions.add(sub);
+
+                // 如果 subscribe 是同步触发的（例如 BehaviorSubject），上面的 set 已经执行。
+                // 如果是异步的，或者当前还没有值，Map 中可能还没有记录。
+                if (!this._observableValues.has(value)) {
+                    this._observableValues.set(value, initialValue);
+                }
+            }
+            return this._observableValues.get(value);
+        }
         if (typeof value === 'function') {
             // 如果函数返回的是其他可解析对象，这里直接返回结果，由调用方决定是否继续处理。
             return (value as Function)();
