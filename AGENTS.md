@@ -1,5 +1,12 @@
 # Agents
 
+***Follow Content Must Read With UTF-8 Encoding***
+
+## 开发指南
+当前环境是 PowerShell
+所有源码内容使用 UTF-8 编码
+当前操作系统上有 ripgrep (rg) ， 可以使用 `rg` 命令进行文件内容搜索
+
 # 实现守则
 不使用 `import()` 、 `require()` 动态导入，所有模块静态导入，确保兼容性。
 始终保障类型系统正确运行，提高代码的可维护性和可靠性。
@@ -16,7 +23,7 @@
 
 # 注意事项
 
-不使用 PowerShell 的文件读写命令（如 `Get-Content`、`Set-Content` 等）来处理文件操作，避免出现编码问题。
+避免使用 PowerShell 的文件读写命令（如 `Get-Content`、`Set-Content` 等）来处理文件操作，避免出现编码问题。
 
 优先使用工具而不是命令来搜索和查看文件内容，确保更好的兼容性。
 
