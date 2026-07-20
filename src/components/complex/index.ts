@@ -456,7 +456,21 @@ export class Toast extends BaseComponent<IToastConfig> {
 export interface ITableColumn<T> {
     title: string;
     key: keyof T;
-    render?: (value: any, record: T) => string | HTMLElement;
+    render?: (
+        value: any,
+        record: T,
+        cell: ITableCellContext<T>
+    ) => string | HTMLElement | void;
+}
+
+export interface ITableCellContext<T> {
+    /** 当前单元格的原生 DOM 元素。 */
+    element: HTMLTableCellElement;
+    /** 向当前单元格添加 PortableSimpleUi 组件。 */
+    add: ComponentContainerProxy;
+    record: T;
+    rowIndex: number;
+    columnIndex: number;
 }
 
 export interface ITableConfig<T = any> extends IComponentConfig {
@@ -464,18 +478,28 @@ export interface ITableConfig<T = any> extends IComponentConfig {
     dataSource: DynamicValue<T[]>;
 }
 
-export class Table extends BaseComponent<ITableConfig> {
+export class Table<T = any> extends BaseComponent<ITableConfig<T>> {
+    /** Table 重绘时需要销毁的单元格组件容器。 */
+    private cellContainers: ComponentContainer[] = [];
+
     protected getBaseClassName(): string | null {
         return 'ps-table';
     }
 
-    protected createHTMLElement(): HTMLElement {
-        const el = document.createElement('table');
-        return el;
+    protected createHTMLElement(): HTMLTableElement {
+        return document.createElement('table');
+    }
+
+    private destroyCellContainers(): void {
+        this.cellContainers.forEach(container => container.destroy());
+        this.cellContainers = [];
     }
 
     public render(): void {
         super.render();
+
+        // render() 会重建所有表格内容，先销毁旧单元格中的组件和订阅。
+        this.destroyCellContainers();
         this.element.innerHTML = '';
         const data = this.resolveValue(this.config.dataSource) || [];
 
@@ -495,28 +519,50 @@ export class Table extends BaseComponent<ITableConfig> {
 
         // Body
         const tbody = document.createElement('tbody');
-        data.forEach(record => {
+        data.forEach((record, rowIndex) => {
             const tr = document.createElement('tr');
-            this.config.columns.forEach(col => {
+            this.config.columns.forEach((col, columnIndex) => {
                 const td = document.createElement('td');
                 td.style.padding = '8px';
                 td.style.borderBottom = '1px solid #eee';
+
+                // 先挂载 td，使 cell.add 创建的组件直接进入当前表格行。
+                tr.appendChild(td);
+
+                const container = new ComponentContainer(td, this.zoneWrapper, this);
+                this.cellContainers.push(container);
+                const add = createComponentContainerProxyFromContainer(container);
+
                 const val = record[col.key];
                 if (col.render) {
-                    const rendered = col.render(val, record);
+                    const rendered = col.render(val, record, {
+                        element: td,
+                        add,
+                        record,
+                        rowIndex,
+                        columnIndex,
+                    });
                     if (rendered instanceof HTMLElement) {
-                        td.appendChild(rendered);
-                    } else {
-                        td.textContent = rendered;
+                        // cell.add 返回的组件元素已经挂载，避免无意义的重复追加。
+                        if (!td.contains(rendered)) {
+                            td.appendChild(rendered);
+                        }
+                    } else if (rendered !== undefined) {
+                        // 不使用 textContent，避免删除 render 中通过 cell.add 添加的组件。
+                        td.appendChild(document.createTextNode(String(rendered)));
                     }
                 } else {
                     td.textContent = String(val);
                 }
-                tr.appendChild(td);
             });
             tbody.appendChild(tr);
         });
         this.element.appendChild(tbody);
+    }
+
+    public destroy(): void {
+        this.destroyCellContainers();
+        super.destroy();
     }
 }
 

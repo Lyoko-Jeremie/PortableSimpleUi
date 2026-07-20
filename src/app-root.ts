@@ -199,9 +199,12 @@ declare module './app-root' {
  * 通过映射 IComponentRegistry 实现类型安全
  */
 export type ComponentContainerProxy = {
-    [K in keyof IComponentRegistry]: IComponentRegistry[K] extends ComponentConstructor<infer T>
+    [K in Exclude<keyof IComponentRegistry, 'Table'>]: IComponentRegistry[K] extends ComponentConstructor<infer T>
         ? (config: ConstructorParameters<IComponentRegistry[K]>[0]) => T
         : never;
+} & {
+    /** Table 保留行数据泛型，使 columns、record 与 cell context 能从 dataSource 推导类型。 */
+    Table<T = any>(config: ComplexComponents.ITableConfig<T>): ComplexComponents.Table<T>;
 };
 
 // 提前声明组件构造函数，稍后实现

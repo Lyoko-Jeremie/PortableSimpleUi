@@ -235,12 +235,36 @@ if (uiRoot) {
                 {title: 'ID', key: 'id'},
                 {title: '姓名', key: 'name'},
                 {title: '角色', key: 'role'},
-                {title: '状态', key: 'status'}
+                {
+                    title: '状态',
+                    key: 'status',
+                    render: (status, _record, cell) => {
+                        cell.add.Badge({
+                            text: status,
+                            color: status === '在线' ? 'green' : 'gray'
+                        });
+                    }
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    render: (_value, record, cell) => {
+                        const actions = cell.add.Flex({gap: '6px'});
+                        actions.add.Button({
+                            text: '查看',
+                            onClick: () => console.log('查看用户', record)
+                        });
+                        actions.add.Button({
+                            text: '删除',
+                            onClick: () => console.log('删除用户', record)
+                        });
+                    }
+                }
             ],
             dataSource: [
-                {id: 1, name: '张三', role: '管理员', status: '在线'},
-                {id: 2, name: '李四', role: '编辑', status: '离线'},
-                {id: 3, name: '王五', role: '访客', status: '在线'}
+                {id: 1, name: '张三', role: '管理员', status: '在线', action: null},
+                {id: 2, name: '李四', role: '编辑', status: '离线', action: null},
+                {id: 3, name: '王五', role: '访客', status: '在线', action: null}
             ]
         });
 
